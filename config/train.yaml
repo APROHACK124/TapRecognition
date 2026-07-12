@@ -1,0 +1,47 @@
+# Training configuration for IMU double-tap detector
+
+seed: 42
+device: auto
+out_dir: checkpoints
+
+data:
+  mode: recorded
+  train_dir: data/train_data
+  val_dir: data/valid_data
+  window_samples: 64
+  sample_rate: 100.0
+  highpass: true
+  negative_windows_per_file: 20
+  trigger_context_samples: 48
+  exclusion_margin: 80
+  dt_min: 0.12
+  dt_max: 0.45
+  synthetic_samples: 8000
+  val_split: 0.15
+
+labels:
+  sigma: 0.04
+  peak_offset: 0.05
+
+model:
+  input_dim: 6
+  cnn_channels: 32
+  gru_hidden: 64
+  gru_layers: 1
+  kernel_size: 5
+  dilations: [1, 2, 4]
+  dropout: 0.1
+
+training:
+  epochs: 50
+  batch_size: 16
+  lr: 0.001
+  weight_decay: 0.0001
+  grad_clip: 1.0
+  prediction_threshold: 0.7
+  num_workers: 0
+  early_stopping:
+    enabled: true
+    patience: 10
+    min_delta: 0.001
+    monitor: val_window_acc

@@ -1,0 +1,242 @@
+"""
+Online (causal) double-tap detector with persistent GRU state.
+
+Suitable for real-time IMU streams: one sample in, one probability out.
+"""
+
+from __future__ import annotations
+
+import argparse
+from dataclasses import dataclass
+
+import numpy as np
+import torch
+
+from .model import CausalCNNGRU
+from .physics import IMUSimulator
+
+
+@dataclass
+class DetectorConfig:
+    threshold_on: float = 0.5
+    threshold_off: float = 0.3
+    consecutive_on: int = 2
+    refractory_sec: float = 0.5
+    highpass_cutoff: float = 0.5
+    sample_rate: float = 100.0
+    ema_alpha: float = 0.01
+
+
+@dataclass
+class DetectionEvent:
+    frame_index: int
+    time_sec: float
+    probability: float
+
+
+class TrainingHighPass:
+    """2nd-order Butterworth high-pass matching dataset.py (scipy lfilter)."""
+
+    B = (0.9780304792065597, -1.9560609584131194, 0.9780304792065597)
+    A1 = -1.9555782403150352
+    A2 = 0.9565436765112031
+
+    def __init__(self, channels: int = 6):
+        self._x1 = np.zeros(channels, dtype=np.float32)
+        self._x2 = np.zeros(channels, dtype=np.float32)
+        self._y1 = np.zeros(channels, dtype=np.float32)
+        self._y2 = np.zeros(channels, dtype=np.float32)
+
+    def filter(self, x: np.ndarray) -> np.ndarray:
+        y = np.empty_like(x)
+        b0, b1, b2 = self.B
+        for i in range(len(x)):
+            yn = (
+                b0 * x[i] + b1 * self._x1[i] + b2 * self._x2[i]
+                - self.A1 * self._y1[i] - self.A2 * self._y2[i]
+            )
+            self._x2[i] = self._x1[i]
+            self._x1[i] = x[i]
+            self._y2[i] = self._y1[i]
+            self._y1[i] = yn
+            y[i] = yn
+        return y
+
+    def reset(self) -> None:
+        self._x1.fill(0)
+        self._x2.fill(0)
+        self._y1.fill(0)
+        self._y2.fill(0)
+
+
+class CausalHighPass:
+    """Per-channel one-pole high-pass (causal, for streaming)."""
+
+    def __init__(self, cutoff: float, sample_rate: float, channels: int = 6):
+        dt = 1.0 / sample_rate
+        rc = 1.0 / (2 * np.pi * cutoff)
+        self.alpha = rc / (rc + dt)
+        self.prev_x = np.zeros(channels, dtype=np.float32)
+        self.prev_y = np.zeros(channels, dtype=np.float32)
+
+    def filter(self, x: np.ndarray) -> np.ndarray:
+        y = self.alpha * (self.prev_y + x - self.prev_x)
+        self.prev_x = x.copy()
+        self.prev_y = y.copy()
+        return y
+
+
+class RunningNormalizer:
+    """Causal EMA z-score normalization."""
+
+    def __init__(self, channels: int = 6, alpha: float = 0.01):
+        self.alpha = alpha
+        self.mean = np.zeros(channels, dtype=np.float32)
+        self.var = np.ones(channels, dtype=np.float32)
+
+    def normalize(self, x: np.ndarray) -> np.ndarray:
+        self.mean = (1 - self.alpha) * self.mean + self.alpha * x
+        diff = x - self.mean
+        self.var = (1 - self.alpha) * self.var + self.alpha * (diff ** 2)
+        return diff / (np.sqrt(self.var) + 1e-6)
+
+
+class OnlineDoubleTapDetector:
+    """
+    Streaming detector wrapping CausalCNNGRU with preprocessing and hysteresis.
+    """
+
+    def __init__(
+        self,
+        model: CausalCNNGRU,
+        config: DetectorConfig | None = None,
+        device: str = "cpu",
+    ):
+        self.model = model.eval()
+        self.config = config or DetectorConfig()
+        self.device = torch.device(device)
+
+        self._h: torch.Tensor | None = None
+        self._cnn_buffer: torch.Tensor | None = None
+        self._hp = TrainingHighPass()
+
+        self._frame_idx = 0
+        self._consecutive = 0
+        self._armed = False
+        self._refractory_until = 0.0
+        self.events: list[DetectionEvent] = []
+
+    def reset(self) -> None:
+        self._h = None
+        self._cnn_buffer = None
+        self._hp = TrainingHighPass()
+        self._frame_idx = 0
+        self._consecutive = 0
+        self._armed = False
+        self._refractory_until = 0.0
+        self.events.clear()
+
+    @torch.no_grad()
+    def process_sample(self, imu_sample: np.ndarray) -> tuple[float, bool]:
+        """
+        Process one IMU sample [6].
+
+        Returns:
+            (probability, triggered_this_step)
+        """
+        x = self._hp.filter(imu_sample.astype(np.float32))
+
+        xt = torch.from_numpy(x).unsqueeze(0).to(self.device)
+        prob, self._h, self._cnn_buffer = self.model.step(
+            xt, self._h, self._cnn_buffer
+        )
+        p = float(prob[0, 0].item())
+        t = self._frame_idx / self.config.sample_rate
+
+        triggered = False
+        if t >= self._refractory_until:
+            if p >= self.config.threshold_on:
+                self._consecutive += 1
+            else:
+                self._consecutive = 0
+
+            if self._consecutive >= self.config.consecutive_on and not self._armed:
+                triggered = True
+                self._armed = True
+                self._refractory_until = t + self.config.refractory_sec
+                self.events.append(
+                    DetectionEvent(self._frame_idx, t, p)
+                )
+
+            if self._armed and p < self.config.threshold_off:
+                self._armed = False
+                self._consecutive = 0
+
+        self._frame_idx += 1
+        return p, triggered
+
+    def process_stream(self, imu: np.ndarray) -> tuple[np.ndarray, list[DetectionEvent]]:
+        """Process full array [T, 6] sample-by-sample."""
+        self.reset()
+        probs = np.zeros(len(imu), dtype=np.float32)
+        for i, sample in enumerate(imu):
+            probs[i], _ = self.process_sample(sample)
+        return probs, list(self.events)
+
+
+def load_detector(checkpoint_path: str, device: str = "cpu") -> OnlineDoubleTapDetector:
+    ckpt = torch.load(checkpoint_path, map_location=device, weights_only=False)
+    cfg = ckpt.get("model_config", {})
+    model = CausalCNNGRU(**cfg)
+    model.load_state_dict(ckpt["model_state"])
+    return OnlineDoubleTapDetector(model, device=device)
+
+
+def _demo_inference(checkpoint: str) -> None:
+    import matplotlib.pyplot as plt
+
+    sim = IMUSimulator(sample_rate=100, window_samples=128, seed=99)
+    detector = load_detector(checkpoint)
+
+    fig, axes = plt.subplots(2, 1, figsize=(12, 6), sharex=True)
+
+    for ax_idx, kind in enumerate(["double", "single"]):
+        imu, labels, meta = sim.generate_window(kind=kind)
+        imu_hp = sim.highpass(imu)
+
+        probs, events = detector.process_stream(imu_hp)
+        t = np.arange(len(imu)) / sim.sample_rate
+
+        ax = axes[ax_idx]
+        ax.plot(t, imu_hp[:, 0], alpha=0.5, label="ax (high-pass)")
+        ax2 = ax.twinx()
+        ax2.plot(t, probs, "r-", linewidth=2, label="P(double-tap)")
+        ax2.axhline(0.7, color="gray", linestyle="--", alpha=0.5)
+        for ev in events:
+            ax2.axvline(ev.time_sec, color="green", linestyle=":", alpha=0.8)
+        ax.set_title(f"{kind} — label={meta.label}, detections={len(events)}")
+        ax.set_ylabel("accel")
+        ax2.set_ylabel("probability")
+        ax.legend(loc="upper left")
+        ax2.legend(loc="upper right")
+
+    axes[1].set_xlabel("time (s)")
+    plt.tight_layout()
+    plt.savefig("inference_demo.png", dpi=120)
+    print("Saved inference_demo.png")
+
+
+def main() -> None:
+    parser = argparse.ArgumentParser(description="Online IMU double-tap inference")
+    parser.add_argument("--checkpoint", default="checkpoints/best.pt")
+    parser.add_argument("--device", default="cpu")
+    args = parser.parse_args()
+
+    detector = load_detector(args.checkpoint, args.device)
+    print(f"Loaded model from {args.checkpoint}")
+    print(f"Receptive field: {detector.model.receptive_field} samples")
+    _demo_inference(args.checkpoint)
+
+
+if __name__ == "__main__":
+    main()

@@ -1,0 +1,32 @@
+# Python
+__pycache__/
+*.py[cod]
+*.egg-info/
+.eggs/
+dist/
+*.egg
+
+# Checkpoints (large binaries - keep best.pt via exception if needed)
+# checkpoints/*.pt
+
+# MindSpore / ONNX artifacts
+checkpoints/*.onnx
+checkpoints/*.ms
+
+# MinGW bundle
+tools/mingw730/
+
+# IDE
+.idea/
+.vscode/
+
+# Data (large recordings)
+data/
+
+# Demo outputs
+demo_outputs/
+*.png
+
+# Virtual env
+.venv/
+venv/
