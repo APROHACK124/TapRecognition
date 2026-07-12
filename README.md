@@ -33,6 +33,7 @@ TapRecognition/
 │   ├── export_for_harmony.py    # Export checkpoint to ONNX for HarmonyOS
 │   └── convert_to_ms.ps1        # ONNX → .ms via MindSpore Lite converter
 ├── tap_recognition/
+│   ├── config.py                # Hyperparameters (TrainConfig dataclasses)
 │   ├── physics.py               # Tap signal synthesis (IMUSimulator)
 │   ├── labels.py                # Gaussian second-tap soft labels
 │   ├── recording.py             # CSV loading, JSON annotation helpers
@@ -91,15 +92,13 @@ The GUI plots **ACC energy delta** and **GYRO energy**, picks the minimum normal
 
 ### 2. Train on labeled recordings
 
-Place training CSVs in `data/train_data/` and validation CSVs in `data/valid_data/`. Then:
-
-Place training CSVs in `data/train_data/` and validation CSVs in `data/valid_data/`. Hyperparameters live in `config/train.yaml` (data paths, model architecture, label params, optimizer settings).
+Place training CSVs in `data/train_data/` and validation CSVs in `data/valid_data/`. Edit defaults in `tap_recognition/config.py` if needed (`TrainConfig`, `DataConfig`, etc.).
 
 ```bash
-python train.py --config config/train.yaml
+python train.py
 ```
 
-For synthetic data, set `data.mode: synthetic` in the config file.
+For synthetic data, set `DataConfig.mode = "synthetic"` in `tap_recognition/config.py`.
 
 Checkpoints are written to `checkpoints/best.pt` and `checkpoints/last.pt`.
 
@@ -136,20 +135,17 @@ Sigmoid → P(double-tap at current frame)
 - GRU processing strictly in temporal order
 - Online inference updates one sample at a time with persistent GRU state
 
-## Training CLI Reference
+## Configuration
 
-| Flag | Default | Description |
-|------|---------|-------------|
-| `--config` | `config/train.yaml` | YAML file with all training hyperparameters |
+Hyperparameters are defined as dataclasses in `tap_recognition/config.py`:
 
-Key sections in `config/train.yaml`:
-
-| Section | Contents |
-|---------|----------|
-| `data` | Dataset mode, paths, window size, negative sampling |
-| `labels` | Gaussian soft-label parameters |
-| `model` | CNN + GRU architecture |
-| `training` | Epochs, batch size, learning rate, grad clip |
+| Class | Contents |
+|-------|----------|
+| `DataConfig` | Dataset mode, paths, window size, negative sampling |
+| `LabelConfig` | Gaussian soft-label parameters |
+| `ModelConfig` | CNN + GRU architecture |
+| `TrainingConfig` | Epochs, batch size, learning rate, early stopping |
+| `TrainConfig` | Top-level wrapper (seed, device, out_dir, nested configs) |
 
 ## Deploy to HarmonyOS (`.pth` → `.ms`)
 

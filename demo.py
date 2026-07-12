@@ -18,7 +18,8 @@ import matplotlib.pyplot as plt
 import numpy as np
 import torch
 
-from tap_recognition.config import LabelConfig, TrainConfig, load_train_config
+from tap_recognition.config import LabelConfig, TrainConfig
+from train import train
 from tap_recognition.dataset import (
     RecordedIMUDataset,
     load_full_recording,
@@ -199,15 +200,14 @@ def plot_architecture(out_path: str = "architecture.png") -> None:
     print(f"Saved {out_path}")
 
 
-def run_training(config_path: str = "config/train.yaml", force: bool = False) -> Path:
-    ckpt = Path("checkpoints/best.pt")
+def run_training(cfg: TrainConfig, force: bool = False) -> Path:
+    ckpt = Path(cfg.out_dir) / "best.pt"
     if ckpt.exists() and not force:
         print("Checkpoint exists, skipping training (use --force-train to retrain)")
         return ckpt
 
     print("Training causal CNN + GRU...")
-    cmd = [sys.executable, "train.py", "--config", config_path]
-    subprocess.run(cmd, check=True)
+    train(cfg)
     return ckpt
 
 
@@ -920,7 +920,6 @@ def verify_causality() -> None:
 
 def main() -> None:
     parser = argparse.ArgumentParser(description="IMU double-tap recognition demo")
-    parser.add_argument("--config", default="config/train.yaml")
     parser.add_argument("--checkpoint", default="checkpoints/best.pt")
     parser.add_argument("--force-train", action="store_true")
     parser.add_argument("--skip-train", action="store_true")
@@ -957,7 +956,7 @@ def main() -> None:
     )
     args = parser.parse_args()
 
-    cfg = load_train_config(args.config)
+    cfg = TrainConfig()
     data_dirs = [Path(cfg.data.train_dir), Path(cfg.data.val_dir)]
 
     print("=" * 60, flush=True)
@@ -973,7 +972,7 @@ def main() -> None:
 
     ckpt = Path(args.checkpoint)
     if not args.skip_train:
-        ckpt = run_training(args.config, force=args.force_train)
+        ckpt = run_training(cfg, force=args.force_train)
     elif not ckpt.exists():
         raise FileNotFoundError(
             f"Checkpoint not found: {ckpt}. Train first or pass --checkpoint."

@@ -2,7 +2,6 @@
 
 from __future__ import annotations
 
-import argparse
 from pathlib import Path
 
 import torch
@@ -10,7 +9,7 @@ import torch.nn as nn
 import torch.nn.functional as F
 from torch.utils.data import DataLoader, Dataset, random_split
 
-from tap_recognition.config import EarlyStoppingConfig, TrainConfig, load_train_config
+from tap_recognition.config import EarlyStoppingConfig, TrainConfig
 from tap_recognition.dataset import IMUDoubleTapDataset, RecordedIMUDataset
 from tap_recognition.model import CausalCNNGRU
 
@@ -318,15 +317,7 @@ def train(cfg: TrainConfig) -> float:
 
 
 def main() -> None:
-    parser = argparse.ArgumentParser(description="Train IMU double-tap detector")
-    parser.add_argument(
-        "--config",
-        default="config/train.yaml",
-        help="Path to YAML training config",
-    )
-    args = parser.parse_args()
-    cfg = load_train_config(args.config)
-    train(cfg)
+    train(TrainConfig())
 
 
 if __name__ == "__main__":

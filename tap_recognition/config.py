@@ -1,20 +1,11 @@
-"""Load training hyperparameters from YAML config files."""
+"""Training and model hyperparameters."""
 
 from __future__ import annotations
 
 from dataclasses import asdict, dataclass, field
-from pathlib import Path
 from typing import Any
 
 from .recording import LabelParams
-
-try:
-    import yaml
-except ImportError as exc:  # pragma: no cover - optional at import time
-    yaml = None
-    _YAML_IMPORT_ERROR = exc
-else:
-    _YAML_IMPORT_ERROR = None
 
 
 @dataclass
@@ -37,7 +28,7 @@ class DataConfig:
 @dataclass
 class LabelConfig:
     sigma: float = 0.04
-    peak_offset: float = 0.02
+    peak_offset: float = 0.05
 
     def to_label_params(self) -> LabelParams:
         return LabelParams(
@@ -83,7 +74,7 @@ class TrainingConfig:
     lr: float = 1e-3
     weight_decay: float = 1e-4
     grad_clip: float = 1.0
-    prediction_threshold: float = 0.5
+    prediction_threshold: float = 0.7
     num_workers: int = 0
     early_stopping: EarlyStoppingConfig = field(default_factory=EarlyStoppingConfig)
 
@@ -102,36 +93,3 @@ class TrainConfig:
         payload = asdict(self)
         payload["model"]["dilations"] = list(self.model.dilations)
         return payload
-
-
-def _merge_dataclass(cls, data: dict[str, Any]):
-    fields = {f.name for f in cls.__dataclass_fields__.values()}  # type: ignore[attr-defined]
-    kwargs = {key: value for key, value in data.items() if key in fields}
-    if cls is ModelConfig and "dilations" in kwargs:
-        kwargs["dilations"] = tuple(kwargs["dilations"])
-    if cls is TrainingConfig and "early_stopping" in kwargs:
-        es = kwargs["early_stopping"]
-        if isinstance(es, dict):
-            kwargs["early_stopping"] = _merge_dataclass(EarlyStoppingConfig, es)
-    return cls(**kwargs)
-
-
-def load_train_config(path: str | Path) -> TrainConfig:
-    if yaml is None:
-        raise ImportError(
-            "PyYAML is required to load config files. Install with: pip install pyyaml"
-        ) from _YAML_IMPORT_ERROR
-
-    path = Path(path)
-    with path.open(encoding="utf-8") as f:
-        raw = yaml.safe_load(f) or {}
-
-    return TrainConfig(
-        seed=raw.get("seed", 42),
-        device=raw.get("device", "auto"),
-        out_dir=raw.get("out_dir", "checkpoints"),
-        data=_merge_dataclass(DataConfig, raw.get("data", {})),
-        labels=_merge_dataclass(LabelConfig, raw.get("labels", {})),
-        model=_merge_dataclass(ModelConfig, raw.get("model", {})),
-        training=_merge_dataclass(TrainingConfig, raw.get("training", {})),
-    )
