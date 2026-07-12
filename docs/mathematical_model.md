@@ -234,7 +234,7 @@ Double-tap samples with $\Delta t \notin [T_{\min}, T_{\max}]$ are **not generat
 Each sample returns:
 
 $$
-\mathcal{D} = \bigl\{ \mathbf{y}_{0:N-1},\; \{y_n\}_{n=0}^{N-1},\; \text{metadata}(t_1, t_2, \Delta t,\, \mathbf{p}_k) \bigr\}
+\mathcal{D} = \{ \mathbf{y}_{:N-1},\; \{y_n\}_{n=0}^{N-1},\; \text{metadata}(t_1, t_2, \Delta t,\, \mathbf{p}_k) \}
 $$
 
 Metadata is used for stratified evaluation, not as a hard training class label.
@@ -304,7 +304,7 @@ with `action_label = 1` for the second tap. Recordings of type `knock_once` or `
 Each window is high-pass filtered (Section 6.1) before training. The dataset returns:
 
 $$
-\bigl\{ \mathbf{y}_{0:T-1},\; \{y_n\}_{n=0}^{T-1},\; \ell_{\text{window}} \bigr\}
+\{ \mathbf{y}_{0:T-1},\; \{y_n\}_{n=0}^{T-1},\; \ell_{\text{window}} \}
 $$
 
 where $\ell_{\text{window}} \in \{0, 1\}$ is a hard window-level label (1 if the window contains a labeled second tap).
