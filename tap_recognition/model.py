@@ -53,12 +53,13 @@ class CausalCNNGRU(nn.Module):
     Causal CNN front-end + GRU for IMU double-tap recognition.
 
     Input:  [B, T, F]  F=6 IMU channels
-    Output: [B, T, 1]  per-frame P(double-tap)
+    Output: [B, T, C]  per-frame logits, C=3 (none, left, right)
     """
 
     def __init__(
         self,
         input_dim: int = 6,
+        num_classes: int = 3,
         cnn_channels: int = 32,
         gru_hidden: int = 64,
         gru_layers: int = 1,
@@ -68,6 +69,7 @@ class CausalCNNGRU(nn.Module):
     ):
         super().__init__()
         self.input_dim = input_dim
+        self.num_classes = num_classes
         self.gru_hidden = gru_hidden
         self.gru_layers = gru_layers
 
@@ -89,7 +91,7 @@ class CausalCNNGRU(nn.Module):
             nn.Linear(gru_hidden, gru_hidden // 2),
             nn.GELU(),
             nn.Dropout(dropout),
-            nn.Linear(gru_hidden // 2, 1),
+            nn.Linear(gru_hidden // 2, num_classes),
         )
 
         self._receptive_field = 1 + sum(
@@ -111,7 +113,7 @@ class CausalCNNGRU(nn.Module):
             h0: [L, B, H] optional initial GRU state
 
         Returns:
-            logits: [B, T, 1]
+            logits: [B, T, C]
             h_n:    [L, B, H] final GRU state
         """
         b, t, _ = x.shape
@@ -134,28 +136,33 @@ class CausalCNNGRU(nn.Module):
         Process a single time step for online inference.
 
         Args:
-            x_t: [B, F] one IMU sample
+            x_t: [B, 1, F] or [B, F] — one IMU sample
             h:   [L, B, H] GRU state
             cnn_buffer: [B, C, R] past projected samples for causal conv
 
         Returns:
-            prob: [B, 1]
-            h_new, buffer_new
+            prob: [B, 1, C] softmax P(none, left, right)
+            h_new: [L, B, H]
+            buffer_new: [B, C_cnn, R]
         """
+        if x_t.dim() == 2:
+            x_t = x_t.unsqueeze(1)
+        elif x_t.dim() != 3 or x_t.shape[1] != 1:
+            raise ValueError(
+                f"step() expects x_t shape [B, 1, F] or [B, F], got {tuple(x_t.shape)}"
+            )
+
         b = x_t.shape[0]
-        proj = self.input_proj(x_t).unsqueeze(1)  # [B, 1, C]
+        proj = self.input_proj(x_t[:, 0, :]).unsqueeze(1)  # [B, 1, C]
         c = proj.shape[-1]
         r = self._receptive_field
 
         if cnn_buffer is None:
             cnn_buffer = torch.zeros(b, c, r, device=x_t.device, dtype=x_t.dtype)
 
-        # Shift buffer left, append new sample
         buffer_new = torch.cat([cnn_buffer[:, :, 1:], proj.transpose(1, 2)], dim=2)
-
-        # Full CNN forward on buffer window (only last step output used)
         cnn_out = self.cnn(buffer_new).transpose(1, 2)  # [B, 1, C]
         gru_out, h_new = self.gru(cnn_out, h)
-        logit = self.head(gru_out[:, -1:, :])
-        prob = torch.sigmoid(logit)
-        return prob.squeeze(-1), h_new, buffer_new
+        logit = self.head(gru_out[:, -1:, :])  # [B, 1, num_classes]
+        prob = torch.softmax(logit, dim=-1)
+        return prob, h_new, buffer_new

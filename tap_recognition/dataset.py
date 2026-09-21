@@ -11,7 +11,12 @@ import numpy as np
 import torch
 from torch.utils.data import Dataset
 
-from .labels import gaussian_second_tap_labels, estimate_first_tap_frame, is_valid_delta_t
+from .labels import (
+    CLASS_LEFT,
+    CLASS_NONE,
+    binary_peak_to_three_class,
+    three_class_frame_labels,
+)
 from .physics import IMUSimulator
 from .recording import IMU_COLUMNS, LabelParams, estimate_sample_rate_hz
 
@@ -23,16 +28,25 @@ class RecordedWindowMeta:
 
 
 def load_trigger_frames(label_path: Path) -> list[int]:
+    return [frame for frame, _cls in load_trigger_events(label_path)]
+
+
+def load_trigger_events(label_path: Path) -> list[tuple[int, int]]:
+    """Load (frame_index, class_id) from a sidecar .txt. class_id 1=left, 2=right."""
     if not label_path.exists() or label_path.stat().st_size == 0:
         return []
 
-    frames: list[int] = []
+    events: list[tuple[int, int]] = []
     for line in label_path.read_text(encoding="utf-8").splitlines():
         line = line.strip()
-        if not line:
+        if not line or line.startswith("#"):
             continue
-        frames.append(int(line.split(",")[0].strip()))
-    return sorted(set(frames))
+        parts = [p.strip() for p in line.split(",")]
+        frame = int(float(parts[0]))
+        class_id = int(float(parts[1])) if len(parts) > 1 else 1
+        events.append((frame, class_id))
+    events.sort(key=lambda item: item[0])
+    return events
 
 
 def load_full_recording(csv_path: Path) -> tuple[np.ndarray, float]:
@@ -51,11 +65,31 @@ def load_full_recording(csv_path: Path) -> tuple[np.ndarray, float]:
     return imu, sample_rate
 
 
+def load_segment_row_bounds(csv_path: Path) -> list[tuple[int, int]]:
+    """Half-open [start, end) row ranges for each contiguous segment_index run."""
+    with csv_path.open(encoding="utf-8-sig", newline="") as f:
+        rows = list(csv.DictReader(f))
+    if not rows or "segment_index" not in rows[0]:
+        return []
+
+    bounds: list[tuple[int, int]] = []
+    start = 0
+    current = int(rows[0]["segment_index"])
+    for i, row in enumerate(rows):
+        seg = int(row["segment_index"])
+        if seg != current:
+            bounds.append((start, i))
+            start = i
+            current = seg
+    bounds.append((start, len(rows)))
+    return bounds
+
+
 class IMUDoubleTapDataset(Dataset):
     def __init__(
         self,
         num_samples: int = 4000,
-        window_samples: int = 64,
+        window_samples: int = 300,
         sample_rate: float = 100.0,
         seed: int = 42,
         highpass: bool = True,
@@ -68,10 +102,12 @@ class IMUDoubleTapDataset(Dataset):
         self.highpass = highpass
         self.samples: list[tuple] = []
         for i in range(num_samples):
-            y, labels, meta = self.sim.generate_window()
+            y, peak, meta = self.sim.generate_window()
             if highpass:
                 y = self.sim.highpass(y)
-            self.samples.append((y, labels, meta.label))
+            class_id = CLASS_LEFT if meta.label == 1 else CLASS_NONE
+            labels = binary_peak_to_three_class(peak, class_id)
+            self.samples.append((y, labels, class_id))
 
     def __len__(self) -> int:
         return len(self.samples)
@@ -81,7 +117,7 @@ class IMUDoubleTapDataset(Dataset):
         return {
             "imu": torch.from_numpy(y),
             "frame_labels": torch.from_numpy(labels),
-            "window_label": torch.tensor(window_label, dtype=torch.float32),
+            "window_label": torch.tensor(window_label, dtype=torch.long),
         }
 
 
@@ -91,12 +127,12 @@ class RecordedIMUDataset(Dataset):
     def __init__(
         self,
         data_dir: str | Path,
-        window_samples: int = 64,
+        window_samples: int = 300,
         label_params: LabelParams | None = None,
         highpass: bool = True,
         negative_windows_per_file: int = 20,
-        trigger_context_samples: int = 48,
-        exclusion_margin: int = 80,
+        trigger_context_samples: int = 200,
+        exclusion_margin: int = 200,
         dt_min: float = 0.12,
         dt_max: float = 0.45,
         seed: int = 42,
@@ -118,7 +154,9 @@ class RecordedIMUDataset(Dataset):
         self.samples: list[tuple[np.ndarray, np.ndarray, int]] = []
         self.window_meta: list[RecordedWindowMeta] = []
 
-        csv_files = sorted(Path(data_dir).glob("*.csv"))
+        csv_files = sorted(
+            p for p in Path(data_dir).glob("*.csv") if not p.name.endswith(".labels.csv")
+        )
         if csv_paths is not None:
             allowed = {Path(p).resolve() for p in csv_paths}
             csv_files = [p for p in csv_files if p.resolve() in allowed]
@@ -132,14 +170,22 @@ class RecordedIMUDataset(Dataset):
                 imu = self.sim.highpass(imu)
 
             label_path = csv_path.with_suffix(".txt")
-            trigger_frames = load_trigger_frames(label_path)
+            trigger_events = load_trigger_events(label_path)
+            trigger_frames = [frame for frame, _cls in trigger_events]
+            segments = load_segment_row_bounds(csv_path)
 
-            for trigger_frame in trigger_frames:
+            if segments:
+                self._add_segment_windows(
+                    csv_path.name, imu, segments, trigger_events
+                )
+                continue
+
+            for trigger_frame, class_id in trigger_events:
                 window, labels = self._window_for_trigger(
-                    imu, trigger_frame, sample_rate
+                    imu, trigger_frame, sample_rate, class_id
                 )
                 if window is not None:
-                    self.samples.append((window, labels, 1))
+                    self.samples.append((window, labels, class_id))
                     self.window_meta.append(
                         RecordedWindowMeta(csv_path.name, trigger_frame)
                     )
@@ -149,12 +195,13 @@ class RecordedIMUDataset(Dataset):
                 trigger_frames,
                 negative_windows_per_file,
             )
+            none_labels = three_class_frame_labels(window_samples, [])
             for start in negative_starts:
                 window = imu[start : start + window_samples]
                 if len(window) < window_samples:
                     continue
                 self.samples.append(
-                    (window.astype(np.float32), np.zeros(window_samples, np.float32), 0)
+                    (window.astype(np.float32), none_labels.copy(), CLASS_NONE)
                 )
                 self.window_meta.append(RecordedWindowMeta(csv_path.name, None))
 
@@ -166,6 +213,7 @@ class RecordedIMUDataset(Dataset):
         imu: np.ndarray,
         trigger_frame: int,
         sample_rate: float,
+        class_id: int,
     ) -> tuple[np.ndarray | None, np.ndarray | None]:
         if trigger_frame < 0 or trigger_frame >= len(imu):
             return None, None
@@ -185,19 +233,74 @@ class RecordedIMUDataset(Dataset):
             return None, None
 
         t2_frame_in_window = trigger_frame - start
-        t1_frame_in_window = estimate_first_tap_frame(window, t2_frame_in_window)
-        if t1_frame_in_window is not None:
-            delta_t = (t2_frame_in_window - t1_frame_in_window) / sample_rate
-            if not is_valid_delta_t(delta_t, self.dt_min, self.dt_max):
-                return None, None
-
-        t2_sec = t2_frame_in_window / sample_rate
-        labels = gaussian_second_tap_labels(
+        labels = three_class_frame_labels(
             self.window_samples,
-            sample_rate,
-            t2_sec,
-            sigma=self.label_params.sigma,
-            peak_offset=self.label_params.peak_offset,
+            [(t2_frame_in_window, class_id)],
+            half_frames=self.label_params.half_frames,
+        )
+        return window.astype(np.float32), labels
+
+    def _add_segment_windows(
+        self,
+        source_name: str,
+        imu: np.ndarray,
+        segments: list[tuple[int, int]],
+        trigger_events: list[tuple[int, int]],
+    ) -> None:
+        """One training sequence per 3 s collection segment."""
+        for seg_start, seg_end in segments:
+            local_events = [
+                (frame - seg_start, class_id)
+                for frame, class_id in trigger_events
+                if seg_start <= frame < seg_end
+            ]
+            if trigger_events and not local_events:
+                continue
+            window, labels = self._fit_to_window(
+                imu[seg_start:seg_end], local_events
+            )
+            class_id = local_events[0][1] if local_events else CLASS_NONE
+            trigger_frame = (
+                seg_start + local_events[0][0] if local_events else None
+            )
+            self.samples.append((window, labels, class_id))
+            self.window_meta.append(RecordedWindowMeta(source_name, trigger_frame))
+
+    def _fit_to_window(
+        self,
+        imu_seg: np.ndarray,
+        local_events: list[tuple[int, int]],
+    ) -> tuple[np.ndarray, np.ndarray]:
+        target = self.window_samples
+        n = len(imu_seg)
+        half = self.label_params.half_frames
+
+        if n == target:
+            labels = three_class_frame_labels(n, local_events, half_frames=half)
+            return imu_seg.astype(np.float32), labels
+
+        if n > target:
+            if local_events:
+                n2 = max(frame for frame, _cls in local_events)
+                start = n2 - self.trigger_context_samples
+                start = max(0, min(start, n - target))
+            else:
+                start = 0
+            end = start + target
+            shifted = [
+                (frame - start, class_id)
+                for frame, class_id in local_events
+                if start <= frame < end
+            ]
+            labels = three_class_frame_labels(target, shifted, half_frames=half)
+            return imu_seg[start:end].astype(np.float32), labels
+
+        pad = target - n
+        window = np.pad(imu_seg, ((0, pad), (0, 0)), mode="edge")
+        labels = three_class_frame_labels(n, local_events, half_frames=half)
+        labels = np.concatenate(
+            [labels, three_class_frame_labels(pad, [], half_frames=half)],
+            axis=0,
         )
         return window.astype(np.float32), labels
 
@@ -239,5 +342,5 @@ class RecordedIMUDataset(Dataset):
         return {
             "imu": torch.from_numpy(y),
             "frame_labels": torch.from_numpy(labels),
-            "window_label": torch.tensor(window_label, dtype=torch.float32),
+            "window_label": torch.tensor(window_label, dtype=torch.long),
         }

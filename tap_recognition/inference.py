@@ -12,19 +12,23 @@ from dataclasses import dataclass
 import numpy as np
 import torch
 
+from .labels import confirm_prior_tap
 from .model import CausalCNNGRU
 from .physics import IMUSimulator
 
 
 @dataclass
 class DetectorConfig:
-    threshold_on: float = 0.5
+    threshold_on: float = 0.50
     threshold_off: float = 0.3
-    consecutive_on: int = 2
-    refractory_sec: float = 0.5
+    consecutive_on: int = 1
+    look_ahead_sec: float = 0.12
+    refractory_sec: float = 0.50
     highpass_cutoff: float = 0.5
     sample_rate: float = 100.0
     ema_alpha: float = 0.01
+    require_prior_tap: bool = False
+    prior_tap_mad_k: float = 5.0
 
 
 @dataclass
@@ -32,6 +36,65 @@ class DetectionEvent:
     frame_index: int
     time_sec: float
     probability: float
+    class_id: int = 0
+
+
+def pick_tap_events(
+    probs: np.ndarray,
+    *,
+    threshold: float = 0.50,
+    look_ahead_sec: float = 0.12,
+    refractory_sec: float = 0.50,
+    sample_rate: float = 100.0,
+    consecutive_on: int = 1,
+    acc: np.ndarray | None = None,
+    require_prior_tap: bool = False,
+    prior_tap_mad_k: float = 5.0,
+) -> list[tuple[int, int, float]]:
+    """
+    One report per physical double-tap.
+
+    On first frames over threshold, wait up to look_ahead_sec,
+    emit the strongest left/right peak, then ignore refractory_sec so
+    ring-down cannot fire again.
+    """
+    n = len(probs)
+    look = max(1, int(round(look_ahead_sec * sample_rate)))
+    lock = max(1, int(round(refractory_sec * sample_rate)))
+    events: list[tuple[int, int, float]] = []
+    i = 0
+    streak = 0
+    while i < n:
+        event_p = float(probs[i, 1:].max())
+        if event_p < threshold:
+            streak = 0
+            i += 1
+            continue
+        streak += 1
+        if streak < consecutive_on:
+            i += 1
+            continue
+        start = i - consecutive_on + 1
+        end = min(n, start + look)
+        local = probs[start:end, 1:]
+        rel = int(np.argmax(local.max(axis=1)))
+        peak = start + rel
+        class_id = int(np.argmax(probs[peak, 1:])) + 1
+        peak_p = float(probs[peak, class_id])
+        if require_prior_tap and acc is not None:
+            if not confirm_prior_tap(
+                acc,
+                peak,
+                sample_rate=sample_rate,
+                mad_k=prior_tap_mad_k,
+            ):
+                i += 1
+                streak = 0
+                continue
+        events.append((peak, class_id, peak_p))
+        i = peak + lock
+        streak = 0
+    return events
 
 
 class TrainingHighPass:
@@ -119,10 +182,12 @@ class OnlineDoubleTapDetector:
         self._h: torch.Tensor | None = None
         self._cnn_buffer: torch.Tensor | None = None
         self._hp = TrainingHighPass()
+        self._acc_hp: list[np.ndarray] = []
 
         self._frame_idx = 0
         self._consecutive = 0
-        self._armed = False
+        self._pending_start: int | None = None
+        self._pending_best: tuple[int, int, float] | None = None
         self._refractory_until = 0.0
         self.events: list[DetectionEvent] = []
 
@@ -130,11 +195,38 @@ class OnlineDoubleTapDetector:
         self._h = None
         self._cnn_buffer = None
         self._hp = TrainingHighPass()
+        self._acc_hp = []
         self._frame_idx = 0
         self._consecutive = 0
-        self._armed = False
+        self._pending_start = None
+        self._pending_best = None
         self._refractory_until = 0.0
         self.events.clear()
+
+    def _emit_pending(self) -> bool:
+        if self._pending_best is None:
+            self._pending_start = None
+            return False
+        frame, class_id, p_event = self._pending_best
+        if self.config.require_prior_tap and self._acc_hp:
+            acc = np.stack(self._acc_hp, axis=0)
+            if not confirm_prior_tap(
+                acc,
+                frame,
+                sample_rate=self.config.sample_rate,
+                mad_k=self.config.prior_tap_mad_k,
+            ):
+                self._pending_start = None
+                self._pending_best = None
+                self._consecutive = 0
+                return False
+        t = frame / self.config.sample_rate
+        self.events.append(DetectionEvent(frame, t, p_event, class_id))
+        self._refractory_until = t + self.config.refractory_sec
+        self._pending_start = None
+        self._pending_best = None
+        self._consecutive = 0
+        return True
 
     @torch.no_grad()
     def process_sample(self, imu_sample: np.ndarray) -> tuple[float, bool]:
@@ -142,38 +234,40 @@ class OnlineDoubleTapDetector:
         Process one IMU sample [6].
 
         Returns:
-            (probability, triggered_this_step)
+            (event probability, triggered_this_step)
         """
         x = self._hp.filter(imu_sample.astype(np.float32))
+        self._acc_hp.append(x[:3].copy())
 
-        xt = torch.from_numpy(x).unsqueeze(0).to(self.device)
+        xt = torch.from_numpy(x).view(1, 1, -1).to(self.device)
         prob, self._h, self._cnn_buffer = self.model.step(
             xt, self._h, self._cnn_buffer
         )
-        p = float(prob[0, 0].item())
+        p_vec = prob[0, 0].cpu().numpy()
+        p_event = float(p_vec[1:].max())
+        class_id = int(p_vec[1:].argmax()) + 1
         t = self._frame_idx / self.config.sample_rate
-
         triggered = False
-        if t >= self._refractory_until:
-            if p >= self.config.threshold_on:
+
+        if self._pending_start is not None:
+            if self._pending_best is None or p_event > self._pending_best[2]:
+                self._pending_best = (self._frame_idx, class_id, p_event)
+            if t >= self._pending_start + self.config.look_ahead_sec:
+                triggered = self._emit_pending()
+        elif t >= self._refractory_until:
+            if p_event >= self.config.threshold_on:
                 self._consecutive += 1
             else:
                 self._consecutive = 0
-
-            if self._consecutive >= self.config.consecutive_on and not self._armed:
-                triggered = True
-                self._armed = True
-                self._refractory_until = t + self.config.refractory_sec
-                self.events.append(
-                    DetectionEvent(self._frame_idx, t, p)
-                )
-
-            if self._armed and p < self.config.threshold_off:
-                self._armed = False
-                self._consecutive = 0
+            if self._consecutive >= self.config.consecutive_on:
+                start_t = (
+                    self._frame_idx - self.config.consecutive_on + 1
+                ) / self.config.sample_rate
+                self._pending_start = start_t
+                self._pending_best = (self._frame_idx, class_id, p_event)
 
         self._frame_idx += 1
-        return p, triggered
+        return p_event, triggered
 
     def process_stream(self, imu: np.ndarray) -> tuple[np.ndarray, list[DetectionEvent]]:
         """Process full array [T, 6] sample-by-sample."""
@@ -181,12 +275,16 @@ class OnlineDoubleTapDetector:
         probs = np.zeros(len(imu), dtype=np.float32)
         for i, sample in enumerate(imu):
             probs[i], _ = self.process_sample(sample)
+        if self._pending_best is not None:
+            self._emit_pending()
         return probs, list(self.events)
 
 
 def load_detector(checkpoint_path: str, device: str = "cpu") -> OnlineDoubleTapDetector:
     ckpt = torch.load(checkpoint_path, map_location=device, weights_only=False)
-    cfg = ckpt.get("model_config", {})
+    cfg = dict(ckpt.get("model_config", {}))
+    if "dilations" in cfg:
+        cfg["dilations"] = tuple(cfg["dilations"])
     model = CausalCNNGRU(**cfg)
     model.load_state_dict(ckpt["model_state"])
     return OnlineDoubleTapDetector(model, device=device)

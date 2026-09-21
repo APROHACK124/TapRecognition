@@ -21,6 +21,7 @@ SegmentKind = Literal["double_tap", "single_tap", "background", "invalid", "unla
 class LabelParams:
     sigma: float = 0.04
     peak_offset: float = 0.02
+    half_frames: int = 10
 
 
 @dataclass

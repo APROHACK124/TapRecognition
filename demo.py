@@ -23,10 +23,11 @@ from train import train
 from tap_recognition.dataset import (
     RecordedIMUDataset,
     load_full_recording,
+    load_trigger_events,
     load_trigger_frames,
 )
 from tap_recognition.inference import OnlineDoubleTapDetector
-from tap_recognition.labels import estimate_first_tap_frame, gaussian_second_tap_labels
+from tap_recognition.labels import estimate_first_tap_frame, three_class_frame_labels
 from tap_recognition.model import CausalCNNGRU
 from tap_recognition.physics import IMUSimulator
 from train import evaluate
@@ -127,7 +128,7 @@ def plot_detailed_pipeline(
     # --- Preprocess & windowing ---
     ax.text(1.2, 6.85, "2. Preprocess & windowing", fontsize=10, fontweight="bold", color="#333")
     box(0.3, 5.5, 2.2, 0.9, "High-pass\n(gravity removal)", "#e8f5e9", "#2e7d32")
-    box(2.8, 5.5, 2.8, 0.9, f"64-frame window\ncontext={cfg.data.trigger_context_samples} before n₂", "#e8f5e9", "#2e7d32")
+    box(2.8, 5.5, 2.8, 0.9, f"{cfg.data.window_samples}-frame window\n3 s segment / context={cfg.data.trigger_context_samples}", "#e8f5e9", "#2e7d32")
     box(5.9, 5.5, 2.6, 0.9, f"Δt filter\n[{cfg.data.dt_min:.2f}, {cfg.data.dt_max:.2f}] s", "#e8f5e9", "#2e7d32")
     box(8.8, 5.5, 2.4, 0.9, f"Gaussian labels\nσ={cfg.labels.sigma}s", "#e8f5e9", "#2e7d32")
     arrow(2.5, 5.95, 2.8, 5.95)
@@ -162,7 +163,7 @@ def plot_detailed_pipeline(
     # --- Deploy ---
     ax.text(8.2, 2.65, "5. Deploy (streaming)", fontsize=10, fontweight="bold", color="#333")
     box(8.0, 1.3, 2.2, 0.9, "Causal HP\n+ EMA norm", "#fce4ec", "#c62828")
-    box(10.5, 1.3, 1.5, 0.9, "GRU step\n(carry h)", "#fce4ec", "#c62828")
+    box(10.5, 1.3, 1.8, 0.9, "NN step\n[1,1,6]→[1,1,1]\ncarry h, buf", "#fce4ec", "#c62828")
     box(12.2, 1.3, 1.5, 0.9, "Hysteresis\ntrigger", "#fce4ec", "#c62828")
     arrow(8.25, 3.5, 9.1, 2.2)
     arrow(10.2, 1.75, 10.5, 1.75)
@@ -260,25 +261,20 @@ def export_to_mindspore(
     return ms_path
 
 
+def event_prob_from_logits(logits: torch.Tensor) -> torch.Tensor:
+    """P(left or right second-tap) = max of class-1/2 softmax."""
+    probs = torch.softmax(logits, dim=-1)
+    return probs[..., 1:].max(dim=-1).values
+
+
 def build_full_stream_true_labels(
     n_samples: int,
-    sample_rate: float,
-    trigger_frames: list[int],
-    label_cfg: LabelConfig,
+    trigger_events: list[tuple[int, int]],
+    half_frames: int,
 ) -> np.ndarray:
-    """Build frame-level soft labels from label_imu trigger frames."""
-    labels = np.zeros(n_samples, dtype=np.float32)
-    for frame in trigger_frames:
-        t2_sec = frame / sample_rate
-        bump = gaussian_second_tap_labels(
-            n_samples,
-            sample_rate,
-            t2_sec,
-            sigma=label_cfg.sigma,
-            peak_offset=label_cfg.peak_offset,
-        )
-        labels = np.maximum(labels, bump)
-    return labels
+    """Per-frame event weight 1 - P(none) from 3-class Gaussian labels."""
+    labels = three_class_frame_labels(n_samples, trigger_events, half_frames=half_frames)
+    return 1.0 - labels[:, 0]
 
 
 def match_triggers(
@@ -317,7 +313,7 @@ def predict_recording_probs_causal(
     with torch.no_grad():
         xt = torch.from_numpy(imu.astype(np.float32)).unsqueeze(0).to(device)
         logits, _ = model(xt)
-        return torch.sigmoid(logits.squeeze(-1)).cpu().numpy()[0]
+        return event_prob_from_logits(logits).cpu().numpy()[0]
 
 
 def predict_recording_probs_windowed(
@@ -351,7 +347,7 @@ def predict_recording_probs_windowed(
             )
             xt = torch.from_numpy(windows).to(device)
             logits, _ = model(xt)
-            batch_probs = torch.sigmoid(logits.squeeze(-1)).cpu().numpy()
+            batch_probs = event_prob_from_logits(logits).cpu().numpy()
             for start, window_probs in zip(batch_starts, batch_probs):
                 for j, value in enumerate(window_probs):
                     idx = start + j
@@ -382,9 +378,9 @@ def evaluate_file_windows_from_dataset(
         batch = ds[idx]
         imu = batch["imu"].unsqueeze(0).to(device)
         logits, _ = model(imu)
-        probs = torch.sigmoid(logits.squeeze(-1)).cpu().numpy()[0]
-        window_pred = probs.max() > threshold
-        window_label = int(batch["window_label"].item())
+        probs = event_prob_from_logits(logits).cpu().numpy()[0]
+        window_pred = bool(probs.max() > threshold)
+        window_label = int(batch["window_label"].item() > 0)
 
         correct += int(window_pred == window_label)
 
@@ -498,7 +494,7 @@ def _first_example_window(
             continue
         batch = dataset[idx]
         item = {"meta": meta, "batch": batch, "idx": idx}
-        if int(batch["window_label"].item()) == 1 and positive is None:
+        if int(batch["window_label"].item()) > 0 and positive is None:
             positive = (idx, item)
         elif int(batch["window_label"].item()) == 0 and negative is None:
             negative = (idx, item)
@@ -527,7 +523,7 @@ def _window_model_output(
 ) -> np.ndarray:
     xt = torch.from_numpy(imu_window).unsqueeze(0).to(device)
     logits, _ = model(xt)
-    return torch.sigmoid(logits.squeeze(-1)).cpu().numpy()[0]
+    return event_prob_from_logits(logits).cpu().numpy()[0]
 
 
 def plot_recorded_file(
@@ -542,7 +538,8 @@ def plot_recorded_file(
     """Visualize input time series, training labels, predictions, and a window detail."""
     imu_raw, sample_rate = load_full_recording(csv_path)
     label_path = csv_path.with_suffix(".txt")
-    trigger_frames = load_trigger_frames(label_path)
+    trigger_events = load_trigger_events(label_path)
+    trigger_frames = [frame for frame, _cls in trigger_events]
     n = len(imu_raw)
     t_sec = np.arange(n) / sample_rate
 
@@ -556,7 +553,7 @@ def plot_recorded_file(
     probs = predict_recording_probs_causal(imu_hp, model, device=device)
     pred_frames = window_stats["detected_triggers"]
 
-    true_labels = build_full_stream_true_labels(n, sample_rate, trigger_frames, cfg.labels)
+    true_labels = build_full_stream_true_labels(n, trigger_events, cfg.labels.half_frames)
 
     t1_frames: list[int | None] = []
     valid_triggers: list[int] = []
@@ -661,6 +658,8 @@ def plot_recorded_file(
         ax_win_in.set_title(f"Training window #{ex_idx} — model input (HP, stacked)")
         ax_win_in.set_xlabel("time in window (s)")
 
+        if labels_w.ndim == 2:
+            labels_w = 1.0 - labels_w[:, 0]
         ax_win_lbl.fill_between(tw, 0, labels_w, color="#cc3333", alpha=0.4)
         ax_win_lbl.plot(tw, labels_w, color="#cc3333", lw=1.5)
         ax_win_lbl.set_ylim(-0.05, 1.05)
@@ -861,41 +860,80 @@ def run_recorded_comparison(
 
 
 def run_online_demo(checkpoint: Path) -> None:
-    from tap_recognition.inference import OnlineDoubleTapDetector
+    """Sample-by-sample demo: imu [1,1,6] + hidden states -> prob [1,1,1]."""
+    from tap_recognition.inference import DetectorConfig, OnlineDoubleTapDetector
 
     ckpt = torch.load(checkpoint, map_location="cpu", weights_only=False)
     model = CausalCNNGRU(**ckpt["model_config"])
     model.load_state_dict(ckpt["model_state"])
+    model.eval()
+
+    cfg = ckpt["model_config"]
+    cnn_channels = cfg.get("cnn_channels", 32)
+    gru_hidden = cfg.get("gru_hidden", 64)
+    gru_layers = cfg.get("gru_layers", 1)
+    receptive_field = model.receptive_field
+
+    det_cfg = DetectorConfig()
+    detector = OnlineDoubleTapDetector(model, config=det_cfg)
 
     sim = IMUSimulator(sample_rate=100, window_samples=100, seed=123)
-    detector = OnlineDoubleTapDetector(model)
-
-    fig, axes = plt.subplots(3, 1, figsize=(12, 8), sharex=True)
+    fig = plt.figure(figsize=(13, 9))
+    gs = gridspec.GridSpec(4, 1, height_ratios=[0.55, 1.0, 1.0, 1.0], hspace=0.35)
+    ax_info = fig.add_subplot(gs[0])
+    axes = [fig.add_subplot(gs[i]) for i in range(1, 4)]
     test_cases = ["double", "single", "background"]
+
+    ax_info.axis("off")
+    io_text = (
+        "Streaming step I/O (each new IMU sample):\n"
+        f"  in:  imu [1, 1, 6]  +  cnn_buffer [1, {cnn_channels}, {receptive_field}]  "
+        f"+  h [{gru_layers}, 1, {gru_hidden}]\n"
+        "  out: prob [1, 1, 1]  +  updated cnn_buffer  +  updated h\n"
+        "  post: hysteresis on prob scalar -> trigger event"
+    )
+    ax_info.text(
+        0.02, 0.5, io_text, va="center", fontsize=9, family="monospace",
+        bbox=dict(boxstyle="round", facecolor="#f5f5f5", edgecolor="#999"),
+    )
 
     for ax, kind in zip(axes, test_cases):
         imu, labels, meta = sim.generate_window(kind=kind)
         imu_hp = sim.highpass(imu)
-        probs, events = detector.process_stream(imu_hp)
+
+        detector.reset()
+        probs = np.zeros(len(imu), dtype=np.float32)
+        h_norms = np.zeros(len(imu), dtype=np.float32)
+        buf_norms = np.zeros(len(imu), dtype=np.float32)
+
+        for i, sample in enumerate(imu_hp):
+            probs[i], _ = detector.process_sample(sample)
+            if detector._h is not None:
+                h_norms[i] = float(detector._h.norm().item())
+            if detector._cnn_buffer is not None:
+                buf_norms[i] = float(detector._cnn_buffer.norm().item())
+
+        events = list(detector.events)
         t = np.arange(len(imu)) / sim.sample_rate
 
-        ax.plot(t, np.linalg.norm(imu_hp[:, :3], axis=1), label="|a| norm")
+        ax.plot(t, np.linalg.norm(imu_hp[:, :3], axis=1), label="|a| norm", color="#1f77b4")
         ax2 = ax.twinx()
-        ax2.fill_between(t, 0, labels, alpha=0.15, color="blue", label="ground truth")
-        ax2.plot(t, probs, "r-", linewidth=2, label="P(double-tap)")
-        ax2.axhline(0.7, color="gray", linestyle="--", alpha=0.4)
+        ax2.fill_between(t, 0, labels, alpha=0.12, color="blue", label="ground truth")
+        ax2.plot(t, probs, "r-", linewidth=2, label="prob [1,1,1]")
+        ax2.plot(t, h_norms / max(h_norms.max(), 1e-6), "--", color="#888", alpha=0.7, label="||h|| (normed)")
+        ax2.plot(t, buf_norms / max(buf_norms.max(), 1e-6), ":", color="#666", alpha=0.7, label="||cnn_buf|| (normed)")
+        ax2.axhline(det_cfg.threshold_on, color="gray", linestyle="--", alpha=0.4)
         for ev in events:
             ax2.axvline(ev.time_sec, color="green", linewidth=1.5, linestyle=":")
         ax.set_title(f"{kind}: gt={meta.label}, detected={len(events)}")
         ax.set_ylabel("|a|")
-        ax2.set_ylabel("prob")
-        ax.legend(loc="upper left", fontsize=8)
-        ax2.legend(loc="upper right", fontsize=8)
+        ax2.set_ylabel("prob / state norm")
+        ax.legend(loc="upper left", fontsize=7)
+        ax2.legend(loc="upper right", fontsize=7)
 
     axes[-1].set_xlabel("time (s)")
-    fig.suptitle("Online Inference Demo (sample-by-sample, causal)")
-    plt.tight_layout()
-    plt.savefig("online_demo.png", dpi=120)
+    fig.suptitle("Online Inference — one sample per step", fontsize=12, y=0.98)
+    plt.savefig("online_demo.png", dpi=120, bbox_inches="tight")
     plt.close()
     print("Saved online_demo.png")
 
@@ -907,12 +945,12 @@ def verify_causality() -> None:
     x = torch.randn(1, 32, 6)
     with torch.no_grad():
         logits_full, _ = model(x)
-        p_t = torch.sigmoid(logits_full[0, 15, 0]).item()
+        p_t = torch.softmax(logits_full[0, 15], dim=-1)[0].item()
 
         x_modified = x.clone()
         x_modified[0, 16:, :] = torch.randn(16, 6) * 100
         logits_mod, _ = model(x_modified)
-        p_t_mod = torch.sigmoid(logits_mod[0, 15, 0]).item()
+        p_t_mod = torch.softmax(logits_mod[0, 15], dim=-1)[0].item()
 
     assert abs(p_t - p_t_mod) < 1e-5, "Causality violated!"
     print(f"Causality check passed (p@t={p_t:.6f}, unchanged after future perturbation)")
