@@ -20,8 +20,12 @@ tools/mingw730/
 .idea/
 .vscode/
 
-# Data (large recordings)
-data/
+# Keep labeled train/val recordings; ignore other data folders
+data/*
+!data/train_data/
+!data/train_data/**
+!data/valid_data/
+!data/valid_data/**
 
 # Demo outputs
 demo_outputs/
