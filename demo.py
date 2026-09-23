@@ -224,7 +224,7 @@ def export_to_mindspore(
     print("Exporting checkpoint to ONNX for MindSpore Lite...")
     export_cmd = [
         sys.executable,
-        "tools/export_for_harmony.py",
+        "tools/export_step_for_harmony.py",
         "--checkpoint",
         str(checkpoint),
         "--output",
