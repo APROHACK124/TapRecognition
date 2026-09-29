@@ -14,7 +14,7 @@ import pandas as pd
 from scipy.optimize import linear_sum_assignment
 import torch
 
-from tap_recognition.dataset import load_trigger_events
+from tap_recognition.dataset import load_session_exclusions, load_trigger_events
 from tap_recognition.inference import pick_tap_events
 from tap_recognition.labels import three_class_frame_labels
 from tap_recognition.physics import IMUSimulator
@@ -50,8 +50,19 @@ class Recording:
 
 
 def load_recordings(root: Path, data_config: dict, half_frames: int):
-    """Validate continuity, filter once per file (as the training Dataset does)."""
+    """Load only non-excluded sessions while preserving their original frame order."""
     recordings, audit, manifest = [], [], []
+    registry_value = data_config.get("session_exclusions_file")
+    registry = Path(registry_value) if registry_value else None
+    if registry is not None and not registry.is_absolute():
+        registry = root / registry
+    exclusions = load_session_exclusions(registry) if registry is not None else []
+    excluded_by_file: dict[str, set[int]] = {}
+    for exclusion in exclusions:
+        excluded_by_file.setdefault(exclusion.source_file, set()).add(
+            exclusion.segment_index
+        )
+
     for split, key in [("train", "train_dir"), ("valid", "val_dir")]:
         for directory in data_config[key].split(","):
             paths = sorted((root / directory.strip()).glob("*.csv"))
@@ -69,8 +80,19 @@ def load_recordings(root: Path, data_config: dict, half_frames: int):
                 seg = df.segment_index.to_numpy()
                 starts = np.r_[0, np.flatnonzero(seg[1:] != seg[:-1]) + 1]
                 ends = np.r_[starts[1:], len(df)]
-                bounds = list(zip(starts.tolist(), ends.tolist()))
-                assert len(np.unique(seg)) == len(bounds), path
+                segment_ids = seg[starts].astype(int)
+                indexed_bounds = list(zip(segment_ids.tolist(), starts.tolist(), ends.tolist()))
+                assert len(np.unique(segment_ids)) == len(indexed_bounds), path
+                excluded_ids = excluded_by_file.get(path.name, set())
+                unknown = excluded_ids - set(segment_ids.tolist())
+                assert not unknown, f"{path.name}: unknown excluded segment(s) {sorted(unknown)}"
+                included_bounds = [
+                    (start, end)
+                    for segment_id, start, end in indexed_bounds
+                    if segment_id not in excluded_ids
+                ]
+                if not included_bounds:
+                    raise ValueError(f"{path.name}: all segments are excluded")
                 label_path = path.with_suffix(".txt")
                 assert label_path.exists(), f"Missing labels are NOT negatives: {path}"
                 events = load_trigger_events(label_path)
@@ -79,24 +101,55 @@ def load_recordings(root: Path, data_config: dict, half_frames: int):
                 expected = 1 if "knock_twice_left" in path.name.lower() else (
                     2 if "knock_twice_right" in path.name.lower() else 0
                 )
-                for start, end in bounds:
+                for segment_id, start, end in indexed_bounds:
+                    if segment_id in excluded_ids:
+                        continue
                     local = [(f, c) for f, c in events if start <= f < end]
-                    assert len(local) == int(expected > 0), (path, start, local)
+                    assert len(local) <= int(expected > 0), (path, start, local)
                     assert all(c == expected for _, c in local), path
                 imu = df[IMU_COLUMNS].to_numpy(dtype=np.float32)
                 assert np.isfinite(imu).all(), path
                 if data_config["highpass"]:
                     imu = IMUSimulator(sample_rate=fs).highpass(imu)
-                labels = three_class_frame_labels(len(df), events, half_frames=half_frames)
+                included_events = [
+                    (frame, cls)
+                    for frame, cls in events
+                    if any(start <= frame < end for start, end in included_bounds)
+                ]
+                excluded_event_count = len(events) - len(included_events)
+                filtered_imu_parts = []
+                filtered_time_parts = []
+                remapped_events = []
+                bounds = []
+                cursor = 0
+                for start, end in included_bounds:
+                    filtered_imu_parts.append(imu[start:end])
+                    filtered_time_parts.append((timestamps[start:end] - timestamps[0]) / 1000)
+                    bounds.append((cursor, cursor + end - start))
+                    remapped_events.extend(
+                        (frame - start + cursor, cls)
+                        for frame, cls in included_events
+                        if start <= frame < end
+                    )
+                    cursor += end - start
+                filtered_imu = np.concatenate(filtered_imu_parts, axis=0)
+                filtered_time = np.concatenate(filtered_time_parts)
+                labels = three_class_frame_labels(
+                    len(filtered_imu), remapped_events, half_frames=half_frames
+                )
                 recordings.append(Recording(
                     split, path, str(df.user_name.iloc[0]), str(df.action_label.iloc[0]),
-                    fs, (timestamps - timestamps[0]) / 1000, imu, labels, events, bounds,
+                    fs, filtered_time, filtered_imu, labels, remapped_events, bounds,
                 ))
-                lengths = ends - starts
+                lengths = np.asarray([end - start for start, end in included_bounds])
                 audit.append(dict(
                     split=split, file=path.name, user=str(df.user_name.iloc[0]),
-                    action=str(df.action_label.iloc[0]), frames=len(df), fs=fs,
-                    minutes=len(df) / fs / 60, segments=len(bounds), events=len(events),
+                    action=str(df.action_label.iloc[0]), frames=int(lengths.sum()), fs=fs,
+                    minutes=int(lengths.sum()) / fs / 60, segments=len(indexed_bounds),
+                    included_segments=len(included_bounds),
+                    excluded_segments=len(indexed_bounds) - len(included_bounds),
+                    excluded_segment_ids=",".join(map(str, sorted(excluded_ids))),
+                    events=len(included_events), excluded_events=excluded_event_count,
                     segment_min=int(lengths.min()), segment_max=int(lengths.max()),
                     non_300_segments=int((lengths != 300).sum()),
                     dropped_by_300_fit=int(np.maximum(lengths - 300, 0).sum()),
@@ -105,6 +158,8 @@ def load_recordings(root: Path, data_config: dict, half_frames: int):
                 ))
                 for source in (path, label_path):
                     manifest.append(dict(path=str(source.relative_to(root)), sha256=sha256(source)))
+    if registry is not None and registry.is_file():
+        manifest.append(dict(path=str(registry.relative_to(root)), sha256=sha256(registry)))
     keys = [(r.split, r.path.name) for r in recordings]
     assert len(set(keys)) == len(keys), "Duplicate input files"
     return recordings, pd.DataFrame(audit), manifest

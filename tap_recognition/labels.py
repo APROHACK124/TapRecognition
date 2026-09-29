@@ -62,8 +62,9 @@ def detect_second_tap_frame(
 
     When provided, first_tap_after_sec and second_tap_before_sec define a
     strict pair window. The first tap must be after its start and the second
-    tap must be before its end. Returns None if no pair meets those bounds and
-    has Δt in [dt_min, dt_max].
+    tap must be before its end. Strong candidates are preferred, but if none
+    fall in the requested window, the best local-peak pair in that window is
+    returned so weak intended taps are not hidden by stronger early activity.
     """
     del gyro  # reserved; pairing is driven by acc energy
     if first_tap_after_sec is not None and first_tap_after_sec < 0:
@@ -93,22 +94,31 @@ def detect_second_tap_frame(
                 break
         peaks = sorted(cand)
 
-    pairs: list[tuple[int, int, float, float, float]] = []
-    for i, t1 in enumerate(peaks):
-        for t2 in peaks[i + 1 :]:
-            delta_t = (t2 - t1) / sample_rate
-            if (
-                dt_min <= delta_t <= dt_max
-                and (
-                    first_tap_after_sec is None
-                    or t1 / sample_rate > first_tap_after_sec
-                )
-                and (
-                    second_tap_before_sec is None
-                    or t2 / sample_rate < second_tap_before_sec
-                )
-            ):
-                pairs.append((t1, t2, delta_t, float(acc_d[t1]), float(acc_d[t2])))
+    def valid_pairs(candidate_peaks: list[int]) -> list[tuple[int, int, float, float, float]]:
+        pairs: list[tuple[int, int, float, float, float]] = []
+        for i, t1 in enumerate(candidate_peaks):
+            for t2 in candidate_peaks[i + 1 :]:
+                delta_t = (t2 - t1) / sample_rate
+                if (
+                    dt_min <= delta_t <= dt_max
+                    and (
+                        first_tap_after_sec is None
+                        or t1 / sample_rate > first_tap_after_sec
+                    )
+                    and (
+                        second_tap_before_sec is None
+                        or t2 / sample_rate < second_tap_before_sec
+                    )
+                ):
+                    pairs.append((t1, t2, delta_t, float(acc_d[t1]), float(acc_d[t2])))
+        return pairs
+
+    pairs = valid_pairs(peaks)
+    if not pairs and first_tap_after_sec is not None:
+        # The global robust threshold can be dominated by an early accidental
+        # movement. Within an explicitly requested window, rank all local peaks
+        # instead of declaring the intended, weaker pair missing.
+        pairs = valid_pairs(_local_peaks(acc_d, 3))
     if not pairs:
         return None
     pairs.sort(key=lambda p: (min(p[3], p[4]), p[1]), reverse=True)

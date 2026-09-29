@@ -22,6 +22,14 @@ def _write_text(path: Path, text: str) -> None:
     path.write_bytes(text.encode("ascii"))
 
 
+def _is_strict_recording(csv_path: Path) -> bool:
+    return csv_path.name.startswith("imuStrict")
+
+
+def _is_regular_recording(csv_path: Path) -> bool:
+    return csv_path.name.startswith("imu_")
+
+
 def label_csv(
     csv_path: Path,
     half_frames: int = 10,
@@ -124,17 +132,36 @@ def main() -> None:
         if path.is_dir():
             csvs.extend(
                 p
-                for p in sorted(path.glob("imu_*.csv"))
-                if not p.name.endswith(".labels.csv")
+                for p in sorted(path.glob("*.csv"))
+                if (
+                    (_is_regular_recording(p) or _is_strict_recording(p))
+                    and not p.name.endswith(".labels.csv")
+                )
             )
         else:
             csvs.append(path)
 
+    strict_csvs = [csv_path for csv_path in csvs if _is_strict_recording(csv_path)]
+    if strict_csvs and strict_spike_window_ms is None:
+        parser.error(
+            f"refusing to label {len(strict_csvs)} imuStrict recording(s) without "
+            "--strict-spike-window-ms START_MS END_MS"
+        )
+
+    regular_csvs = [csv_path for csv_path in csvs if _is_regular_recording(csv_path)]
+    if regular_csvs and strict_spike_window_ms is not None:
+        print(
+            "WARNING: --strict-spike-window-ms is ignored for "
+            f"{len(regular_csvs)} regular imu_ recording(s); they use unrestricted pairing.",
+            file=sys.stderr,
+        )
+
     for csv_path in csvs:
+        window_for_csv = None if _is_regular_recording(csv_path) else strict_spike_window_ms
         label_path, n_events, n_miss = label_csv(
             csv_path,
             args.half_frames,
-            strict_spike_window_ms,
+            window_for_csv,
         )
         print(f"{csv_path.name}: events={n_events} miss={n_miss} -> {label_path.name}")
 
