@@ -22,10 +22,23 @@ def _write_text(path: Path, text: str) -> None:
     path.write_bytes(text.encode("ascii"))
 
 
-def label_csv(csv_path: Path, half_frames: int = 10) -> tuple[Path, int, int]:
+def label_csv(
+    csv_path: Path,
+    half_frames: int = 10,
+    strict_spike_window_ms: tuple[float, float] | None = None,
+) -> tuple[Path, int, int]:
     csv_path = Path(csv_path)
     class_id = class_id_from_filename(csv_path.name)
     label_path = csv_path.with_suffix(".txt")
+
+    first_tap_after_sec = None
+    second_tap_before_sec = None
+    if strict_spike_window_ms is not None:
+        start_ms, end_ms = strict_spike_window_ms
+        if start_ms < 0 or start_ms >= end_ms:
+            raise ValueError("strict spike window requires 0 <= START_MS < END_MS")
+        first_tap_after_sec = start_ms / 1000.0
+        second_tap_before_sec = end_ms / 1000.0
 
     if class_id is None:
         _write_text(label_path, "")
@@ -42,6 +55,8 @@ def label_csv(csv_path: Path, half_frames: int = 10) -> tuple[Path, int, int]:
                 imu[start:end, :3],
                 imu[start:end, 3:],
                 sample_rate=sample_rate,
+                first_tap_after_sec=first_tap_after_sec,
+                second_tap_before_sec=second_tap_before_sec,
             )
             if pair is None:
                 n_miss += 1
@@ -50,7 +65,11 @@ def label_csv(csv_path: Path, half_frames: int = 10) -> tuple[Path, int, int]:
             events.append((start + int(n2), class_id))
     else:
         pair = detect_second_tap_frame(
-            imu[:, :3], imu[:, 3:], sample_rate=sample_rate
+            imu[:, :3],
+            imu[:, 3:],
+            sample_rate=sample_rate,
+            first_tap_after_sec=first_tap_after_sec,
+            second_tap_before_sec=second_tap_before_sec,
         )
         if pair is None:
             n_miss += 1
@@ -81,7 +100,23 @@ def main() -> None:
     parser = argparse.ArgumentParser(description="Auto-label IMU CSV recordings")
     parser.add_argument("paths", nargs="+", help="CSV file or directory")
     parser.add_argument("--half-frames", type=int, default=10)
+    parser.add_argument(
+        "--strict-spike-window-ms",
+        nargs=2,
+        type=float,
+        metavar=("START_MS", "END_MS"),
+        help=(
+            "accept a pair only when its first spike is strictly after START_MS "
+            "and its second spike is strictly before END_MS, relative to each segment"
+        ),
+    )
     args = parser.parse_args()
+    strict_spike_window_ms = None
+    if args.strict_spike_window_ms:
+        start_ms, end_ms = args.strict_spike_window_ms
+        if start_ms < 0 or start_ms >= end_ms:
+            parser.error("--strict-spike-window-ms requires 0 <= START_MS < END_MS")
+        strict_spike_window_ms = (start_ms, end_ms)
 
     csvs: list[Path] = []
     for raw in args.paths:
@@ -96,7 +131,11 @@ def main() -> None:
             csvs.append(path)
 
     for csv_path in csvs:
-        label_path, n_events, n_miss = label_csv(csv_path, args.half_frames)
+        label_path, n_events, n_miss = label_csv(
+            csv_path,
+            args.half_frames,
+            strict_spike_window_ms,
+        )
         print(f"{csv_path.name}: events={n_events} miss={n_miss} -> {label_path.name}")
 
 

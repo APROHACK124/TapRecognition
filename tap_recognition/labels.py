@@ -54,13 +54,29 @@ def detect_second_tap_frame(
     dt_min: float = DT_MIN,
     dt_max: float = DT_MAX,
     sample_rate: float = 100.0,
+    first_tap_after_sec: float | None = None,
+    second_tap_before_sec: float | None = None,
 ) -> tuple[int, int] | None:
     """
     Find (n1, n2) in one 3 s collection segment using acc-energy peaks.
 
-    Returns None if no pair has Δt in [dt_min, dt_max].
+    When provided, first_tap_after_sec and second_tap_before_sec define a
+    strict pair window. The first tap must be after its start and the second
+    tap must be before its end. Returns None if no pair meets those bounds and
+    has Δt in [dt_min, dt_max].
     """
     del gyro  # reserved; pairing is driven by acc energy
+    if first_tap_after_sec is not None and first_tap_after_sec < 0:
+        raise ValueError("first_tap_after_sec must be non-negative")
+    if second_tap_before_sec is not None and second_tap_before_sec < 0:
+        raise ValueError("second_tap_before_sec must be non-negative")
+    if (
+        first_tap_after_sec is not None
+        and second_tap_before_sec is not None
+        and first_tap_after_sec >= second_tap_before_sec
+    ):
+        raise ValueError("first_tap_after_sec must be before second_tap_before_sec")
+
     acc_d = acc_energy_delta(acc)
     med = float(np.median(acc_d))
     mad = float(np.median(np.abs(acc_d - med))) + 1e-6
@@ -81,7 +97,17 @@ def detect_second_tap_frame(
     for i, t1 in enumerate(peaks):
         for t2 in peaks[i + 1 :]:
             delta_t = (t2 - t1) / sample_rate
-            if dt_min <= delta_t <= dt_max:
+            if (
+                dt_min <= delta_t <= dt_max
+                and (
+                    first_tap_after_sec is None
+                    or t1 / sample_rate > first_tap_after_sec
+                )
+                and (
+                    second_tap_before_sec is None
+                    or t2 / sample_rate < second_tap_before_sec
+                )
+            ):
                 pairs.append((t1, t2, delta_t, float(acc_d[t1]), float(acc_d[t2])))
     if not pairs:
         return None

@@ -21,6 +21,7 @@ class DataConfig:
     exclusion_margin: int = 200
     dt_min: float = 0.12
     dt_max: float = 0.45
+    session_exclusions_file: str = "data/session_exclusions.csv"
     synthetic_samples: int = 8000
     val_split: float = 0.15
 

@@ -103,6 +103,7 @@ def _recorded_dataset(
                 dt_min=data.dt_min,
                 dt_max=data.dt_max,
                 seed=seed + i,
+                session_exclusions_file=data.session_exclusions_file,
             )
         )
     return parts[0] if len(parts) == 1 else ConcatDataset(parts)

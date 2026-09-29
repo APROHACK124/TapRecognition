@@ -46,7 +46,7 @@ def export_step_onnx(checkpoint_path: Path, output_path: Path, opset: int = 14) 
     gru_layers = cfg.get("gru_layers", 1)
     receptive_field = model.receptive_field
 
-    wrapper = StreamingStep(model)
+    wrapper = StreamingStep(model).eval()
     imu = torch.randn(1, 1, input_dim)
     cnn_buffer = torch.zeros(1, cnn_channels, receptive_field)
     h_in = torch.zeros(gru_layers, 1, gru_hidden)
@@ -58,6 +58,7 @@ def export_step_onnx(checkpoint_path: Path, output_path: Path, opset: int = 14) 
         str(output_path),
         export_params=True,
         opset_version=opset,
+        dynamo=False,  # Keep the requested opset for the MindSpore Lite converter.
         do_constant_folding=True,
         input_names=["imu", "cnn_buffer", "h_in"],
         output_names=["prob", "h_out", "cnn_buffer_out"],
