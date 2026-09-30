@@ -1,4 +1,4 @@
-"""Replay selected validation operating points for inspectable recording examples."""
+"""Replay validation-selected operating points on training or validation examples."""
 
 from __future__ import annotations
 
@@ -47,8 +47,12 @@ def _sha256(path: Path) -> str:
     return hashlib.sha256(path.read_bytes()).hexdigest()
 
 
-def load_examples(root: Path, data: dict, labels: dict, seed: int):
-    """Load validation frames and exactly the fitted windows used by training."""
+def load_examples(root: Path, data: dict, labels: dict, seed: int, split: str = 'valid'):
+    """Load a split's current frames and fitted windows without augmentation."""
+    if split not in ('train', 'valid'):
+        raise ValueError(f'Unsupported inspection split: {split!r}')
+    directory_key = 'train_dir' if split == 'train' else 'val_dir'
+    seed_offset = 0 if split == 'train' else 1
     registry = Path(data['session_exclusions_file']) if data.get('session_exclusions_file') else None
     if registry is not None and not registry.is_absolute():
         registry = root / registry
@@ -57,7 +61,7 @@ def load_examples(root: Path, data: dict, labels: dict, seed: int):
         excluded.setdefault(item.source_file, set()).add(item.segment_index)
     manifest = []
     recordings = {}
-    for i, folder in enumerate(data['val_dir'].split(',')):
+    for i, folder in enumerate(data[directory_key].split(',')):
         directory = Path(folder.strip())
         if not directory.is_absolute():
             directory = root / directory
@@ -67,16 +71,16 @@ def load_examples(root: Path, data: dict, labels: dict, seed: int):
             negative_windows_per_file=data['negative_windows_per_file'],
             trigger_context_samples=data['trigger_context_samples'],
             exclusion_margin=data['exclusion_margin'], dt_min=data['dt_min'],
-            dt_max=data['dt_max'], seed=seed + 1 + i,
+            dt_max=data['dt_max'], seed=seed + seed_offset + i,
             session_exclusions_file=registry,
         )
         cursor = 0
         paths = sorted(p for p in directory.glob('*.csv') if not p.name.endswith('.labels.csv'))
         if not paths:
-            raise ValueError(f'No validation recordings in {directory}')
+            raise ValueError(f'No {split} recordings in {directory}')
         for path in paths:
             if path.name in recordings:
-                raise ValueError(f'Duplicate validation filename: {path.name}')
+                raise ValueError(f'Duplicate {split} filename: {path.name}')
             df = pd.read_csv(path)
             time_ms = df.timestamp_ms.to_numpy(dtype=np.float64)
             fs = estimate_sample_rate_hz(time_ms)
@@ -118,7 +122,7 @@ def load_examples(root: Path, data: dict, labels: dict, seed: int):
             )
             for p in (path, label_path):
                 manifest.append(dict(path=str(p.relative_to(root)), sha256=_sha256(p)))
-        assert cursor == len(dataset.samples), f'Unmatched validation windows in {directory}'
+        assert cursor == len(dataset.samples), f'Unmatched {split} windows in {directory}'
     if registry is not None and registry.is_file():
         manifest.append(dict(path=str(registry.relative_to(root)), sha256=_sha256(registry)))
     manifest.sort(key=lambda item: item['path'])
@@ -169,8 +173,14 @@ def _segment_at(segments, frame):
     return next((sid for sid, start, end in segments if start <= frame < end), None)
 
 
-def replay_examples(root: Path, operating_points: pd.DataFrame):
-    """Return current-data segment, recording, alarm, and probability comparisons."""
+def replay_examples(root: Path, operating_points: pd.DataFrame, split: str = 'valid'):
+    """Replay one split at frozen validation-selected thresholds in eval mode.
+
+    Training replay is an in-sample label audit, not a generalization estimate.
+    Its current-data hash is not compared with the exported validation hash.
+    """
+    if split not in ('train', 'valid'):
+        raise ValueError(f'Unsupported inspection split: {split!r}')
     choices = operating_points.set_index('model', drop=False)
     checkpoints = {}
     for label, row in choices.iterrows():
@@ -180,15 +190,20 @@ def replay_examples(root: Path, operating_points: pd.DataFrame):
             raise ValueError(f'{label}: best.pt differs from selected-threshold export')
         checkpoints[label] = torch.load(checkpoint_path, map_location='cpu', weights_only=True)
     first = next(iter(checkpoints.values()))['train_config']
-    recordings, current_hash = load_examples(root, first['data'], first['labels'], first['seed'])
+    recordings, current_hash = load_examples(root, first['data'], first['labels'], first['seed'], split)
     for label, checkpoint in checkpoints.items():
         cfg = checkpoint['train_config']
         if any(cfg[key] != first[key] for key in ('data', 'labels', 'seed')):
-            raise ValueError(f'{label}: validation preprocessing/data config differs from other models')
-    status = pd.DataFrame([dict(model=label, export_validation_sha256=row['validation_sha256'],
-                                current_validation_sha256=current_hash,
-                                matches_export=current_hash == row['validation_sha256'])
-                           for label, row in choices.iterrows()])
+            raise ValueError(f'{label}: {split} preprocessing/data config differs from other models')
+    if split == 'valid':
+        status = pd.DataFrame([dict(model=label, split=split,
+                                     export_validation_sha256=row['validation_sha256'],
+                                     current_validation_sha256=current_hash,
+                                     matches_export=current_hash == row['validation_sha256'])
+                               for label, row in choices.iterrows()])
+    else:
+        status = pd.DataFrame([dict(model=label, split=split, current_training_sha256=current_hash)
+                               for label in choices.index])
     segments, alarm_rows, traces = [], [], {}
     looks = {'instant': 0, 'lookahead_12f': 12}
     with torch.inference_mode():
@@ -223,7 +238,7 @@ def replay_examples(root: Path, operating_points: pd.DataFrame):
                     nearest = alarm['alarm_frame'] - closest[0] if closest else None
                     truth_i = matched_by_alarm.get(index)
                     detail = dict(
-                        model=label, file=rec.path.name,
+                        model=label, split=split, file=rec.path.name,
                         segment_index=_segment_at(rec.segments, alarm['alarm_frame']),
                         **alarm, matched=truth_i is not None,
                         matched_true_frame=rec.events[truth_i][0] if truth_i is not None else np.nan,
@@ -261,7 +276,7 @@ def replay_examples(root: Path, operating_points: pd.DataFrame):
                     n_fp = len(false_alarms)
                     deltas = [detected[matched_by_event[idx]]['alarm_frame'] - frame
                               for idx, frame in local_truth if idx in matched_by_event]
-                    segments.append(dict(model=label, file=rec.path.name, user=rec.user,
+                    segments.append(dict(model=label, split=split, file=rec.path.name, user=rec.user,
                                          action=rec.action,
                                          recording_type='knock_twice' if rec.action.startswith('knock_twice') else rec.action,
                                          segment_index=sid, start_frame=start,
@@ -282,11 +297,11 @@ def replay_examples(root: Path, operating_points: pd.DataFrame):
             del model
     segment_scores = pd.DataFrame(segments)
     alarm_details = pd.DataFrame(alarm_rows, columns=[
-        'model', 'file', 'segment_index', 'alarm_frame', 'peak_frame', 'class_id',
+        'model', 'split', 'file', 'segment_index', 'alarm_frame', 'peak_frame', 'class_id',
         'probability', 'matched', 'matched_true_frame', 'latency_frames',
         'nearest_true_frame', 'delta_to_nearest_true', 'wrong_side', 'too_early',
     ])
-    recording_scores = segment_scores.groupby(['model', 'file', 'user', 'action', 'recording_type'], as_index=False).agg(
+    recording_scores = segment_scores.groupby(['model', 'split', 'file', 'user', 'action', 'recording_type'], as_index=False).agg(
         segments=('segment_index', 'size'), minutes=('minutes', 'sum'),
         n_windows=('window_correct', 'count'), window_correct=('window_correct', 'sum'),
         window_fp=('window_fp', 'sum'), window_fn=('window_fn', 'sum'),
