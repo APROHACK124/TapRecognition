@@ -35,3 +35,6 @@ demo_outputs/
 # Virtual env
 .venv/
 venv/
+
+# Windows download-origin metadata copied as invalid filenames outside NTFS.
+*:Zone.Identifier
