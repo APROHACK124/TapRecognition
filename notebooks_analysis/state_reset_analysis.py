@@ -175,20 +175,22 @@ def predict_modes(model, recording):
     """2x2 state ablation on exactly the same, unmodified frames.
 
     Continuous CNN features can be computed once because the CNN is causal in
-    eval mode. GRU chunks carry state only within this call/recording.
+    eval mode. Recurrent chunks carry state only within this call/recording.
     """
     assert not model.training
     x = torch.from_numpy(recording.imu).unsqueeze(0)
     full_features = cnn_features(model, x)
     reset_features = [cnn_features(model, x[:, a:b]) for a, b in recording.bounds]
+    recurrent = model.lstm if hasattr(model, "lstm") else model.gru
     logits_by_mode, hidden_by_mode = {}, {}
     for mode, (carry_cnn, carry_gru) in MODES.items():
         state, parts, states = None, [], []
         for i, (a, b) in enumerate(recording.bounds):
             features = full_features[:, a:b] if carry_cnn else reset_features[i]
-            output, state = model.gru(features, state if carry_gru else None)
+            output, state = recurrent(features, state if carry_gru else None)
             parts.append(model.head(output))
-            states.append(state[0, 0].cpu().numpy().copy())
+            hidden = state[0] if isinstance(state, tuple) else state
+            states.append(hidden[0, 0].cpu().numpy().copy())
         logits_by_mode[mode] = torch.cat(parts, dim=1)[0]
         hidden_by_mode[mode] = np.stack(states)
 
@@ -210,17 +212,18 @@ def overlap_stream_logits(model, x, chunk_sizes):
     """Independent correct streaming reference, without the repository's step().
 
     Keep real raw-input history (not fictitious zero history). Recompute at most
-    receptive_field-1 frames for the CNN, then feed ONLY new features to the GRU.
+    receptive_field-1 frames for the CNN, then feed ONLY new recurrent features.
     Works for single frames as well as arbitrary chunk sizes.
     """
     assert not model.training and sum(chunk_sizes) == x.shape[1]
     context, state, parts, start = None, None, [], 0
     keep = model.receptive_field - 1
+    recurrent = model.lstm if hasattr(model, "lstm") else model.gru
     for size in chunk_sizes:
         current = x[:, start:start + size]
         buffered = current if context is None else torch.cat([context, current], dim=1)
         features = cnn_features(model, buffered)[:, -size:]
-        output, state = model.gru(features, state)
+        output, state = recurrent(features, state)
         parts.append(model.head(output))
         context = buffered[:, -keep:] if keep else buffered[:, :0]
         start += size

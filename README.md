@@ -102,6 +102,28 @@ For synthetic data, set `DataConfig.mode = "synthetic"` in `tap_recognition/conf
 
 Checkpoints are written to `checkpoints/best.pt` and `checkpoints/last.pt`.
 
+#### CNN–LSTM experiment
+
+`main_notebooks/baseline_lstm.ipynb` follows the GRU baseline with a one-layer,
+unidirectional LSTM. Set `LSTM_HIDDEN_SIZE` to **64** for the same hidden width,
+or **55** for approximately the same total parameter count as the GRU-64 model.
+Match `LABEL_DELAY_FRAMES`, `AMPLITUDE_AUGMENTATION`, data, and training settings
+to the GRU run being compared; high-pass filtering remains enabled.
+
+The shared training script also supports the LSTM:
+
+```bash
+python train.py --recurrent-type lstm --recurrent-hidden 64 --out-dir checkpoints_lstm64
+python train.py --recurrent-type lstm --recurrent-hidden 55 --out-dir checkpoints_lstm55
+```
+
+The script retains its existing augmentation and unshifted-target behavior;
+use the notebook's switches for delayed-target/augmentation experiments.
+LSTM checkpoints record `model_type="lstm"` and use `lstm_hidden`/`lstm_layers`
+in `model_config`. `tap_recognition.model_factory.build_model` loads either
+architecture, including legacy GRU checkpoints without `model_type`.
+Streaming LSTM inference carries both hidden and cell state.
+
 ### 4. Run inference
 
 ```bash

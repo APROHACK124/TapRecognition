@@ -14,7 +14,7 @@ from scipy.optimize import linear_sum_assignment
 import torch
 
 from tap_recognition.dataset import RecordedIMUDataset, load_session_exclusions, load_trigger_events
-from tap_recognition.model import CausalCNNGRU
+from tap_recognition.model_factory import build_model
 from tap_recognition.physics import IMUSimulator
 from tap_recognition.recording import IMU_COLUMNS, LabelParams, estimate_sample_rate_hz
 
@@ -196,7 +196,7 @@ def replay_examples(root: Path, operating_points: pd.DataFrame):
             checkpoint = checkpoints[label]
             config = dict(checkpoint['model_config'])
             config['dilations'] = tuple(config['dilations'])
-            model = CausalCNNGRU(**config).cpu().eval()
+            model = build_model(config, checkpoint.get('model_type')).cpu().eval()
             model.load_state_dict(checkpoint['model_state'])
             look = looks[row['policy']]
             thresholds = np.array([row['left_threshold'], row['right_threshold']])
