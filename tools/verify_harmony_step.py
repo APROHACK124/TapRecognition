@@ -21,7 +21,7 @@ import torch
 
 sys.path.insert(0, str(Path(__file__).resolve().parents[1]))
 from tap_recognition.dataset import load_full_recording
-from tap_recognition.model_factory import build_model
+from tap_recognition.model import CausalCNNGRU
 from tap_recognition.physics import IMUSimulator
 
 
@@ -110,7 +110,7 @@ def main() -> None:
     cfg = ckpt["model_config"]
     assert (cfg["input_dim"], cfg["num_classes"], cfg["cnn_channels"],
             cfg["gru_hidden"], cfg["gru_layers"]) == (6, 3, 32, 64, 1)
-    model = build_model(ckpt["model_config"], ckpt.get("model_type")).eval()
+    model = CausalCNNGRU(**ckpt["model_config"]).eval()
     model.load_state_dict(ckpt["model_state"])
     raw, fs = load_full_recording(args.recording)
     assert abs(fs - ckpt["train_config"]["data"]["sample_rate"]) < 0.5

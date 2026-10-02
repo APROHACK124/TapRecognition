@@ -29,7 +29,6 @@ from tap_recognition.dataset import (
 from tap_recognition.inference import OnlineDoubleTapDetector
 from tap_recognition.labels import estimate_first_tap_frame, three_class_frame_labels
 from tap_recognition.model import CausalCNNGRU
-from tap_recognition.model_factory import build_model
 from tap_recognition.physics import IMUSimulator
 from train import evaluate
 
@@ -731,7 +730,7 @@ def run_recorded_comparison(
 ) -> list[dict[str, int | float | str]]:
     """Plot every CSV in data_dirs and compare predictions to label_imu sidecars."""
     ckpt = torch.load(checkpoint, map_location=device, weights_only=False)
-    model = build_model(ckpt["model_config"], ckpt.get("model_type"))
+    model = CausalCNNGRU(**ckpt["model_config"])
     model.load_state_dict(ckpt["model_state"])
     model.to(device)
     model.eval()
@@ -865,7 +864,7 @@ def run_online_demo(checkpoint: Path) -> None:
     from tap_recognition.inference import DetectorConfig, OnlineDoubleTapDetector
 
     ckpt = torch.load(checkpoint, map_location="cpu", weights_only=False)
-    model = build_model(ckpt["model_config"], ckpt.get("model_type"))
+    model = CausalCNNGRU(**ckpt["model_config"])
     model.load_state_dict(ckpt["model_state"])
     model.eval()
 

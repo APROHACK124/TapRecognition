@@ -356,7 +356,6 @@ def train(cfg: TrainConfig) -> float:
         loaded = dict(ckpt.get("model_config", model_kwargs))
         if "dilations" in loaded:
             loaded["dilations"] = tuple(loaded["dilations"])
-        loaded.setdefault("cnn_normalization", "batch_norm")
         model_kwargs = loaded
         model = build_model(model_kwargs, ckpt.get("model_type")).to(device)
         model.load_state_dict(ckpt["model_state"])

@@ -1,4 +1,4 @@
-"""Verify a two-layer CNN/LSTM streaming export against full PyTorch forward().
+"""Verify a CNN/LSTM streaming export against full PyTorch forward().
 
 Use the same arguments as tools/verify_harmony_step.py, with the LSTM .ms.
 Run with LD_LIBRARY_PATH including the MindSpore Lite converter/lib and runtime/lib.
@@ -34,7 +34,10 @@ def main() -> None:
     cfg = ckpt["model_config"]
     assert ckpt["model_type"] == "lstm"
     assert (cfg["input_dim"], cfg["num_classes"], cfg["cnn_channels"],
-            cfg["lstm_hidden"], cfg["lstm_layers"]) == (6, 3, 32, 64, 2)
+            cfg["lstm_hidden"]) == (6, 3, 32, 64)
+    layers = cfg["lstm_layers"]
+    assert layers in (1, 2)
+    state_shape = (layers, 1, 64)
     model = build_model(cfg, "lstm").eval()
     model.load_state_dict(ckpt["model_state"])
     raw, fs = load_full_recording(args.recording)
@@ -54,9 +57,9 @@ def main() -> None:
     assert [x.name for x in session.get_outputs()] == list(output_names)
 
     ms = MindSporeStep(args.runtime_lib, args.ms, input_names,
-                       ((1, 1, 3), (2, 1, 64), (2, 1, 64), (1, 32, 29)), output_names)
+                       ((1, 1, 3), state_shape, state_shape, (1, 32, 29)), output_names)
     torch.set_num_threads(1)
-    h_onnx = np.zeros((2, 1, 64), dtype=np.float32)
+    h_onnx = np.zeros(state_shape, dtype=np.float32)
     c_onnx = h_onnx.copy()
     b_onnx = np.zeros((1, 32, 29), dtype=np.float32)
     h_ms, c_ms, b_ms = h_onnx.copy(), c_onnx.copy(), b_onnx.copy()
@@ -67,7 +70,7 @@ def main() -> None:
     with torch.inference_mode():
         logits, (h_final, c_final) = model(torch.from_numpy(samples).unsqueeze(0))
         expected = logits.softmax(-1).numpy()
-        state = (torch.zeros(2, 1, 64), torch.zeros(2, 1, 64))
+        state = (torch.zeros(state_shape), torch.zeros(state_shape))
         buffer = torch.zeros(1, 32, 29)
         for frame in range(len(samples)):
             imu = samples[frame:frame+1][None, ...]
@@ -94,7 +97,7 @@ def main() -> None:
     for name, error in errors.items():
         print(f"{name}: {error:.8g}")
         assert error < (2e-3 if name.startswith("ms_") else 1e-4), f"{name} diverged by frame {frame}"
-    print(f"PASS: {len(samples)} frames, both layers' hidden and cell states fed back independently")
+    print(f"PASS: {len(samples)} frames, all {layers} LSTM layer(s)' hidden and cell states fed back independently")
 
 
 if __name__ == "__main__":

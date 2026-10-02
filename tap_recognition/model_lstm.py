@@ -29,7 +29,6 @@ class CausalCNNLSTM(nn.Module):
         kernel_size: int = 5,
         dilations: tuple[int, ...] = (1, 2, 4),
         dropout: float = 0.1,
-        cnn_normalization: str = "layer_norm",
     ):
         super().__init__()
         self.input_dim = input_dim
@@ -39,10 +38,7 @@ class CausalCNNLSTM(nn.Module):
 
         self.input_proj = nn.Linear(input_dim, cnn_channels)
         self.cnn = nn.Sequential(*[
-            CausalConvBlock(
-                cnn_channels, kernel_size, d, normalization=cnn_normalization
-            )
-            for d in dilations
+            CausalConvBlock(cnn_channels, kernel_size, d) for d in dilations
         ])
         self.dropout = nn.Dropout(dropout)
         self.lstm = nn.LSTM(
