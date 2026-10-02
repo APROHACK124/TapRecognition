@@ -133,7 +133,7 @@ class LSTMModelTest(unittest.TestCase):
                     self.assertEqual((config.lstm_hidden, config.lstm_layers), (55, 2))
 
     def test_notebook_setup_and_delayed_validation_without_training(self) -> None:
-        notebook_path = Path(__file__).resolve().parents[1] / 'main_notebooks/baseline_lstm.ipynb'
+        notebook_path = Path(__file__).resolve().parents[1] / 'main_notebooks/training_lstm.ipynb'
         notebook = json.loads(notebook_path.read_text())
         labels = torch.zeros(40, 3)
         labels[:, 0] = 1

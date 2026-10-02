@@ -98,7 +98,7 @@ For an 8-frame delay:
 
 At 100 Hz, 8 frames equals 80 ms. A Gaussian that previously covered approximately `n2 - 10` through `n2 + 10` is shifted to approximately `n2 - 2` through `n2 + 18`. This removes almost all of the pre-second-tap supervision while allowing the causal model time to observe the second impact.
 
-The delayed target is saved in checkpoint metadata as `positive_label_delay_frames`, and `baseline_evaluation.ipynb` reads that value to apply the matching delayed labels for frame/window evaluation.
+The delayed target is saved in checkpoint metadata as `positive_label_delay_frames`, and `evaluate.ipynb` reads that value to apply the matching delayed labels for frame/window evaluation.
 
 ### Result
 
@@ -153,7 +153,7 @@ This did not justify treating augmentation as a proven improvement or changing t
 
 ## Evaluation Protocol
 
-`main_notebooks/baseline_evaluation.ipynb` evaluates a saved checkpoint without retraining. It:
+`main_notebooks/evaluate.ipynb` evaluates a saved checkpoint without retraining. It:
 
 - Loads model architecture and target delay from checkpoint metadata.
 - Computes window, frame, and matched-event metrics.
@@ -238,9 +238,9 @@ The central finding is not merely that an LSTM is better than a GRU. The largest
 
 | File | Role | Current Status |
 | --- | --- | --- |
-| `main_notebooks/baseline.ipynb` | Train the causal CNN + GRU baseline; exposes `LABEL_DELAY_FRAMES`. | Active training notebook. |
-| `main_notebooks/baseline_lstm.ipynb` | Train LSTM variants; exposes hidden size, layer count, delay, and amplitude augmentation. | Active training notebook. |
-| `main_notebooks/baseline_evaluation.ipynb` | Evaluate one saved run, perform threshold-pair sweeps, and export comparable CSVs. | Canonical evaluation notebook. |
+| `main_notebooks/training_gru.ipynb` | Train the causal CNN + GRU baseline; exposes `LABEL_DELAY_FRAMES`. | Active training notebook. |
+| `main_notebooks/training_lstm.ipynb` | Train LSTM variants; exposes hidden size, layer count, delay, and amplitude augmentation. | Active training notebook. |
+| `main_notebooks/evaluate.ipynb` | Evaluate one saved run, perform threshold-pair sweeps, and export comparable CSVs. | Canonical evaluation notebook. |
 | `main_notebooks/compare_models.ipynb` | Compare the current four retained runs and validate compatible metadata. | Canonical comparison notebook. |
 | `main_notebooks/compare_8frames.ipynb` | Historical saved-run comparison focused on delayed-target experiments. | Reference/exploration notebook. |
 | `main_notebooks/compare_GRUvsLSTM.ipynb` | Historical saved-run GRU/LSTM comparison with example replay. | Reference/exploration notebook. |
