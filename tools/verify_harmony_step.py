@@ -21,7 +21,7 @@ import torch
 
 sys.path.insert(0, str(Path(__file__).resolve().parents[1]))
 from tap_recognition.dataset import load_full_recording
-from tap_recognition.model import CausalCNNGRU
+from tap_recognition.model_factory import build_model
 from tap_recognition.physics import IMUSimulator
 
 
@@ -32,7 +32,14 @@ class TensorArray(C.Structure):
 class MindSporeStep:
     """Small ctypes wrapper over the device-side MindSpore Lite 2.9 C API."""
 
-    def __init__(self, lib_path: Path, model_path: Path):
+    def __init__(
+        self,
+        lib_path: Path,
+        model_path: Path,
+        input_names: tuple[str, ...] = ("imu", "cnn_buffer", "h_in"),
+        output_shapes: tuple[tuple[int, ...], ...] = ((1, 1, 3), (1, 1, 64), (1, 32, 29)),
+        output_names: tuple[str, ...] = ("prob", "h_out", "cnn_buffer_out"),
+    ):
         lib = C.CDLL(str(lib_path))
         self.lib = lib
         lib.MSContextCreate.restype = C.c_void_p
@@ -64,10 +71,13 @@ class MindSporeStep:
             raise RuntimeError(f"MSModelBuildFromFile failed: {status}")
         self.inputs = lib.MSModelGetInputs(self.model)
         names = [lib.MSTensorGetName(self.inputs.handle_list[i]).decode() for i in range(self.inputs.handle_num)]
-        assert names == ["imu", "cnn_buffer", "h_in"], names
+        assert names == list(input_names), names
+        self.output_names = output_names
+        self.output_shapes = output_shapes
 
-    def step(self, imu: np.ndarray, buffer: np.ndarray, h: np.ndarray) -> tuple[np.ndarray, ...]:
-        for i, array in enumerate((imu, buffer, h)):
+    def step(self, *arrays: np.ndarray) -> tuple[np.ndarray, ...]:
+        assert len(arrays) == self.inputs.handle_num
+        for i, array in enumerate(arrays):
             array = np.ascontiguousarray(array, dtype=np.float32)
             tensor = self.inputs.handle_list[i]
             assert self.lib.MSTensorGetDataSize(tensor) == array.nbytes
@@ -76,18 +86,17 @@ class MindSporeStep:
         status = self.lib.MSModelPredict(self.model, self.inputs, C.byref(outputs), None, None)
         if status != 0:
             raise RuntimeError(f"MSModelPredict failed: {status}")
-        assert outputs.handle_num == 3, outputs.handle_num
-        names = [self.lib.MSTensorGetName(outputs.handle_list[i]).decode() for i in range(3)]
-        assert names == ["prob", "h_out", "cnn_buffer_out"], names
-        sizes = (3, 64, 32 * 29)
+        assert outputs.handle_num == len(self.output_names), outputs.handle_num
+        names = [self.lib.MSTensorGetName(outputs.handle_list[i]).decode() for i in range(outputs.handle_num)]
+        assert names == list(self.output_names), names
         result = []
-        for i, n in enumerate(sizes):
+        for i, shape in enumerate(self.output_shapes):
             tensor = outputs.handle_list[i]
+            n = int(np.prod(shape))
             assert self.lib.MSTensorGetDataSize(tensor) == n * 4
             ptr = C.cast(self.lib.MSTensorGetData(tensor), C.POINTER(C.c_float))
-            result.append(np.ctypeslib.as_array(ptr, shape=(n,)).copy())
-        return (result[0].reshape(1, 1, 3), result[1].reshape(1, 1, 64),
-                result[2].reshape(1, 32, 29))
+            result.append(np.ctypeslib.as_array(ptr, shape=(n,)).copy().reshape(shape))
+        return tuple(result)
 
 def main() -> None:
     parser = argparse.ArgumentParser(description=__doc__)
@@ -101,7 +110,7 @@ def main() -> None:
     cfg = ckpt["model_config"]
     assert (cfg["input_dim"], cfg["num_classes"], cfg["cnn_channels"],
             cfg["gru_hidden"], cfg["gru_layers"]) == (6, 3, 32, 64, 1)
-    model = CausalCNNGRU(**ckpt["model_config"]).eval()
+    model = build_model(ckpt["model_config"], ckpt.get("model_type")).eval()
     model.load_state_dict(ckpt["model_state"])
     raw, fs = load_full_recording(args.recording)
     assert abs(fs - ckpt["train_config"]["data"]["sample_rate"]) < 0.5

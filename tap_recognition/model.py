@@ -38,14 +38,37 @@ class CausalConv1d(nn.Module):
 
 
 class CausalConvBlock(nn.Module):
-    def __init__(self, channels: int, kernel_size: int, dilation: int):
+    """Causal convolution followed by a normalization with no future context."""
+
+    def __init__(
+        self,
+        channels: int,
+        kernel_size: int,
+        dilation: int,
+        normalization: str = "layer_norm",
+    ):
         super().__init__()
         self.conv = CausalConv1d(channels, channels, kernel_size, dilation)
-        self.norm = nn.BatchNorm1d(channels)
+        if normalization == "layer_norm":
+            # Normalize channels within one frame, never over batch or time.
+            self.norm = nn.LayerNorm(channels)
+        elif normalization == "batch_norm":
+            self.norm = nn.BatchNorm1d(channels)
+        else:
+            raise ValueError(
+                "normalization must be 'layer_norm' or 'batch_norm', "
+                f"got {normalization!r}"
+            )
+        self.normalization = normalization
         self.act = nn.GELU()
 
     def forward(self, x: torch.Tensor) -> torch.Tensor:
-        return self.act(self.norm(self.conv(x)))
+        x = self.conv(x)
+        if self.normalization == "layer_norm":
+            x = self.norm(x.transpose(1, 2)).transpose(1, 2)
+        else:
+            x = self.norm(x)
+        return self.act(x)
 
 
 class CausalCNNGRU(nn.Module):
@@ -66,6 +89,7 @@ class CausalCNNGRU(nn.Module):
         kernel_size: int = 5,
         dilations: tuple[int, ...] = (1, 2, 4),
         dropout: float = 0.1,
+        cnn_normalization: str = "layer_norm",
     ):
         super().__init__()
         self.input_dim = input_dim
@@ -77,7 +101,11 @@ class CausalCNNGRU(nn.Module):
 
         blocks = []
         for d in dilations:
-            blocks.append(CausalConvBlock(cnn_channels, kernel_size, d))
+            blocks.append(
+                CausalConvBlock(
+                    cnn_channels, kernel_size, d, normalization=cnn_normalization
+                )
+            )
         self.cnn = nn.Sequential(*blocks)
 
         self.dropout = nn.Dropout(dropout)

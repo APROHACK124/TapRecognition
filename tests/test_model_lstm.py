@@ -65,6 +65,16 @@ class LSTMModelTest(unittest.TestCase):
         torch.testing.assert_close(modes['continuous'], reference[0], atol=1e-6, rtol=1e-6)
         self.assertEqual(states['continuous'].shape, (2, model.lstm_hidden))
 
+    def test_training_logits_do_not_depend_on_future_frames(self) -> None:
+        model = CausalCNNLSTM(dropout=0.0).train()
+        x = torch.randn(2, 60, 6)
+        changed = x.clone()
+        changed[:, 30:] += 20
+        with torch.no_grad():
+            reference, _ = model(x)
+            perturbed, _ = model(changed)
+        torch.testing.assert_close(reference[:, :30], perturbed[:, :30])
+
     def test_checkpoint_round_trip_and_legacy_gru_dispatch(self) -> None:
         for config in (ModelConfig(), LSTMModelConfig(lstm_hidden=55)):
             with self.subTest(config=type(config).__name__):

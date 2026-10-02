@@ -4,6 +4,7 @@ from __future__ import annotations
 
 import torch
 import torch.nn as nn
+import torch.nn.functional as F
 
 from .model import CausalConvBlock
 
@@ -28,6 +29,7 @@ class CausalCNNLSTM(nn.Module):
         kernel_size: int = 5,
         dilations: tuple[int, ...] = (1, 2, 4),
         dropout: float = 0.1,
+        cnn_normalization: str = "layer_norm",
     ):
         super().__init__()
         self.input_dim = input_dim
@@ -37,7 +39,10 @@ class CausalCNNLSTM(nn.Module):
 
         self.input_proj = nn.Linear(input_dim, cnn_channels)
         self.cnn = nn.Sequential(*[
-            CausalConvBlock(cnn_channels, kernel_size, d) for d in dilations
+            CausalConvBlock(
+                cnn_channels, kernel_size, d, normalization=cnn_normalization
+            )
+            for d in dilations
         ])
         self.dropout = nn.Dropout(dropout)
         self.lstm = nn.LSTM(
@@ -63,6 +68,39 @@ class CausalCNNLSTM(nn.Module):
     @property
     def receptive_field(self) -> int:
         return self._receptive_field
+
+    def _lstm_one_step(
+        self, x: torch.Tensor, state: LSTMState | None
+    ) -> tuple[torch.Tensor, LSTMState]:
+        """Apply the trained LSTM weights as explicit gates for ONNX Lite export.
+
+        ONNX LSTM operators can convert yet produce divergent recurrent state
+        in MindSpore Lite. PyTorch's gate order is input/forget/candidate/output.
+        """
+        if state is None:
+            h = x.new_zeros(self.lstm_layers, x.shape[0], self.lstm_hidden)
+            c = x.new_zeros(self.lstm_layers, x.shape[0], self.lstm_hidden)
+        else:
+            h, c = state
+
+        next_hidden, next_cell = [], []
+        for layer in range(self.lstm_layers):
+            gates = F.linear(
+                x,
+                getattr(self.lstm, f"weight_ih_l{layer}"),
+                getattr(self.lstm, f"bias_ih_l{layer}"),
+            ) + F.linear(
+                h[layer],
+                getattr(self.lstm, f"weight_hh_l{layer}"),
+                getattr(self.lstm, f"bias_hh_l{layer}"),
+            )
+            i, f, g, o = gates.chunk(4, dim=-1)
+            cell = torch.sigmoid(f) * c[layer] + torch.sigmoid(i) * torch.tanh(g)
+            x = torch.sigmoid(o) * torch.tanh(cell)
+            next_hidden.append(x)
+            next_cell.append(cell)
+
+        return x.unsqueeze(1), (torch.stack(next_hidden), torch.stack(next_cell))
 
     def forward(
         self,
@@ -120,5 +158,5 @@ class CausalCNNLSTM(nn.Module):
 
         buffer_new = torch.cat([*histories, cnn_buffer[:, :, -1:]], dim=2)
         features = self.dropout(current.transpose(1, 2))
-        output, next_state = self.lstm(features, state)
+        output, next_state = self._lstm_one_step(features[:, 0, :], state)
         return self.head(output).softmax(dim=-1), next_state, buffer_new

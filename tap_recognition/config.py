@@ -50,6 +50,7 @@ class ModelConfig:
     kernel_size: int = 5
     dilations: tuple[int, ...] = (1, 2, 4)
     dropout: float = 0.1
+    cnn_normalization: str = "layer_norm"
 
     def to_model_kwargs(self) -> dict[str, Any]:
         return {
@@ -61,6 +62,7 @@ class ModelConfig:
             "kernel_size": self.kernel_size,
             "dilations": self.dilations,
             "dropout": self.dropout,
+            "cnn_normalization": self.cnn_normalization,
         }
 
 
@@ -74,6 +76,7 @@ class LSTMModelConfig:
     kernel_size: int = 5
     dilations: tuple[int, ...] = (1, 2, 4)
     dropout: float = 0.1
+    cnn_normalization: str = "layer_norm"
 
     def to_model_kwargs(self) -> dict[str, Any]:
         return {
@@ -85,6 +88,7 @@ class LSTMModelConfig:
             "kernel_size": self.kernel_size,
             "dilations": self.dilations,
             "dropout": self.dropout,
+            "cnn_normalization": self.cnn_normalization,
         }
 
 

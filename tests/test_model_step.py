@@ -4,8 +4,10 @@ import unittest
 from pathlib import Path
 
 import torch
+import torch.nn as nn
 
 from tap_recognition.model import CausalCNNGRU
+from tap_recognition.model_factory import build_model
 
 
 class ModelStepTest(unittest.TestCase):
@@ -37,7 +39,7 @@ class ModelStepTest(unittest.TestCase):
         torch.set_num_threads(1)
         ckpt_path = Path(__file__).resolve().parents[1] / "checkpoints/best.pt"
         checkpoint = torch.load(ckpt_path, map_location="cpu", weights_only=False)
-        model = CausalCNNGRU(**checkpoint["model_config"]).eval()
+        model = build_model(checkpoint["model_config"], checkpoint.get("model_type")).eval()
         model.load_state_dict(checkpoint["model_state"])
         torch.manual_seed(17)
         x = torch.randn(1, 75, model.input_dim)
@@ -54,6 +56,24 @@ class ModelStepTest(unittest.TestCase):
             torch.cat(probs, dim=1), logits.softmax(dim=-1), atol=1e-6, rtol=1e-6
         )
         torch.testing.assert_close(h, final_h, atol=1e-6, rtol=1e-6)
+
+    def test_training_logits_do_not_depend_on_future_frames(self) -> None:
+        model = CausalCNNGRU(dropout=0.0).train()
+        x = torch.randn(2, 60, model.input_dim)
+        changed = x.clone()
+        changed[:, 30:] += 20
+        with torch.no_grad():
+            reference, _ = model(x)
+            perturbed, _ = model(changed)
+        torch.testing.assert_close(reference[:, :30], perturbed[:, :30])
+
+    def test_factory_preserves_batch_norm_for_legacy_configs(self) -> None:
+        model = build_model({
+            "input_dim": 6, "num_classes": 3, "cnn_channels": 32,
+            "gru_hidden": 64, "gru_layers": 1, "kernel_size": 5,
+            "dilations": [1, 2, 4], "dropout": 0.1,
+        })
+        self.assertIsInstance(model.cnn[0].norm, nn.BatchNorm1d)
 
 
 if __name__ == "__main__":
