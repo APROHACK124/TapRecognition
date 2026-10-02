@@ -245,7 +245,7 @@ The central finding is not merely that an LSTM is better than a GRU. The largest
 | `main_notebooks/compare_8frames.ipynb` | Historical saved-run comparison focused on delayed-target experiments. | Reference/exploration notebook. |
 | `main_notebooks/compare_GRUvsLSTM.ipynb` | Historical saved-run GRU/LSTM comparison with example replay. | Reference/exploration notebook. |
 | `main_notebooks/baseline_evaluation_delayed_labels.ipynb` | Earlier delayed-label evaluation notebook. | Historical predecessor of the canonical evaluator. |
-| `main_notebooks/external_test.ipynb` | Frozen-threshold evaluation on an external directory. | Use only after freezing final model and thresholds. |
+| Frozen external evaluation workflow | Evaluate a held-out directory without changing model or thresholds. | Prepare a dedicated script or notebook before reporting generalization. |
 
 ### Analysis And Labeling Tools
 
@@ -266,5 +266,5 @@ The central finding is not merely that an LSTM is better than a GRU. The largest
 - Do not compare `baseline_old_data/` absolute scores to the new-data runs. It uses a different validation and preprocessing fingerprint and contains 446 events rather than 526.
 - The BatchNorm causality question remains open and was intentionally not changed. It should be a separately controlled architecture experiment, not mixed into the current result story.
 - The delay-10 idea has no retained artifact. It remains a future controlled experiment, not a conclusion.
-- Before reporting the final model as generalizable, run `external_test.ipynb` on truly unseen recordings with LSTM64D8 and the frozen 0.50/0.50 thresholds.
+- Before reporting the final model as generalizable, run a frozen-configuration evaluation on truly unseen recordings with LSTM64D8 and the frozen 0.50/0.50 thresholds.
 - The public project README can be derived from this document by reducing the detailed audit history, retaining the final model and validation caveat, and adding the separate demo changes.
