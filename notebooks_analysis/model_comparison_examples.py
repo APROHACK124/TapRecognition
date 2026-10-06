@@ -184,17 +184,28 @@ def replay_examples(root: Path, operating_points: pd.DataFrame, split: str = 'va
     choices = operating_points.set_index('model', drop=False)
     checkpoints = {}
     for label, row in choices.iterrows():
-        checkpoint_path = root / row['folder'] / '..' / 'best.pt'
+        checkpoint_path = root / row['checkpoint_path'] if isinstance(row.get('checkpoint_path'), str) else (
+            root / row['folder'] / '..' / 'best.pt')
         checkpoint_path = checkpoint_path.resolve()
         if _sha256(checkpoint_path) != row['checkpoint_sha256']:
-            raise ValueError(f'{label}: best.pt differs from selected-threshold export')
+            raise ValueError(f'{label}: checkpoint differs from selected-threshold export')
         checkpoints[label] = torch.load(checkpoint_path, map_location='cpu', weights_only=True)
-    first = next(iter(checkpoints.values()))['train_config']
-    recordings, current_hash = load_examples(root, first['data'], first['labels'], first['seed'], split)
-    for label, checkpoint in checkpoints.items():
-        cfg = checkpoint['train_config']
-        if any(cfg[key] != first[key] for key in ('data', 'labels', 'seed')):
-            raise ValueError(f'{label}: {split} preprocessing/data config differs from other models')
+    has_evaluation_context = all(isinstance(row.get('evaluation_data'), dict)
+                                 for _, row in choices.iterrows())
+    if has_evaluation_context:
+        first = choices.iloc[0]
+        data, labels, seed = first.evaluation_data, first.evaluation_labels, first.evaluation_seed
+        for label, row in choices.iterrows():
+            if (row.evaluation_data, row.evaluation_labels, row.evaluation_seed) != (data, labels, seed):
+                raise ValueError(f'{label}: {split} evaluation context differs from other models')
+    else:
+        first = next(iter(checkpoints.values()))['train_config']
+        data, labels, seed = first['data'], first['labels'], first['seed']
+        for label, checkpoint in checkpoints.items():
+            cfg = checkpoint['train_config']
+            if any(cfg[key] != first[key] for key in ('data', 'labels', 'seed')):
+                raise ValueError(f'{label}: {split} preprocessing/data config differs from other models')
+    recordings, current_hash = load_examples(root, data, labels, seed, split)
     if split == 'valid':
         status = pd.DataFrame([dict(model=label, split=split,
                                      export_validation_sha256=row['validation_sha256'],
