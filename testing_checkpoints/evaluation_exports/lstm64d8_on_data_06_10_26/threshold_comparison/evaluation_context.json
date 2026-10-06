@@ -1,0 +1,28 @@
+{
+  "checkpoint_path": "testing_checkpoints/lstm64d8/best.pt",
+  "checkpoint_training_seed": 101,
+  "data": {
+    "dt_max": 0.45,
+    "dt_min": 0.12,
+    "exclusion_margin": 200,
+    "highpass": true,
+    "mode": "recorded",
+    "negative_windows_per_file": 20,
+    "sample_rate": 100.0,
+    "session_exclusions_file": "/home/aprohack/desktop/work/tap-project/project/tapRecognitionRui/TapRecognition/data_06_10_26/session_exclusions.csv",
+    "synthetic_samples": 8000,
+    "train_dir": "/home/aprohack/desktop/work/tap-project/project/tapRecognitionRui/TapRecognition/data_06_10_26/train_data",
+    "trigger_context_samples": 200,
+    "val_dir": "/home/aprohack/desktop/work/tap-project/project/tapRecognitionRui/TapRecognition/data_06_10_26/valid_data",
+    "val_split": 0.15,
+    "window_samples": 300
+  },
+  "labels": {
+    "half_frames": 10,
+    "peak_offset": 0.05,
+    "sigma": 0.04
+  },
+  "preprocessing_sha256": "e31bca28180caa401ca8d715dccb5be8c0c55247985612e3b14cbc8ac2f46c72",
+  "seed": 101,
+  "validation_sha256": "b49802fe63f23bd6961fe2ef153b79cecd339661c330607be2faba3503e92d16"
+}
