@@ -43,6 +43,26 @@ class FeatureCNNLSTM(CausalCNNLSTM):
         current = self.input_proj(raw)[:, -1:].transpose(1, 2)
         buffer = (current.new_zeros(current.shape[0], current.shape[1], self._receptive_field)
                   if cnn_buffer is None else cnn_buffer["cnn"])
+        prob, next_state, next_cnn = self._step_projected(current, state, buffer)
+        keep = self.feature_config.history_samples
+        next_buffer = {
+            "raw": raw[:, -keep:] if keep else raw[:, :0],
+            "cnn": next_cnn,
+        }
+        return prob, next_state, next_buffer
+
+    def step_fixed(self, x_t, state, cnn_buffer, feature_history, feature_ready):
+        """Tensor-only export contract with frozen feature normalization.
+
+        Unlike receptive_field (43 for defaults), cnn_buffer has only the
+        CNN history (29). Feature history (14) is carried separately.
+        """
+        features, history, ready = self.input_proj.features.step(x_t, feature_history, feature_ready)
+        projected = self.input_proj.linear((features - self.input_proj.mean) / self.input_proj.scale)
+        prob, state, buffer = self._step_projected(projected.transpose(1, 2), state, cnn_buffer)
+        return prob, state, buffer, history, ready
+
+    def _step_projected(self, current, state, buffer):
         offset, histories = 0, []
         for block in self.cnn:
             n_past = block.conv.left_pad
@@ -53,11 +73,7 @@ class FeatureCNNLSTM(CausalCNNLSTM):
             else:
                 current = block(current)
             offset += n_past
-        keep = self.feature_config.history_samples
-        next_buffer = {
-            "raw": raw[:, -keep:] if keep else raw[:, :0],
-            "cnn": torch.cat((*histories, buffer[:, :, -1:]), dim=2),
-        }
+        next_buffer = torch.cat((*histories, buffer[:, :, -1:]), dim=2)
         features = self.dropout(current.transpose(1, 2))
         output, next_state = self._lstm_one_step(features[:, 0], state)
         return self.head(output).softmax(-1), next_state, next_buffer

@@ -88,6 +88,29 @@ class CausalIMUFeatures(nn.Module):
                 parts.append(rms.transpose(1, 2))
         return torch.cat(parts, dim=-1)
 
+    def step(self, x, history, ready):
+        """Fixed-shape export: [B,1,6], [B,history_samples,6], [1].
+
+        Zero all states at a stream boundary. ready distinguishes first-frame
+        zero differences from an actual previous observation of zero. RMS
+        retains zero prehistory and a fixed divisor even during startup.
+        """
+        raw = torch.cat((history, x), dim=1)
+        parts = [x]
+        vectors = x.reshape(x.shape[0], 1, 2, 3)
+        if self.config.magnitudes:
+            parts.append(vectors.square().sum(-1).sqrt())
+        if self.config.differences or self.config.difference_magnitudes:
+            delta = (x - history[:, -1:]) * ready
+            if self.config.differences:
+                parts.append(delta)
+            if self.config.difference_magnitudes:
+                parts.append(delta.reshape(x.shape[0], 1, 2, 3).square().sum(-1).sqrt())
+        for window in self.config.rms_windows:
+            energy = raw[:, -window:].reshape(x.shape[0], window, 2, 3).square().sum(-1)
+            parts.append((energy.sum(1, keepdim=True) / window + 1e-8).sqrt() - 1e-4)
+        return torch.cat(parts, dim=-1), raw[:, 1:], torch.ones_like(ready)
+
 
 class FeatureProjection(nn.Module):
     """Feature extraction -> frozen training-set normalization -> learned projection."""

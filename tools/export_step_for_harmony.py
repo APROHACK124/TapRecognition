@@ -14,6 +14,7 @@ sys.path.insert(0, str(Path(__file__).resolve().parents[1]))
 from tap_recognition.model import CausalCNNGRU
 from tap_recognition.model_factory import build_model
 from tap_recognition.model_lstm import CausalCNNLSTM
+from tap_recognition.model_feature_lstm import FeatureCNNLSTM
 
 
 class StreamingStep(nn.Module):
@@ -51,6 +52,19 @@ class StreamingLSTMStep(nn.Module):
         return prob, h_out, c_out, buf_out
 
 
+class StreamingFeatureLSTMStep(nn.Module):
+    """Features and training normalization stay inside the graph, not ArkTS."""
+
+    def __init__(self, model: FeatureCNNLSTM):
+        super().__init__()
+        self.model = model
+
+    def forward(self, imu, cnn_buffer, h_in, c_in, feature_history, feature_ready):
+        prob, (h, c), buffer, history, ready = self.model.step_fixed(
+            imu, (h_in, c_in), cnn_buffer, feature_history, feature_ready)
+        return prob, h, c, buffer, history, ready
+
+
 def export_step_onnx(checkpoint_path: Path, output_path: Path, opset: int = 14) -> Path:
     checkpoint = torch.load(checkpoint_path, map_location="cpu", weights_only=True)
     cfg = dict(checkpoint["model_config"])
@@ -60,11 +74,26 @@ def export_step_onnx(checkpoint_path: Path, output_path: Path, opset: int = 14) 
 
     input_dim = cfg.get("input_dim", 6)
     cnn_channels = cfg.get("cnn_channels", 32)
-    receptive_field = model.receptive_field
+    receptive_field = model._receptive_field if isinstance(model, FeatureCNNLSTM) else model.receptive_field
 
     imu = torch.randn(1, 1, input_dim)
     cnn_buffer = torch.zeros(1, cnn_channels, receptive_field)
-    if isinstance(model, CausalCNNLSTM):
+    if isinstance(model, FeatureCNNLSTM):
+        if model.feature_config.history_samples < 1:
+            raise ValueError("Feature export requires at least one history sample")
+        if not model.input_proj.normalization_fitted.item():
+            raise ValueError("Feature normalization must be fitted on the training split")
+        if not torch.isfinite(model.input_proj.scale).all() or not (model.input_proj.scale > 0).all():
+            raise ValueError("Invalid frozen feature normalization scales")
+        if not torch.isfinite(model.input_proj.mean).all():
+            raise ValueError("Invalid frozen feature normalization means")
+        state_shape = (cfg["lstm_layers"], 1, cfg["lstm_hidden"])
+        wrapper = StreamingFeatureLSTMStep(model).eval()
+        inputs = (imu, cnn_buffer, torch.zeros(state_shape), torch.zeros(state_shape),
+                  torch.zeros(1, model.feature_config.history_samples, 6), torch.zeros(1))
+        input_names = ["imu", "cnn_buffer", "h_in", "c_in", "feature_history", "feature_ready"]
+        output_names = ["prob", "h_out", "c_out", "cnn_buffer_out", "feature_history_out", "feature_ready_out"]
+    elif isinstance(model, CausalCNNLSTM):
         state_shape = (cfg["lstm_layers"], 1, cfg["lstm_hidden"])
         wrapper = StreamingLSTMStep(model).eval()
         inputs = (imu, cnn_buffer, torch.zeros(state_shape), torch.zeros(state_shape))
@@ -94,6 +123,8 @@ def export_step_onnx(checkpoint_path: Path, output_path: Path, opset: int = 14) 
         f"Streaming I/O: imu [1,1,{input_dim}] + cnn_buffer [1,{cnn_channels},{receptive_field}] "
         f"+ {', '.join(input_names[2:])} {list(state_shape)} -> prob [1,1,{cfg.get('num_classes', 3)}]"
     )
+    if isinstance(model, FeatureCNNLSTM):
+        print(f"Feature state: feature_history [1,{model.feature_config.history_samples},6] + feature_ready [1]")
     return output_path
 
 
