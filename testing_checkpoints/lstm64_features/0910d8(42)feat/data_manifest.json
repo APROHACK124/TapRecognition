@@ -1,0 +1,1430 @@
+[
+  {
+    "path": "/home/aprohack/desktop/work/tap-project/project/tapRecognitionRui/TapRecognition/data_09_10_26/session_exclusions.csv",
+    "sha256": "e441fb5800b4fcfacdac486f6cf923951d7b650edffdf937e9b89736c4b3ea9d"
+  },
+  {
+    "path": "/home/aprohack/desktop/work/tap-project/project/tapRecognitionRui/TapRecognition/data_09_10_26/train_data/imuStrict_Miguel_knock_twice_left_20260929_115133.csv",
+    "sha256": "a3de8204b269cada0690668096cf24aaeb758acb3db52786f8c59c0cbac625f1"
+  },
+  {
+    "path": "/home/aprohack/desktop/work/tap-project/project/tapRecognitionRui/TapRecognition/data_09_10_26/train_data/imuStrict_Miguel_knock_twice_left_20260929_115133.txt",
+    "sha256": "a86255ac74c5639542b936739c5981b585f307468ef839ebdc6dbc69dc9eb3cd"
+  },
+  {
+    "path": "/home/aprohack/desktop/work/tap-project/project/tapRecognitionRui/TapRecognition/data_09_10_26/train_data/imuStrict_Miguel_knock_twice_left_20260929_115547.csv",
+    "sha256": "b3f505d47601f0d3d1822651333db8825a8764d69d03dd088ddc527f3be2565a"
+  },
+  {
+    "path": "/home/aprohack/desktop/work/tap-project/project/tapRecognitionRui/TapRecognition/data_09_10_26/train_data/imuStrict_Miguel_knock_twice_left_20260929_115547.txt",
+    "sha256": "cb3d91795d17fa5a1809f2207a91571c3a8e93eccc9057ae5049d5517b80bc97"
+  },
+  {
+    "path": "/home/aprohack/desktop/work/tap-project/project/tapRecognitionRui/TapRecognition/data_09_10_26/train_data/imuStrict_Miguel_knock_twice_left_20260929_142805.csv",
+    "sha256": "8f60c694c594bd585a9935b03bdd211e093624ac65230eca0f2480b8f883c868"
+  },
+  {
+    "path": "/home/aprohack/desktop/work/tap-project/project/tapRecognitionRui/TapRecognition/data_09_10_26/train_data/imuStrict_Miguel_knock_twice_left_20260929_142805.txt",
+    "sha256": "f293b79005c6b314e891d3043938317ae41d427c473017e3eec1ae12999d90c9"
+  },
+  {
+    "path": "/home/aprohack/desktop/work/tap-project/project/tapRecognitionRui/TapRecognition/data_09_10_26/train_data/imuStrict_Miguel_knock_twice_left_20260929_142927.csv",
+    "sha256": "48d24c08678646d0563d2ffba6fac566f3a90d752424cf8d528d32d983bc5dfa"
+  },
+  {
+    "path": "/home/aprohack/desktop/work/tap-project/project/tapRecognitionRui/TapRecognition/data_09_10_26/train_data/imuStrict_Miguel_knock_twice_left_20260929_142927.txt",
+    "sha256": "23b2d600964f3553acb3226f53fae7fef8983852ded3e7da437d683f063b31fa"
+  },
+  {
+    "path": "/home/aprohack/desktop/work/tap-project/project/tapRecognitionRui/TapRecognition/data_09_10_26/train_data/imuStrict_Miguel_knock_twice_left_20260929_152105.csv",
+    "sha256": "bca6957637549df85b1363351610bbd99b54f6190fbaae718d9b23374cceae02"
+  },
+  {
+    "path": "/home/aprohack/desktop/work/tap-project/project/tapRecognitionRui/TapRecognition/data_09_10_26/train_data/imuStrict_Miguel_knock_twice_left_20260929_152105.txt",
+    "sha256": "a8d0629ec29b42da759da6c5f1548af02d226012623cc173a50271d786740619"
+  },
+  {
+    "path": "/home/aprohack/desktop/work/tap-project/project/tapRecognitionRui/TapRecognition/data_09_10_26/train_data/imuStrict_Miguel_knock_twice_left_20260929_153409.csv",
+    "sha256": "e71263bc5b18517619bf8a82a78d743d9c3c81e359ce8eb4963bcc2651763769"
+  },
+  {
+    "path": "/home/aprohack/desktop/work/tap-project/project/tapRecognitionRui/TapRecognition/data_09_10_26/train_data/imuStrict_Miguel_knock_twice_left_20260929_153409.txt",
+    "sha256": "60e9f6f4cd983402567dbea32955dcb361220bb327f85347fc93f042578169db"
+  },
+  {
+    "path": "/home/aprohack/desktop/work/tap-project/project/tapRecognitionRui/TapRecognition/data_09_10_26/train_data/imuStrict_Miguel_knock_twice_left_20260929_154349.csv",
+    "sha256": "1582f38ba632ef0ce132cdb7a02eee876327cbe1db315d3732cc822b2ca7be3d"
+  },
+  {
+    "path": "/home/aprohack/desktop/work/tap-project/project/tapRecognitionRui/TapRecognition/data_09_10_26/train_data/imuStrict_Miguel_knock_twice_left_20260929_154349.txt",
+    "sha256": "d6bae35f0c41ff267a09d9feae58e7dd5215f5504a36c84d77c3005ec56f7ae9"
+  },
+  {
+    "path": "/home/aprohack/desktop/work/tap-project/project/tapRecognitionRui/TapRecognition/data_09_10_26/train_data/imuStrict_Miguel_knock_twice_left_20260930_103727.csv",
+    "sha256": "2dcfed74b2cbf0c6fddf4caa212a29ff25cde68cf068e4b9cb96d63895e594e7"
+  },
+  {
+    "path": "/home/aprohack/desktop/work/tap-project/project/tapRecognitionRui/TapRecognition/data_09_10_26/train_data/imuStrict_Miguel_knock_twice_left_20260930_103727.txt",
+    "sha256": "5d5f0a53fdb365996361c6552c3d16ae3e310c6e0bea9600d63c7f6721b60c26"
+  },
+  {
+    "path": "/home/aprohack/desktop/work/tap-project/project/tapRecognitionRui/TapRecognition/data_09_10_26/train_data/imuStrict_Miguel_knock_twice_left_20260930_103949.csv",
+    "sha256": "927a312b9c0147508f59ccc29f15e188a13c4365e5e34099be186c03fea530a3"
+  },
+  {
+    "path": "/home/aprohack/desktop/work/tap-project/project/tapRecognitionRui/TapRecognition/data_09_10_26/train_data/imuStrict_Miguel_knock_twice_left_20260930_103949.txt",
+    "sha256": "2be39d16f3ae5299a9a35fa918e0747679a56abf76cd04111af15063f3081acd"
+  },
+  {
+    "path": "/home/aprohack/desktop/work/tap-project/project/tapRecognitionRui/TapRecognition/data_09_10_26/train_data/imuStrict_Miguel_knock_twice_left_20260930_104055.csv",
+    "sha256": "c697f2b64cfd210362120945dd9efe43166dae96c719e211b98a19a9cca888e7"
+  },
+  {
+    "path": "/home/aprohack/desktop/work/tap-project/project/tapRecognitionRui/TapRecognition/data_09_10_26/train_data/imuStrict_Miguel_knock_twice_left_20260930_104055.txt",
+    "sha256": "0d8df2b0864ba0a0454b68c703ec6d754ab2ba65bd811403908fcd7f68252570"
+  },
+  {
+    "path": "/home/aprohack/desktop/work/tap-project/project/tapRecognitionRui/TapRecognition/data_09_10_26/train_data/imuStrict_Miguel_knock_twice_left_20260930_151324.csv",
+    "sha256": "b054975ca0ba6135bbdf043e7341199a9268f82e93c5dd88cab682365d7a430d"
+  },
+  {
+    "path": "/home/aprohack/desktop/work/tap-project/project/tapRecognitionRui/TapRecognition/data_09_10_26/train_data/imuStrict_Miguel_knock_twice_left_20260930_151324.txt",
+    "sha256": "141e1b868261be5b491e55b7b88711059ae14e1a5c4db980717f9a4dd6d5856c"
+  },
+  {
+    "path": "/home/aprohack/desktop/work/tap-project/project/tapRecognitionRui/TapRecognition/data_09_10_26/train_data/imuStrict_Miguel_knock_twice_left_20260930_151654.csv",
+    "sha256": "44b732f983e30f95c332afe0d4ab889bea1ea81ad2666bb15d1241a921bd53ee"
+  },
+  {
+    "path": "/home/aprohack/desktop/work/tap-project/project/tapRecognitionRui/TapRecognition/data_09_10_26/train_data/imuStrict_Miguel_knock_twice_left_20260930_151654.txt",
+    "sha256": "a640355cd129c1b84fb3b029debc6e506e682396077c6ea24faed9c115224cdb"
+  },
+  {
+    "path": "/home/aprohack/desktop/work/tap-project/project/tapRecognitionRui/TapRecognition/data_09_10_26/train_data/imuStrict_Miguel_knock_twice_left_20260930_151809.csv",
+    "sha256": "ad4bf0765d9baab3b45b57662b67d4343e7af0a2ff881bc4a1f06016e019a7e4"
+  },
+  {
+    "path": "/home/aprohack/desktop/work/tap-project/project/tapRecognitionRui/TapRecognition/data_09_10_26/train_data/imuStrict_Miguel_knock_twice_left_20260930_151809.txt",
+    "sha256": "e454aa8f0f31d62899493f22ad499699e8eb8a9a3e3578cca5a1ca33bd12a781"
+  },
+  {
+    "path": "/home/aprohack/desktop/work/tap-project/project/tapRecognitionRui/TapRecognition/data_09_10_26/train_data/imuStrict_Miguel_knock_twice_left_20261002_104504.csv",
+    "sha256": "37c8c0da692aa2316b6854d1c4f709a896d652174648b5a5d0daaa2a2b721ede"
+  },
+  {
+    "path": "/home/aprohack/desktop/work/tap-project/project/tapRecognitionRui/TapRecognition/data_09_10_26/train_data/imuStrict_Miguel_knock_twice_left_20261002_104504.txt",
+    "sha256": "c012d5e8e144b02d65e9a31417d511f5c1a665e184b4ff2c56637b6559310ed3"
+  },
+  {
+    "path": "/home/aprohack/desktop/work/tap-project/project/tapRecognitionRui/TapRecognition/data_09_10_26/train_data/imuStrict_Miguel_knock_twice_left_20261002_104723.csv",
+    "sha256": "a5476ef17e94d6cc69c907a2eb9971e455063bdff125ef13a8e1b0de011f2a61"
+  },
+  {
+    "path": "/home/aprohack/desktop/work/tap-project/project/tapRecognitionRui/TapRecognition/data_09_10_26/train_data/imuStrict_Miguel_knock_twice_left_20261002_104723.txt",
+    "sha256": "8867eaac96a32930241ce939a2ad31f683f6c4494185ceb6a7fe84c3f6fc498f"
+  },
+  {
+    "path": "/home/aprohack/desktop/work/tap-project/project/tapRecognitionRui/TapRecognition/data_09_10_26/train_data/imuStrict_Miguel_knock_twice_left_20261002_105023.csv",
+    "sha256": "a07d82f1aa92cda66a4d0f82763f937c1f204dc5e79a50d61122ad6e13cf873c"
+  },
+  {
+    "path": "/home/aprohack/desktop/work/tap-project/project/tapRecognitionRui/TapRecognition/data_09_10_26/train_data/imuStrict_Miguel_knock_twice_left_20261002_105023.txt",
+    "sha256": "27b2d679b3cc0361206360663a626b1f81187c174d7803408cbc76db6b99e50a"
+  },
+  {
+    "path": "/home/aprohack/desktop/work/tap-project/project/tapRecognitionRui/TapRecognition/data_09_10_26/train_data/imuStrict_Miguel_knock_twice_left_20261002_105859.csv",
+    "sha256": "9350ce980840366eb244a9e312cf426d388e116f19e75dd015470b2351839de2"
+  },
+  {
+    "path": "/home/aprohack/desktop/work/tap-project/project/tapRecognitionRui/TapRecognition/data_09_10_26/train_data/imuStrict_Miguel_knock_twice_left_20261002_105859.txt",
+    "sha256": "d9ae1b6521f08e2f5713d8cccc07443d86c6733acee69564c52809c057c5f5ff"
+  },
+  {
+    "path": "/home/aprohack/desktop/work/tap-project/project/tapRecognitionRui/TapRecognition/data_09_10_26/train_data/imuStrict_Miguel_knock_twice_left_20261002_110119.csv",
+    "sha256": "e19f74fdd0e19be7d5c7e65e028430fbd8c8ce92d5f2f99a06f424c352dec3f4"
+  },
+  {
+    "path": "/home/aprohack/desktop/work/tap-project/project/tapRecognitionRui/TapRecognition/data_09_10_26/train_data/imuStrict_Miguel_knock_twice_left_20261002_110119.txt",
+    "sha256": "8a035b88b80640e2b5c5f68ed7d04ed51ee1481b2c5b89db18a9ff94e7bc35ce"
+  },
+  {
+    "path": "/home/aprohack/desktop/work/tap-project/project/tapRecognitionRui/TapRecognition/data_09_10_26/train_data/imuStrict_Miguel_knock_twice_left_20261005_152553.csv",
+    "sha256": "6ea171c28b90fde1eb6ba10cd9d2f3b7011c34e6d917d4ae698c4a705d08c835"
+  },
+  {
+    "path": "/home/aprohack/desktop/work/tap-project/project/tapRecognitionRui/TapRecognition/data_09_10_26/train_data/imuStrict_Miguel_knock_twice_left_20261005_152553.txt",
+    "sha256": "a3018e9bb70b0a4daf529aa85bbed71a864cf63026336aec4859f945a1aa3f6a"
+  },
+  {
+    "path": "/home/aprohack/desktop/work/tap-project/project/tapRecognitionRui/TapRecognition/data_09_10_26/train_data/imuStrict_Miguel_knock_twice_left_20261005_154432.csv",
+    "sha256": "1f7d68165730296ff6af68e2f798e98750edb4cb1969beb367012153d430aab5"
+  },
+  {
+    "path": "/home/aprohack/desktop/work/tap-project/project/tapRecognitionRui/TapRecognition/data_09_10_26/train_data/imuStrict_Miguel_knock_twice_left_20261005_154432.txt",
+    "sha256": "e688c3341b44691563ef7034fc50509fa9fe748a7b66aa62ef85a9c37326e1ab"
+  },
+  {
+    "path": "/home/aprohack/desktop/work/tap-project/project/tapRecognitionRui/TapRecognition/data_09_10_26/train_data/imuStrict_Miguel_knock_twice_left_20261005_154713.csv",
+    "sha256": "781bb9d4ae246feef8e3530e6cf919cc227e92e86c538ca6e27644e8cee4d68f"
+  },
+  {
+    "path": "/home/aprohack/desktop/work/tap-project/project/tapRecognitionRui/TapRecognition/data_09_10_26/train_data/imuStrict_Miguel_knock_twice_left_20261005_154713.txt",
+    "sha256": "0ea799efaa704d0befcd74fb82633b5b5fc4e1e8218b492d513ebbe116f20ae8"
+  },
+  {
+    "path": "/home/aprohack/desktop/work/tap-project/project/tapRecognitionRui/TapRecognition/data_09_10_26/train_data/imuStrict_Miguel_knock_twice_left_20261005_154832.csv",
+    "sha256": "07a9e52fb0b491f55afe12401c01b6e9166c5721dc7004b1f92ea8b75c05af71"
+  },
+  {
+    "path": "/home/aprohack/desktop/work/tap-project/project/tapRecognitionRui/TapRecognition/data_09_10_26/train_data/imuStrict_Miguel_knock_twice_left_20261005_154832.txt",
+    "sha256": "69b7ff133eeb17b673ea681fa6b91790e93d591fd904a0fbeb9ef8e2a78b84d7"
+  },
+  {
+    "path": "/home/aprohack/desktop/work/tap-project/project/tapRecognitionRui/TapRecognition/data_09_10_26/train_data/imuStrict_Miguel_knock_twice_left_20261006_094941.csv",
+    "sha256": "045a1d8a7394ef29d96454f947555fafdecc40cf3f52045a4e6e51ae6943b4a4"
+  },
+  {
+    "path": "/home/aprohack/desktop/work/tap-project/project/tapRecognitionRui/TapRecognition/data_09_10_26/train_data/imuStrict_Miguel_knock_twice_left_20261006_094941.txt",
+    "sha256": "4fec365bfbada6a5e3f59c7d72abfda51cad57a13c809edf1154331979710efb"
+  },
+  {
+    "path": "/home/aprohack/desktop/work/tap-project/project/tapRecognitionRui/TapRecognition/data_09_10_26/train_data/imuStrict_Miguel_knock_twice_left_20261006_095157.csv",
+    "sha256": "858cd40b05959fc90ee67279f50237978d65d6e8adc3f27e6964cdfb644d7d8a"
+  },
+  {
+    "path": "/home/aprohack/desktop/work/tap-project/project/tapRecognitionRui/TapRecognition/data_09_10_26/train_data/imuStrict_Miguel_knock_twice_left_20261006_095157.txt",
+    "sha256": "ed48b2575cd7b8f87655e909565f9c5bf75f89e25d26868c1ad2159e951bf4a0"
+  },
+  {
+    "path": "/home/aprohack/desktop/work/tap-project/project/tapRecognitionRui/TapRecognition/data_09_10_26/train_data/imuStrict_Miguel_knock_twice_right_20260929_115241.csv",
+    "sha256": "438fcb1ca73cfad88af1f039cf8a47be1cd67c8a0532de5fbebc031a16c07779"
+  },
+  {
+    "path": "/home/aprohack/desktop/work/tap-project/project/tapRecognitionRui/TapRecognition/data_09_10_26/train_data/imuStrict_Miguel_knock_twice_right_20260929_115241.txt",
+    "sha256": "eb74b4a191621fb9ea7083567357c3f25ed78ba1c7316b6406a6dd99588eb2f7"
+  },
+  {
+    "path": "/home/aprohack/desktop/work/tap-project/project/tapRecognitionRui/TapRecognition/data_09_10_26/train_data/imuStrict_Miguel_knock_twice_right_20260929_115359.csv",
+    "sha256": "23a3ba06c4b6bd5478c0c1f71129b1baaa940f6764f27e2a92561867506daa50"
+  },
+  {
+    "path": "/home/aprohack/desktop/work/tap-project/project/tapRecognitionRui/TapRecognition/data_09_10_26/train_data/imuStrict_Miguel_knock_twice_right_20260929_115359.txt",
+    "sha256": "0b2fc4cf9cbd38c7b0068d71524a608e362bd5a7ebdbbe75c81f2dd3a744181a"
+  },
+  {
+    "path": "/home/aprohack/desktop/work/tap-project/project/tapRecognitionRui/TapRecognition/data_09_10_26/train_data/imuStrict_Miguel_knock_twice_right_20260929_115944.csv",
+    "sha256": "84fe2804115ec328d04bc66572116df39d71087219c07cb0d0e836287a7efa02"
+  },
+  {
+    "path": "/home/aprohack/desktop/work/tap-project/project/tapRecognitionRui/TapRecognition/data_09_10_26/train_data/imuStrict_Miguel_knock_twice_right_20260929_115944.txt",
+    "sha256": "b137a7eb8e6e8836624fb377012b50ff7a2bbfc3c037c8932731e8c7035079f5"
+  },
+  {
+    "path": "/home/aprohack/desktop/work/tap-project/project/tapRecognitionRui/TapRecognition/data_09_10_26/train_data/imuStrict_Miguel_knock_twice_right_20260929_142533.csv",
+    "sha256": "3a33f3a3e79c230272b7977317cd72b836180cb0ca0f45c982ecda5181b1adaf"
+  },
+  {
+    "path": "/home/aprohack/desktop/work/tap-project/project/tapRecognitionRui/TapRecognition/data_09_10_26/train_data/imuStrict_Miguel_knock_twice_right_20260929_142533.txt",
+    "sha256": "1d085933a44c61dec1c0315a5027fc6dd6f3bb738654620ff23b0c8f59a1ce57"
+  },
+  {
+    "path": "/home/aprohack/desktop/work/tap-project/project/tapRecognitionRui/TapRecognition/data_09_10_26/train_data/imuStrict_Miguel_knock_twice_right_20260929_154612.csv",
+    "sha256": "240e2926871803201929880d1444fb96016b1f7290fe0c43e8e222f705439492"
+  },
+  {
+    "path": "/home/aprohack/desktop/work/tap-project/project/tapRecognitionRui/TapRecognition/data_09_10_26/train_data/imuStrict_Miguel_knock_twice_right_20260929_154612.txt",
+    "sha256": "9bfa533950fed9e459b4aac1c781149baa7a8d49680a1df79645a45f5b93af59"
+  },
+  {
+    "path": "/home/aprohack/desktop/work/tap-project/project/tapRecognitionRui/TapRecognition/data_09_10_26/train_data/imuStrict_Miguel_knock_twice_right_20260930_103423.csv",
+    "sha256": "d10ad4fdf2a4882698cf6948fdb0ec80055b5db56a445c3f114662696a6209b5"
+  },
+  {
+    "path": "/home/aprohack/desktop/work/tap-project/project/tapRecognitionRui/TapRecognition/data_09_10_26/train_data/imuStrict_Miguel_knock_twice_right_20260930_103423.txt",
+    "sha256": "b412e1bf43634015f6491b98b612ce292c103caa341e948379345f320a337d0c"
+  },
+  {
+    "path": "/home/aprohack/desktop/work/tap-project/project/tapRecognitionRui/TapRecognition/data_09_10_26/train_data/imuStrict_Miguel_knock_twice_right_20260930_103600.csv",
+    "sha256": "d36b4a964f03319ed30bfac5407aee43499c915eb4c911eaf43027baa07ed0ec"
+  },
+  {
+    "path": "/home/aprohack/desktop/work/tap-project/project/tapRecognitionRui/TapRecognition/data_09_10_26/train_data/imuStrict_Miguel_knock_twice_right_20260930_103600.txt",
+    "sha256": "04a501207db5ace6c584ed56c702655ac06b4d2af8e4ff79eea1add75a0450be"
+  },
+  {
+    "path": "/home/aprohack/desktop/work/tap-project/project/tapRecognitionRui/TapRecognition/data_09_10_26/train_data/imuStrict_Miguel_knock_twice_right_20260930_151507.csv",
+    "sha256": "d0cfa1f8097d2ba9b9c2158a8c991e875faa9fc177634cb4778e9648309fce7d"
+  },
+  {
+    "path": "/home/aprohack/desktop/work/tap-project/project/tapRecognitionRui/TapRecognition/data_09_10_26/train_data/imuStrict_Miguel_knock_twice_right_20260930_151507.txt",
+    "sha256": "ea50bb252cf9b2047db0e742d547f61aef1ce5944151cf1aa84b78baa30437bd"
+  },
+  {
+    "path": "/home/aprohack/desktop/work/tap-project/project/tapRecognitionRui/TapRecognition/data_09_10_26/train_data/imuStrict_Miguel_knock_twice_right_20260930_152047.csv",
+    "sha256": "c1bf9a903f49f45a9f5ba2dbad9131d7e8d764a5cd188e8139f43529a176f3c9"
+  },
+  {
+    "path": "/home/aprohack/desktop/work/tap-project/project/tapRecognitionRui/TapRecognition/data_09_10_26/train_data/imuStrict_Miguel_knock_twice_right_20260930_152047.txt",
+    "sha256": "05d2827431fd72c0e6578eac28bdb7d1b7288ecbc934d24770b66861b8758bca"
+  },
+  {
+    "path": "/home/aprohack/desktop/work/tap-project/project/tapRecognitionRui/TapRecognition/data_09_10_26/train_data/imuStrict_Miguel_knock_twice_right_20260930_152158.csv",
+    "sha256": "8cf8b0b4f953489b4cc7345b2478cffc123989202fc88d111267758951667a3d"
+  },
+  {
+    "path": "/home/aprohack/desktop/work/tap-project/project/tapRecognitionRui/TapRecognition/data_09_10_26/train_data/imuStrict_Miguel_knock_twice_right_20260930_152158.txt",
+    "sha256": "f13f72d89f15e3274792489685b5b12a244bda60e04998dfb0332be58fc5b156"
+  },
+  {
+    "path": "/home/aprohack/desktop/work/tap-project/project/tapRecognitionRui/TapRecognition/data_09_10_26/train_data/imuStrict_Miguel_knock_twice_right_20261002_104355.csv",
+    "sha256": "24d574da13eabe9622400f72fb4ff3883082c53f4b8d4858b1c12d8631badc60"
+  },
+  {
+    "path": "/home/aprohack/desktop/work/tap-project/project/tapRecognitionRui/TapRecognition/data_09_10_26/train_data/imuStrict_Miguel_knock_twice_right_20261002_104355.txt",
+    "sha256": "0dcb8b0327730f3816a3b1ea0286ce6e321690e75e8a6876d7eb8d43dc8975a1"
+  },
+  {
+    "path": "/home/aprohack/desktop/work/tap-project/project/tapRecognitionRui/TapRecognition/data_09_10_26/train_data/imuStrict_Miguel_knock_twice_right_20261002_104614.csv",
+    "sha256": "20c7e903ce3a48409f5e41295891b85b7dfc2c009037b6025cf7929c88c1ee31"
+  },
+  {
+    "path": "/home/aprohack/desktop/work/tap-project/project/tapRecognitionRui/TapRecognition/data_09_10_26/train_data/imuStrict_Miguel_knock_twice_right_20261002_104614.txt",
+    "sha256": "e4c63a3c59b6a0f5dbf0c63933aee16f39a64930064e2ccd83a719d28f0164cf"
+  },
+  {
+    "path": "/home/aprohack/desktop/work/tap-project/project/tapRecognitionRui/TapRecognition/data_09_10_26/train_data/imuStrict_Miguel_knock_twice_right_20261002_104916.csv",
+    "sha256": "5d6afa95bf77b3270916f7357d5b90b19b01ebed6e1b34500342e2ddaeaeb940"
+  },
+  {
+    "path": "/home/aprohack/desktop/work/tap-project/project/tapRecognitionRui/TapRecognition/data_09_10_26/train_data/imuStrict_Miguel_knock_twice_right_20261002_104916.txt",
+    "sha256": "23619078111cdcc449e11025ad2f4679979016b52efed6bcae9f86d048838a20"
+  },
+  {
+    "path": "/home/aprohack/desktop/work/tap-project/project/tapRecognitionRui/TapRecognition/data_09_10_26/train_data/imuStrict_Miguel_knock_twice_right_20261002_105132.csv",
+    "sha256": "e52f1924662c6a3ce3e2b8ae48ae9e44103bb686b23405664be9cfe9c6561d19"
+  },
+  {
+    "path": "/home/aprohack/desktop/work/tap-project/project/tapRecognitionRui/TapRecognition/data_09_10_26/train_data/imuStrict_Miguel_knock_twice_right_20261002_105132.txt",
+    "sha256": "e2a123cdf1b0b969c2149c15c99cc526646ab77b42baa902302a9d008daa54d6"
+  },
+  {
+    "path": "/home/aprohack/desktop/work/tap-project/project/tapRecognitionRui/TapRecognition/data_09_10_26/train_data/imuStrict_Miguel_knock_twice_right_20261002_110007.csv",
+    "sha256": "73dac12ecdb180294f984c387b413f1aed693cf989709a15567e14696f7f6416"
+  },
+  {
+    "path": "/home/aprohack/desktop/work/tap-project/project/tapRecognitionRui/TapRecognition/data_09_10_26/train_data/imuStrict_Miguel_knock_twice_right_20261002_110007.txt",
+    "sha256": "2efb8be1bc037e1d8e4305ac8f5534dd6638af1731e2a2944514ccaf857edced"
+  },
+  {
+    "path": "/home/aprohack/desktop/work/tap-project/project/tapRecognitionRui/TapRecognition/data_09_10_26/train_data/imuStrict_Miguel_knock_twice_right_20261005_152420.csv",
+    "sha256": "6eceb714c0d33a27723e0f0803cf59c501469c98738b659654c55d931d2af04e"
+  },
+  {
+    "path": "/home/aprohack/desktop/work/tap-project/project/tapRecognitionRui/TapRecognition/data_09_10_26/train_data/imuStrict_Miguel_knock_twice_right_20261005_152420.txt",
+    "sha256": "c4a268488c40744044aa1458749201d6353a9e55264b85efb996e548e807cbcb"
+  },
+  {
+    "path": "/home/aprohack/desktop/work/tap-project/project/tapRecognitionRui/TapRecognition/data_09_10_26/train_data/imuStrict_Miguel_knock_twice_right_20261005_154325.csv",
+    "sha256": "158d73afb6885450a27ef0252fb6fd5491faa0280f2e1a63aa7cd43cfa4c9572"
+  },
+  {
+    "path": "/home/aprohack/desktop/work/tap-project/project/tapRecognitionRui/TapRecognition/data_09_10_26/train_data/imuStrict_Miguel_knock_twice_right_20261005_154325.txt",
+    "sha256": "a71e8698926a001aa882182483ee51520e17e0795b040136f0b1368c04097c3d"
+  },
+  {
+    "path": "/home/aprohack/desktop/work/tap-project/project/tapRecognitionRui/TapRecognition/data_09_10_26/train_data/imuStrict_Miguel_knock_twice_right_20261005_154601.csv",
+    "sha256": "a57b74f566183534ec1700292452e3c55dbbf80ebe337aa6421365064d56b8a2"
+  },
+  {
+    "path": "/home/aprohack/desktop/work/tap-project/project/tapRecognitionRui/TapRecognition/data_09_10_26/train_data/imuStrict_Miguel_knock_twice_right_20261005_154601.txt",
+    "sha256": "394b9397906e9c266a0fd3fc0bc75f005da1d2e50060ef2a86f1e75e72c9663a"
+  },
+  {
+    "path": "/home/aprohack/desktop/work/tap-project/project/tapRecognitionRui/TapRecognition/data_09_10_26/train_data/imuStrict_Miguel_knock_twice_right_20261005_155025.csv",
+    "sha256": "026a59caf118c320ad2199f14aa26765dfa33ce91fad09338ccab82e91fff07b"
+  },
+  {
+    "path": "/home/aprohack/desktop/work/tap-project/project/tapRecognitionRui/TapRecognition/data_09_10_26/train_data/imuStrict_Miguel_knock_twice_right_20261005_155025.txt",
+    "sha256": "516c2998ba7d23aff24b02171773a156b1158c82870c2292839ebb2bff415864"
+  },
+  {
+    "path": "/home/aprohack/desktop/work/tap-project/project/tapRecognitionRui/TapRecognition/data_09_10_26/train_data/imuStrict_Miguel_knock_twice_right_20261006_094810.csv",
+    "sha256": "99671c91240c36e2c01996b0dc5ef158a8cd5a61ca36568d9db70eefc81b4860"
+  },
+  {
+    "path": "/home/aprohack/desktop/work/tap-project/project/tapRecognitionRui/TapRecognition/data_09_10_26/train_data/imuStrict_Miguel_knock_twice_right_20261006_094810.txt",
+    "sha256": "d74f5d8909a6e3baf56e8c0f7dbd3e5752c97f4cab353f38a0545b4c2ddaa162"
+  },
+  {
+    "path": "/home/aprohack/desktop/work/tap-project/project/tapRecognitionRui/TapRecognition/data_09_10_26/train_data/imuStrict_Miguel_knock_twice_right_20261006_095050.csv",
+    "sha256": "2db705e0e223099259b30879338df76a3399b49581ee58ff27c475e01b009b56"
+  },
+  {
+    "path": "/home/aprohack/desktop/work/tap-project/project/tapRecognitionRui/TapRecognition/data_09_10_26/train_data/imuStrict_Miguel_knock_twice_right_20261006_095050.txt",
+    "sha256": "22733ed9b52ffdb6e8faff37e43cbf9906e608450b1b92999796dd0bb275b1c0"
+  },
+  {
+    "path": "/home/aprohack/desktop/work/tap-project/project/tapRecognitionRui/TapRecognition/data_09_10_26/train_data/imuStrict_Miguel_knock_twice_right_20261008_094129.csv",
+    "sha256": "f0c23eb1228e29f465c2781862397474be680fb025c92967bcce11c4146cb5d7"
+  },
+  {
+    "path": "/home/aprohack/desktop/work/tap-project/project/tapRecognitionRui/TapRecognition/data_09_10_26/train_data/imuStrict_Miguel_knock_twice_right_20261008_094129.txt",
+    "sha256": "17508b6870c16031c56e9b86f0bf73b81f750278b9e7afdabc668342bf7af17a"
+  },
+  {
+    "path": "/home/aprohack/desktop/work/tap-project/project/tapRecognitionRui/TapRecognition/data_09_10_26/train_data/imu_Miguel_adjust_grip_20260921_172717.csv",
+    "sha256": "b1a2bc741078521f499978c2a6f4a761abb1cbf5f587eafe90e56090fdb8f327"
+  },
+  {
+    "path": "/home/aprohack/desktop/work/tap-project/project/tapRecognitionRui/TapRecognition/data_09_10_26/train_data/imu_Miguel_adjust_grip_20260921_172717.txt",
+    "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+  },
+  {
+    "path": "/home/aprohack/desktop/work/tap-project/project/tapRecognitionRui/TapRecognition/data_09_10_26/train_data/imu_Miguel_adjust_grip_20260923_175813.csv",
+    "sha256": "2aad03a166538b7d2b2dbff04424198266cb642cd51c1015557b512f77057b22"
+  },
+  {
+    "path": "/home/aprohack/desktop/work/tap-project/project/tapRecognitionRui/TapRecognition/data_09_10_26/train_data/imu_Miguel_adjust_grip_20260923_175813.txt",
+    "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+  },
+  {
+    "path": "/home/aprohack/desktop/work/tap-project/project/tapRecognitionRui/TapRecognition/data_09_10_26/train_data/imu_Miguel_adjust_grip_20260929_141922.csv",
+    "sha256": "9357a3d511e6723f4d48a146353617814c0e1728e4bf0e1ea371ab2629d3d05b"
+  },
+  {
+    "path": "/home/aprohack/desktop/work/tap-project/project/tapRecognitionRui/TapRecognition/data_09_10_26/train_data/imu_Miguel_adjust_grip_20260929_141922.txt",
+    "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+  },
+  {
+    "path": "/home/aprohack/desktop/work/tap-project/project/tapRecognitionRui/TapRecognition/data_09_10_26/train_data/imu_Miguel_adjust_grip_20260929_142034.csv",
+    "sha256": "d1eebd1796dffd76d28fcc5b82fbe450de6c9881d4641518e632fb8df5759d20"
+  },
+  {
+    "path": "/home/aprohack/desktop/work/tap-project/project/tapRecognitionRui/TapRecognition/data_09_10_26/train_data/imu_Miguel_adjust_grip_20260929_142034.txt",
+    "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+  },
+  {
+    "path": "/home/aprohack/desktop/work/tap-project/project/tapRecognitionRui/TapRecognition/data_09_10_26/train_data/imu_Miguel_arbitrary_20260921_172416.csv",
+    "sha256": "b2f51bcb977eca718178ffe38d8acc469bec879bea4b5671db9887869ec7db14"
+  },
+  {
+    "path": "/home/aprohack/desktop/work/tap-project/project/tapRecognitionRui/TapRecognition/data_09_10_26/train_data/imu_Miguel_arbitrary_20260921_172416.txt",
+    "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+  },
+  {
+    "path": "/home/aprohack/desktop/work/tap-project/project/tapRecognitionRui/TapRecognition/data_09_10_26/train_data/imu_Miguel_arbitrary_20260924_093602.csv",
+    "sha256": "562765c90b46d0678bd2e144ffd08ee535e98d78a16cc237ddcfc5f6be08e8b9"
+  },
+  {
+    "path": "/home/aprohack/desktop/work/tap-project/project/tapRecognitionRui/TapRecognition/data_09_10_26/train_data/imu_Miguel_arbitrary_20260924_093602.txt",
+    "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+  },
+  {
+    "path": "/home/aprohack/desktop/work/tap-project/project/tapRecognitionRui/TapRecognition/data_09_10_26/train_data/imu_Miguel_knock_once_20260924_093428.csv",
+    "sha256": "54f45485c1753d9d483547ffd7994f3555a2914852354bc155ffbd3329ab8169"
+  },
+  {
+    "path": "/home/aprohack/desktop/work/tap-project/project/tapRecognitionRui/TapRecognition/data_09_10_26/train_data/imu_Miguel_knock_once_20260924_093428.txt",
+    "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+  },
+  {
+    "path": "/home/aprohack/desktop/work/tap-project/project/tapRecognitionRui/TapRecognition/data_09_10_26/train_data/imu_Miguel_knock_once_20260925_102444.csv",
+    "sha256": "5fde5d5910202dae5bf21e6b9193e8464c6106abd7aa4bd858b440f9d9f69c0a"
+  },
+  {
+    "path": "/home/aprohack/desktop/work/tap-project/project/tapRecognitionRui/TapRecognition/data_09_10_26/train_data/imu_Miguel_knock_once_20260925_102444.txt",
+    "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+  },
+  {
+    "path": "/home/aprohack/desktop/work/tap-project/project/tapRecognitionRui/TapRecognition/data_09_10_26/train_data/imu_Miguel_knock_once_20260929_141525.csv",
+    "sha256": "15fdeeb3883fbaad06f323c110d1bd34c2408a504cf2792c40ee1e0403fd03d6"
+  },
+  {
+    "path": "/home/aprohack/desktop/work/tap-project/project/tapRecognitionRui/TapRecognition/data_09_10_26/train_data/imu_Miguel_knock_once_20260929_141525.txt",
+    "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+  },
+  {
+    "path": "/home/aprohack/desktop/work/tap-project/project/tapRecognitionRui/TapRecognition/data_09_10_26/train_data/imu_Miguel_knock_once_20261005_153635.csv",
+    "sha256": "e443918d2f7300ed526f07458a9e20d48aa8f6df2b98dd1c5cf06e9c10b47d53"
+  },
+  {
+    "path": "/home/aprohack/desktop/work/tap-project/project/tapRecognitionRui/TapRecognition/data_09_10_26/train_data/imu_Miguel_knock_once_20261005_153635.txt",
+    "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+  },
+  {
+    "path": "/home/aprohack/desktop/work/tap-project/project/tapRecognitionRui/TapRecognition/data_09_10_26/train_data/imu_Miguel_knock_once_20261009_094412.csv",
+    "sha256": "b0f78bd47ab9e18445c517fa0ddd7b75aedc5a2cf0ec7e81380e7afc66d01ee8"
+  },
+  {
+    "path": "/home/aprohack/desktop/work/tap-project/project/tapRecognitionRui/TapRecognition/data_09_10_26/train_data/imu_Miguel_knock_once_20261009_094412.txt",
+    "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+  },
+  {
+    "path": "/home/aprohack/desktop/work/tap-project/project/tapRecognitionRui/TapRecognition/data_09_10_26/train_data/imu_Miguel_knock_once_20261009_094530.csv",
+    "sha256": "9d99d87ca137a9102705ddc795c03eeb9c5b48fd50008e46bb42b2610172bbe5"
+  },
+  {
+    "path": "/home/aprohack/desktop/work/tap-project/project/tapRecognitionRui/TapRecognition/data_09_10_26/train_data/imu_Miguel_knock_once_20261009_094530.txt",
+    "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+  },
+  {
+    "path": "/home/aprohack/desktop/work/tap-project/project/tapRecognitionRui/TapRecognition/data_09_10_26/train_data/imu_Miguel_knock_once_20261009_094739.csv",
+    "sha256": "0d530b4a75b1b78bcccf3785855831f130d2e1c0c5a89fba4c3aa95710dd6670"
+  },
+  {
+    "path": "/home/aprohack/desktop/work/tap-project/project/tapRecognitionRui/TapRecognition/data_09_10_26/train_data/imu_Miguel_knock_once_20261009_094739.txt",
+    "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+  },
+  {
+    "path": "/home/aprohack/desktop/work/tap-project/project/tapRecognitionRui/TapRecognition/data_09_10_26/train_data/imu_Miguel_knock_once_20261009_094933.csv",
+    "sha256": "d4ea8055cad5075b08c41813905e181440dbdb21d7d4f3e5a92c3c8efaeae6a2"
+  },
+  {
+    "path": "/home/aprohack/desktop/work/tap-project/project/tapRecognitionRui/TapRecognition/data_09_10_26/train_data/imu_Miguel_knock_once_20261009_094933.txt",
+    "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+  },
+  {
+    "path": "/home/aprohack/desktop/work/tap-project/project/tapRecognitionRui/TapRecognition/data_09_10_26/train_data/imu_Miguel_knock_once_20261009_095321.csv",
+    "sha256": "2de6a6ea0f35dbe4e6e1eb4329d230ddab60b5da970e9407248b4a03d74d81da"
+  },
+  {
+    "path": "/home/aprohack/desktop/work/tap-project/project/tapRecognitionRui/TapRecognition/data_09_10_26/train_data/imu_Miguel_knock_once_20261009_095321.txt",
+    "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+  },
+  {
+    "path": "/home/aprohack/desktop/work/tap-project/project/tapRecognitionRui/TapRecognition/data_09_10_26/train_data/imu_Miguel_knock_once_20261009_095624.csv",
+    "sha256": "fc37f611b73d0a4585bcb642c2a44046e84d4ca4fbbd2adca7c776889a292747"
+  },
+  {
+    "path": "/home/aprohack/desktop/work/tap-project/project/tapRecognitionRui/TapRecognition/data_09_10_26/train_data/imu_Miguel_knock_once_20261009_095624.txt",
+    "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+  },
+  {
+    "path": "/home/aprohack/desktop/work/tap-project/project/tapRecognitionRui/TapRecognition/data_09_10_26/train_data/imu_Miguel_knock_once_20261009_095906.csv",
+    "sha256": "0885b8161549daaed1725174512afc58bc37484b534079149ae5d24638efacf7"
+  },
+  {
+    "path": "/home/aprohack/desktop/work/tap-project/project/tapRecognitionRui/TapRecognition/data_09_10_26/train_data/imu_Miguel_knock_once_20261009_095906.txt",
+    "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+  },
+  {
+    "path": "/home/aprohack/desktop/work/tap-project/project/tapRecognitionRui/TapRecognition/data_09_10_26/train_data/imu_Miguel_knock_once_20261009_102549.csv",
+    "sha256": "a675d0a2e8e1ba50475dab7b37e4c6d85ecf9e2c2fafa62a4c5a8e91e37b7dcd"
+  },
+  {
+    "path": "/home/aprohack/desktop/work/tap-project/project/tapRecognitionRui/TapRecognition/data_09_10_26/train_data/imu_Miguel_knock_once_20261009_102549.txt",
+    "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+  },
+  {
+    "path": "/home/aprohack/desktop/work/tap-project/project/tapRecognitionRui/TapRecognition/data_09_10_26/train_data/imu_Miguel_knock_once_20261009_102700.csv",
+    "sha256": "3811c50fcdc2dfae2300b90945ca63634aea5702a70110fcdc1c171947b22fc7"
+  },
+  {
+    "path": "/home/aprohack/desktop/work/tap-project/project/tapRecognitionRui/TapRecognition/data_09_10_26/train_data/imu_Miguel_knock_once_20261009_102700.txt",
+    "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+  },
+  {
+    "path": "/home/aprohack/desktop/work/tap-project/project/tapRecognitionRui/TapRecognition/data_09_10_26/train_data/imu_Miguel_knock_once_20261009_102916.csv",
+    "sha256": "8d25f5f23d2a55411baa97d5e80f1a472bf991dc45c88c3df45abdc5849e296b"
+  },
+  {
+    "path": "/home/aprohack/desktop/work/tap-project/project/tapRecognitionRui/TapRecognition/data_09_10_26/train_data/imu_Miguel_knock_once_20261009_102916.txt",
+    "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+  },
+  {
+    "path": "/home/aprohack/desktop/work/tap-project/project/tapRecognitionRui/TapRecognition/data_09_10_26/train_data/imu_Miguel_knock_once_20261009_103051.csv",
+    "sha256": "96a8f90be86b61ac262503c249ba9797c501d44e18a06f1eb6e0220c13559944"
+  },
+  {
+    "path": "/home/aprohack/desktop/work/tap-project/project/tapRecognitionRui/TapRecognition/data_09_10_26/train_data/imu_Miguel_knock_once_20261009_103051.txt",
+    "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+  },
+  {
+    "path": "/home/aprohack/desktop/work/tap-project/project/tapRecognitionRui/TapRecognition/data_09_10_26/train_data/imu_Miguel_knock_once_20261009_103349.csv",
+    "sha256": "80b607e4a063043c9e86439e04fc5e2f4e63e6353cc295e8fac0e439c4db3900"
+  },
+  {
+    "path": "/home/aprohack/desktop/work/tap-project/project/tapRecognitionRui/TapRecognition/data_09_10_26/train_data/imu_Miguel_knock_once_20261009_103349.txt",
+    "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+  },
+  {
+    "path": "/home/aprohack/desktop/work/tap-project/project/tapRecognitionRui/TapRecognition/data_09_10_26/train_data/imu_Miguel_knock_twice_left_20260921_171641.csv",
+    "sha256": "9369a54c7b72dd9808d64c77869a18a34845843c57034e6727bb99bcd9632682"
+  },
+  {
+    "path": "/home/aprohack/desktop/work/tap-project/project/tapRecognitionRui/TapRecognition/data_09_10_26/train_data/imu_Miguel_knock_twice_left_20260921_171641.txt",
+    "sha256": "a68fd03c74c34b60a16ccfff754bee57e5e3b19e364a12796ead7d3a334b1d7f"
+  },
+  {
+    "path": "/home/aprohack/desktop/work/tap-project/project/tapRecognitionRui/TapRecognition/data_09_10_26/train_data/imu_Miguel_knock_twice_left_20260921_174113.csv",
+    "sha256": "dfe52aeb7e6b9ba4476fc6c61dc5bd5eaf20f3995dd7138254895148e3b679fd"
+  },
+  {
+    "path": "/home/aprohack/desktop/work/tap-project/project/tapRecognitionRui/TapRecognition/data_09_10_26/train_data/imu_Miguel_knock_twice_left_20260921_174113.txt",
+    "sha256": "072c825b097878e48266dd135794a8c76559d113ff086884d18c890d60026514"
+  },
+  {
+    "path": "/home/aprohack/desktop/work/tap-project/project/tapRecognitionRui/TapRecognition/data_09_10_26/train_data/imu_Miguel_knock_twice_left_20260921_174219.csv",
+    "sha256": "0329a9619125f5cb4c39d2c3b6a781784d0c2468964c40733695a451d2f62edb"
+  },
+  {
+    "path": "/home/aprohack/desktop/work/tap-project/project/tapRecognitionRui/TapRecognition/data_09_10_26/train_data/imu_Miguel_knock_twice_left_20260921_174219.txt",
+    "sha256": "8f45e3b2ef376ec07b2ef6773e644a0b35e734b1804849a3838b6761892ef540"
+  },
+  {
+    "path": "/home/aprohack/desktop/work/tap-project/project/tapRecognitionRui/TapRecognition/data_09_10_26/train_data/imu_Miguel_knock_twice_left_20260923_114401.csv",
+    "sha256": "9b42bd974130d04fc4656d39510b2dfec1cbc8392029b7053eab562973983084"
+  },
+  {
+    "path": "/home/aprohack/desktop/work/tap-project/project/tapRecognitionRui/TapRecognition/data_09_10_26/train_data/imu_Miguel_knock_twice_left_20260923_114401.txt",
+    "sha256": "07496593bd37436e34a2519218a97a7231b4b9dba7082530254cf25a0c3c8d13"
+  },
+  {
+    "path": "/home/aprohack/desktop/work/tap-project/project/tapRecognitionRui/TapRecognition/data_09_10_26/train_data/imu_Miguel_knock_twice_left_20260924_093125.csv",
+    "sha256": "4ecc26e147db8c1196a39879c23cd1065449026f4637cfcbbd4e29b5b021a11c"
+  },
+  {
+    "path": "/home/aprohack/desktop/work/tap-project/project/tapRecognitionRui/TapRecognition/data_09_10_26/train_data/imu_Miguel_knock_twice_left_20260924_093125.txt",
+    "sha256": "7c1be4da87ef173f5834eab8b637c75acb903f98dae987ff6a70b29b22261d15"
+  },
+  {
+    "path": "/home/aprohack/desktop/work/tap-project/project/tapRecognitionRui/TapRecognition/data_09_10_26/train_data/imu_Miguel_knock_twice_left_20260925_105524.csv",
+    "sha256": "42b38657168e657b8d0f9d6dccf546ce920bc089d6b91aa9509a98ed01072f3f"
+  },
+  {
+    "path": "/home/aprohack/desktop/work/tap-project/project/tapRecognitionRui/TapRecognition/data_09_10_26/train_data/imu_Miguel_knock_twice_left_20260925_105524.txt",
+    "sha256": "438b06c089bd4a37c276c2868b6e734d218bf0e25899bc283566a6c009927173"
+  },
+  {
+    "path": "/home/aprohack/desktop/work/tap-project/project/tapRecognitionRui/TapRecognition/data_09_10_26/train_data/imu_Miguel_knock_twice_left_20260925_152309.csv",
+    "sha256": "8121cab0700db7b8071cdeb2aa2dab6392210910a29fe78b21051bc799661cd8"
+  },
+  {
+    "path": "/home/aprohack/desktop/work/tap-project/project/tapRecognitionRui/TapRecognition/data_09_10_26/train_data/imu_Miguel_knock_twice_left_20260925_152309.txt",
+    "sha256": "c65123ed38a7d7cd88d2b14b6b0b65550f40fcf74ec4c37c4ed7a7246b61ed6b"
+  },
+  {
+    "path": "/home/aprohack/desktop/work/tap-project/project/tapRecognitionRui/TapRecognition/data_09_10_26/train_data/imu_Miguel_knock_twice_right_20260921_171833.csv",
+    "sha256": "3c0898ce1e5762f94b43ecedc3713191a0cd3aaaaaf1d92db6ce02ed8de1ef1a"
+  },
+  {
+    "path": "/home/aprohack/desktop/work/tap-project/project/tapRecognitionRui/TapRecognition/data_09_10_26/train_data/imu_Miguel_knock_twice_right_20260921_171833.txt",
+    "sha256": "0f1fc37c7224a15cc5de1d3a94972d3f879581e2d5f5d8c9dfe44619139bf83d"
+  },
+  {
+    "path": "/home/aprohack/desktop/work/tap-project/project/tapRecognitionRui/TapRecognition/data_09_10_26/train_data/imu_Miguel_knock_twice_right_20260921_173708.csv",
+    "sha256": "7b67020dcca33db1bc8c8d5d1bd0ce04bb5e361567b85234ac0441cf41cde6ac"
+  },
+  {
+    "path": "/home/aprohack/desktop/work/tap-project/project/tapRecognitionRui/TapRecognition/data_09_10_26/train_data/imu_Miguel_knock_twice_right_20260921_173708.txt",
+    "sha256": "8b38778ecb1b89200a9a7fd2c5cdb7d804a5fd63538205abcbc0fbbd112d5213"
+  },
+  {
+    "path": "/home/aprohack/desktop/work/tap-project/project/tapRecognitionRui/TapRecognition/data_09_10_26/train_data/imu_Miguel_knock_twice_right_20260921_174334.csv",
+    "sha256": "6760a36713b423c90ee7eac1a765890cdfe9b1175e69bb17d7f66651d772bcb4"
+  },
+  {
+    "path": "/home/aprohack/desktop/work/tap-project/project/tapRecognitionRui/TapRecognition/data_09_10_26/train_data/imu_Miguel_knock_twice_right_20260921_174334.txt",
+    "sha256": "5fa0d7487dfa3063024f192a363352b236ddde8ff5440ee295b5af393d94c165"
+  },
+  {
+    "path": "/home/aprohack/desktop/work/tap-project/project/tapRecognitionRui/TapRecognition/data_09_10_26/train_data/imu_Miguel_knock_twice_right_20260922_093948.csv",
+    "sha256": "0b65276abe0f5a44b69f9c3e93c4776ee1d87c54502f1b269712dbfdeed8fcc0"
+  },
+  {
+    "path": "/home/aprohack/desktop/work/tap-project/project/tapRecognitionRui/TapRecognition/data_09_10_26/train_data/imu_Miguel_knock_twice_right_20260922_093948.txt",
+    "sha256": "aa03a892136712298a93ebf375452eadd330d197b504b072fd750e0bc16b1a74"
+  },
+  {
+    "path": "/home/aprohack/desktop/work/tap-project/project/tapRecognitionRui/TapRecognition/data_09_10_26/train_data/imu_Miguel_knock_twice_right_20260923_113114.csv",
+    "sha256": "a90b7d2374bd40103f5df20065c0148297657a748fc8c230bb7fe46171fd7c4e"
+  },
+  {
+    "path": "/home/aprohack/desktop/work/tap-project/project/tapRecognitionRui/TapRecognition/data_09_10_26/train_data/imu_Miguel_knock_twice_right_20260923_113114.txt",
+    "sha256": "76fbd6b1cedc57d4810500964f0df1c69835f378dd36c0f402b9c5ea1c0430b6"
+  },
+  {
+    "path": "/home/aprohack/desktop/work/tap-project/project/tapRecognitionRui/TapRecognition/data_09_10_26/train_data/imu_Miguel_knock_twice_right_20260923_173517.csv",
+    "sha256": "ebe2385ce571776b6ac80cf2eb4ad51de2076766fbe67fa648a8b59bd60f675d"
+  },
+  {
+    "path": "/home/aprohack/desktop/work/tap-project/project/tapRecognitionRui/TapRecognition/data_09_10_26/train_data/imu_Miguel_knock_twice_right_20260923_173517.txt",
+    "sha256": "3176ca10fb9753f91e9450ea6653418c95df6cf203766cfbe1044c20b8d57fd6"
+  },
+  {
+    "path": "/home/aprohack/desktop/work/tap-project/project/tapRecognitionRui/TapRecognition/data_09_10_26/train_data/imu_Miguel_knock_twice_right_20260924_093233.csv",
+    "sha256": "778920f9275da49ce0363122e3d8cabefc7d89f3ac19456cafd14b7bbb52ceb1"
+  },
+  {
+    "path": "/home/aprohack/desktop/work/tap-project/project/tapRecognitionRui/TapRecognition/data_09_10_26/train_data/imu_Miguel_knock_twice_right_20260924_093233.txt",
+    "sha256": "fb0318213e6816130d9886c893331d2569bb137b290b2016c0d1ed809a4317db"
+  },
+  {
+    "path": "/home/aprohack/desktop/work/tap-project/project/tapRecognitionRui/TapRecognition/data_09_10_26/train_data/imu_Miguel_knock_twice_right_20260925_102310.csv",
+    "sha256": "b29bebf4bf87602e7ed647a1e655c1f77d5c3206f77ad95dbf042d603c13fee4"
+  },
+  {
+    "path": "/home/aprohack/desktop/work/tap-project/project/tapRecognitionRui/TapRecognition/data_09_10_26/train_data/imu_Miguel_knock_twice_right_20260925_102310.txt",
+    "sha256": "fb2c493faeb6fcfa8fadf1bae469ede7f2c422f9d87fe67ad7ad85039e0ffa17"
+  },
+  {
+    "path": "/home/aprohack/desktop/work/tap-project/project/tapRecognitionRui/TapRecognition/data_09_10_26/train_data/imu_Miguel_knock_twice_right_20260925_105401.csv",
+    "sha256": "165408bd2d0605738af43e3dba6d2c263b3159e1c319d7571b02cf6b0c714686"
+  },
+  {
+    "path": "/home/aprohack/desktop/work/tap-project/project/tapRecognitionRui/TapRecognition/data_09_10_26/train_data/imu_Miguel_knock_twice_right_20260925_105401.txt",
+    "sha256": "bdfb0470387ac151ed6124a34d6e907694fd6e5189c6944271009a244eb0b037"
+  },
+  {
+    "path": "/home/aprohack/desktop/work/tap-project/project/tapRecognitionRui/TapRecognition/data_09_10_26/train_data/imu_Miguel_knock_twice_right_20260925_152103.csv",
+    "sha256": "e9b54b11d7e3fecf48cf8781cfef86b350342327e28e36c9b7a031d9ccde35f4"
+  },
+  {
+    "path": "/home/aprohack/desktop/work/tap-project/project/tapRecognitionRui/TapRecognition/data_09_10_26/train_data/imu_Miguel_knock_twice_right_20260925_152103.txt",
+    "sha256": "d0ccfe8f01490ca679ea910a68eb801bdf3719a5ceb3eda1b7a9e79487ec4881"
+  },
+  {
+    "path": "/home/aprohack/desktop/work/tap-project/project/tapRecognitionRui/TapRecognition/data_09_10_26/train_data/imu_Miguel_pick_place_20260921_173554.csv",
+    "sha256": "7e3925751844b5189f3cc098d3f71ee0b71170db0921b2bec903ba8264c1992a"
+  },
+  {
+    "path": "/home/aprohack/desktop/work/tap-project/project/tapRecognitionRui/TapRecognition/data_09_10_26/train_data/imu_Miguel_pick_place_20260921_173554.txt",
+    "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+  },
+  {
+    "path": "/home/aprohack/desktop/work/tap-project/project/tapRecognitionRui/TapRecognition/data_09_10_26/train_data/imu_Miguel_pick_place_20260924_094130.csv",
+    "sha256": "5aadb52539bdfefe0ce6b36f948d6831d6f0499548d06da31e69784d9fd10b90"
+  },
+  {
+    "path": "/home/aprohack/desktop/work/tap-project/project/tapRecognitionRui/TapRecognition/data_09_10_26/train_data/imu_Miguel_pick_place_20260924_094130.txt",
+    "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+  },
+  {
+    "path": "/home/aprohack/desktop/work/tap-project/project/tapRecognitionRui/TapRecognition/data_09_10_26/train_data/imu_Miguel_pick_place_20260930_104325.csv",
+    "sha256": "b5075c734ad1774a9853377e644cb2f60d537c500094e78f81a75e8241caebcc"
+  },
+  {
+    "path": "/home/aprohack/desktop/work/tap-project/project/tapRecognitionRui/TapRecognition/data_09_10_26/train_data/imu_Miguel_pick_place_20260930_104325.txt",
+    "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+  },
+  {
+    "path": "/home/aprohack/desktop/work/tap-project/project/tapRecognitionRui/TapRecognition/data_09_10_26/train_data/imu_Miguel_pick_place_20260930_104435.csv",
+    "sha256": "8d2ee428442099148646cd74e7cff79634023c35ecd075beab2b00593b0864df"
+  },
+  {
+    "path": "/home/aprohack/desktop/work/tap-project/project/tapRecognitionRui/TapRecognition/data_09_10_26/train_data/imu_Miguel_pick_place_20260930_104435.txt",
+    "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+  },
+  {
+    "path": "/home/aprohack/desktop/work/tap-project/project/tapRecognitionRui/TapRecognition/data_09_10_26/train_data/imu_Miguel_pick_place_20260930_105321.csv",
+    "sha256": "13295badbeeb1ebdd7910d64fcbe158de29163d714b071b18c0e67b8c8854195"
+  },
+  {
+    "path": "/home/aprohack/desktop/work/tap-project/project/tapRecognitionRui/TapRecognition/data_09_10_26/train_data/imu_Miguel_pick_place_20260930_105321.txt",
+    "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+  },
+  {
+    "path": "/home/aprohack/desktop/work/tap-project/project/tapRecognitionRui/TapRecognition/data_09_10_26/train_data/imu_Miguel_pick_place_20260930_105549.csv",
+    "sha256": "77daeae56521f097624bb4140a5be6c14aebff3678fad82bff3358ff92ccdd99"
+  },
+  {
+    "path": "/home/aprohack/desktop/work/tap-project/project/tapRecognitionRui/TapRecognition/data_09_10_26/train_data/imu_Miguel_pick_place_20260930_105549.txt",
+    "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+  },
+  {
+    "path": "/home/aprohack/desktop/work/tap-project/project/tapRecognitionRui/TapRecognition/data_09_10_26/train_data/imu_Miguel_pick_place_20261005_153759.csv",
+    "sha256": "518dc7f1522ff120c1647fae077aa066eb95059b9d654d47a98c4e78743f46f3"
+  },
+  {
+    "path": "/home/aprohack/desktop/work/tap-project/project/tapRecognitionRui/TapRecognition/data_09_10_26/train_data/imu_Miguel_pick_place_20261005_153759.txt",
+    "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+  },
+  {
+    "path": "/home/aprohack/desktop/work/tap-project/project/tapRecognitionRui/TapRecognition/data_09_10_26/train_data/imu_Miguel_shake_phone_20260921_173023.csv",
+    "sha256": "667c97cd82b4cd7241a534743ba0ffd9f194713068ea47d029467c82bbc202da"
+  },
+  {
+    "path": "/home/aprohack/desktop/work/tap-project/project/tapRecognitionRui/TapRecognition/data_09_10_26/train_data/imu_Miguel_shake_phone_20260921_173023.txt",
+    "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+  },
+  {
+    "path": "/home/aprohack/desktop/work/tap-project/project/tapRecognitionRui/TapRecognition/data_09_10_26/train_data/imu_Miguel_shake_phone_20260924_093907.csv",
+    "sha256": "389585444eb403d7c37de533f9b86e61ddd35cb8dfaeecdbf9025de08589da2b"
+  },
+  {
+    "path": "/home/aprohack/desktop/work/tap-project/project/tapRecognitionRui/TapRecognition/data_09_10_26/train_data/imu_Miguel_shake_phone_20260924_093907.txt",
+    "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+  },
+  {
+    "path": "/home/aprohack/desktop/work/tap-project/project/tapRecognitionRui/TapRecognition/data_09_10_26/train_data/imu_Miguel_shake_phone_20260925_104900.csv",
+    "sha256": "4a50b9bb416588dad2460542d15503a59308ea5bdf06093e493db219b1cc3ef6"
+  },
+  {
+    "path": "/home/aprohack/desktop/work/tap-project/project/tapRecognitionRui/TapRecognition/data_09_10_26/train_data/imu_Miguel_shake_phone_20260925_104900.txt",
+    "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+  },
+  {
+    "path": "/home/aprohack/desktop/work/tap-project/project/tapRecognitionRui/TapRecognition/data_09_10_26/train_data/imu_Miguel_shake_phone_20260925_105014.csv",
+    "sha256": "a0f652afe8ef54029004a1246d013dbdec7df91ea41f053d73a12961b6ad4318"
+  },
+  {
+    "path": "/home/aprohack/desktop/work/tap-project/project/tapRecognitionRui/TapRecognition/data_09_10_26/train_data/imu_Miguel_shake_phone_20260925_105014.txt",
+    "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+  },
+  {
+    "path": "/home/aprohack/desktop/work/tap-project/project/tapRecognitionRui/TapRecognition/data_09_10_26/train_data/imu_Miguel_shake_phone_20260929_141657.csv",
+    "sha256": "d11e96ce7d0893257801238ab413b27976b01b5eb3516d3d127a95b0c92c831a"
+  },
+  {
+    "path": "/home/aprohack/desktop/work/tap-project/project/tapRecognitionRui/TapRecognition/data_09_10_26/train_data/imu_Miguel_shake_phone_20260929_141657.txt",
+    "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+  },
+  {
+    "path": "/home/aprohack/desktop/work/tap-project/project/tapRecognitionRui/TapRecognition/data_09_10_26/train_data/imu_Miguel_shake_phone_20260929_141805.csv",
+    "sha256": "c7e298caad9e55378e79b135d9881278f1bdd59a1c631996b654a8726cbae73b"
+  },
+  {
+    "path": "/home/aprohack/desktop/work/tap-project/project/tapRecognitionRui/TapRecognition/data_09_10_26/train_data/imu_Miguel_shake_phone_20260929_141805.txt",
+    "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+  },
+  {
+    "path": "/home/aprohack/desktop/work/tap-project/project/tapRecognitionRui/TapRecognition/data_09_10_26/train_data/imu_Miguel_shake_phone_20260929_153831.csv",
+    "sha256": "564bb7fbebada913bb8ee1a44ee0a51e3f0bd97785deec71efbe936ce3a70a84"
+  },
+  {
+    "path": "/home/aprohack/desktop/work/tap-project/project/tapRecognitionRui/TapRecognition/data_09_10_26/train_data/imu_Miguel_shake_phone_20260929_153831.txt",
+    "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+  },
+  {
+    "path": "/home/aprohack/desktop/work/tap-project/project/tapRecognitionRui/TapRecognition/data_09_10_26/train_data/imu_Miguel_shake_phone_20260929_154142.csv",
+    "sha256": "99bb78823033f14e766b584a7850dbe338abb0a6b7f5d36383c13d221a3786c1"
+  },
+  {
+    "path": "/home/aprohack/desktop/work/tap-project/project/tapRecognitionRui/TapRecognition/data_09_10_26/train_data/imu_Miguel_shake_phone_20260929_154142.txt",
+    "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+  },
+  {
+    "path": "/home/aprohack/desktop/work/tap-project/project/tapRecognitionRui/TapRecognition/data_09_10_26/train_data/imu_Miguel_shake_phone_20260930_103213.csv",
+    "sha256": "56e56701173b2a41e82aad97828bc4fbac54c5144565cbfd47caf179e0bd03e8"
+  },
+  {
+    "path": "/home/aprohack/desktop/work/tap-project/project/tapRecognitionRui/TapRecognition/data_09_10_26/train_data/imu_Miguel_shake_phone_20260930_103213.txt",
+    "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+  },
+  {
+    "path": "/home/aprohack/desktop/work/tap-project/project/tapRecognitionRui/TapRecognition/data_09_10_26/train_data/imu_Miguel_shake_phone_20261002_110551.csv",
+    "sha256": "33f18064d098bfa3147db16c7c658ca224299bf90a4e2047d517995ba3b8c9fa"
+  },
+  {
+    "path": "/home/aprohack/desktop/work/tap-project/project/tapRecognitionRui/TapRecognition/data_09_10_26/train_data/imu_Miguel_shake_phone_20261002_110551.txt",
+    "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+  },
+  {
+    "path": "/home/aprohack/desktop/work/tap-project/project/tapRecognitionRui/TapRecognition/data_09_10_26/train_data/imu_Miguel_shake_phone_20261002_110831.csv",
+    "sha256": "0fa5bd269cfe3536829217a6119ffe007ef951acfa4a4cff638ba53abe6f7993"
+  },
+  {
+    "path": "/home/aprohack/desktop/work/tap-project/project/tapRecognitionRui/TapRecognition/data_09_10_26/train_data/imu_Miguel_shake_phone_20261002_110831.txt",
+    "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+  },
+  {
+    "path": "/home/aprohack/desktop/work/tap-project/project/tapRecognitionRui/TapRecognition/data_09_10_26/train_data/imu_Miguel_shake_phone_20261005_152917.csv",
+    "sha256": "30aa9213dbe87b45ff4e44d2648c5b6a0f5204fb87b02983eda7c14b42736aa8"
+  },
+  {
+    "path": "/home/aprohack/desktop/work/tap-project/project/tapRecognitionRui/TapRecognition/data_09_10_26/train_data/imu_Miguel_shake_phone_20261005_152917.txt",
+    "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+  },
+  {
+    "path": "/home/aprohack/desktop/work/tap-project/project/tapRecognitionRui/TapRecognition/data_09_10_26/train_data/imu_Miguel_shake_phone_20261006_095351.csv",
+    "sha256": "432662c5bdf24d1d1c2ea3f4bb7244fc07aa8b2d87e0fd86929f423cc709e62e"
+  },
+  {
+    "path": "/home/aprohack/desktop/work/tap-project/project/tapRecognitionRui/TapRecognition/data_09_10_26/train_data/imu_Miguel_shake_phone_20261006_095351.txt",
+    "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+  },
+  {
+    "path": "/home/aprohack/desktop/work/tap-project/project/tapRecognitionRui/TapRecognition/data_09_10_26/train_data/imu_Miguel_switch_hand_20260924_094018.csv",
+    "sha256": "bff8767c9a85de519694e698247d1aff7f2dcf0d865390d15c34eef4c12102ec"
+  },
+  {
+    "path": "/home/aprohack/desktop/work/tap-project/project/tapRecognitionRui/TapRecognition/data_09_10_26/train_data/imu_Miguel_switch_hand_20260924_094018.txt",
+    "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+  },
+  {
+    "path": "/home/aprohack/desktop/work/tap-project/project/tapRecognitionRui/TapRecognition/data_09_10_26/train_data/imu_Miguel_switch_hand_20260929_150629.csv",
+    "sha256": "7ebed8a55f78da3a7780598e61a0023f9d5d3c10fd08c4184c741178d5cc73e7"
+  },
+  {
+    "path": "/home/aprohack/desktop/work/tap-project/project/tapRecognitionRui/TapRecognition/data_09_10_26/train_data/imu_Miguel_switch_hand_20260929_150629.txt",
+    "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+  },
+  {
+    "path": "/home/aprohack/desktop/work/tap-project/project/tapRecognitionRui/TapRecognition/data_09_10_26/train_data/imu_Miguel_switch_hand_20261005_093848.csv",
+    "sha256": "9d38855101ab8b59c9e8ac2818f13b6d93e144c011d6b3894083c9e8cf18ad80"
+  },
+  {
+    "path": "/home/aprohack/desktop/work/tap-project/project/tapRecognitionRui/TapRecognition/data_09_10_26/train_data/imu_Miguel_switch_hand_20261005_093848.txt",
+    "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+  },
+  {
+    "path": "/home/aprohack/desktop/work/tap-project/project/tapRecognitionRui/TapRecognition/data_09_10_26/train_data/imu_Miguel_switch_hand_20261005_102539.csv",
+    "sha256": "d46253d638fee86119a513c6f7f1dffaebf3f8526b5f57f38ace921e04a0d606"
+  },
+  {
+    "path": "/home/aprohack/desktop/work/tap-project/project/tapRecognitionRui/TapRecognition/data_09_10_26/train_data/imu_Miguel_switch_hand_20261005_102539.txt",
+    "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+  },
+  {
+    "path": "/home/aprohack/desktop/work/tap-project/project/tapRecognitionRui/TapRecognition/data_09_10_26/train_data/imu_Miguel_switch_hand_20261005_151845.csv",
+    "sha256": "3c9d9d09e6e845b81de488725b8d6c2045a81691ac88a38710145cb4640ad4a3"
+  },
+  {
+    "path": "/home/aprohack/desktop/work/tap-project/project/tapRecognitionRui/TapRecognition/data_09_10_26/train_data/imu_Miguel_switch_hand_20261005_151845.txt",
+    "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+  },
+  {
+    "path": "/home/aprohack/desktop/work/tap-project/project/tapRecognitionRui/TapRecognition/data_09_10_26/train_data/imu_Miguel_switch_hand_20261005_153953.csv",
+    "sha256": "155b0155e87f195bea3b3e24066953acd3326c14e0c9bd5eccb553a9c0c842c7"
+  },
+  {
+    "path": "/home/aprohack/desktop/work/tap-project/project/tapRecognitionRui/TapRecognition/data_09_10_26/train_data/imu_Miguel_switch_hand_20261005_153953.txt",
+    "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+  },
+  {
+    "path": "/home/aprohack/desktop/work/tap-project/project/tapRecognitionRui/TapRecognition/data_09_10_26/train_data/imu_Miguel_switch_hand_20261005_154207.csv",
+    "sha256": "36842259eff70f26825c253b856a4b564127f81c8510c00ed083a9aec573cb9f"
+  },
+  {
+    "path": "/home/aprohack/desktop/work/tap-project/project/tapRecognitionRui/TapRecognition/data_09_10_26/train_data/imu_Miguel_switch_hand_20261005_154207.txt",
+    "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+  },
+  {
+    "path": "/home/aprohack/desktop/work/tap-project/project/tapRecognitionRui/TapRecognition/data_09_10_26/train_data/imu_Miguel_switch_hand_20261005_175105.csv",
+    "sha256": "f9f0885e5676d2047cec8473901c75e0308803764e3018b13b3573861dcb1e83"
+  },
+  {
+    "path": "/home/aprohack/desktop/work/tap-project/project/tapRecognitionRui/TapRecognition/data_09_10_26/train_data/imu_Miguel_switch_hand_20261005_175105.txt",
+    "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+  },
+  {
+    "path": "/home/aprohack/desktop/work/tap-project/project/tapRecognitionRui/TapRecognition/data_09_10_26/train_data/imu_Miguel_switch_hand_20261005_175415.csv",
+    "sha256": "c2cc708834135779e3ad3371d27f6f8cae8b4ab9eeae9019dd886e92f8da1df7"
+  },
+  {
+    "path": "/home/aprohack/desktop/work/tap-project/project/tapRecognitionRui/TapRecognition/data_09_10_26/train_data/imu_Miguel_switch_hand_20261005_175415.txt",
+    "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+  },
+  {
+    "path": "/home/aprohack/desktop/work/tap-project/project/tapRecognitionRui/TapRecognition/data_09_10_26/train_data/imu_Miguel_switch_hand_20261005_175627.csv",
+    "sha256": "45b9f8ebba95e6b8797a48717c74af2e0aa0021cea67211988861f064062b89c"
+  },
+  {
+    "path": "/home/aprohack/desktop/work/tap-project/project/tapRecognitionRui/TapRecognition/data_09_10_26/train_data/imu_Miguel_switch_hand_20261005_175627.txt",
+    "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+  },
+  {
+    "path": "/home/aprohack/desktop/work/tap-project/project/tapRecognitionRui/TapRecognition/data_09_10_26/train_data/imu_Miguel_switch_hand_20261005_175913.csv",
+    "sha256": "4e06fed8c8777f681d591b687feccaf2a7b5f3ce87c2f954e5fa952780f006cb"
+  },
+  {
+    "path": "/home/aprohack/desktop/work/tap-project/project/tapRecognitionRui/TapRecognition/data_09_10_26/train_data/imu_Miguel_switch_hand_20261005_175913.txt",
+    "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+  },
+  {
+    "path": "/home/aprohack/desktop/work/tap-project/project/tapRecognitionRui/TapRecognition/data_09_10_26/train_data/imu_Miguel_switch_hand_20261006_094345.csv",
+    "sha256": "d223547f182bb5e0375c23c1381e9598b2fc4ab09a07b67b00423b587a6af8d0"
+  },
+  {
+    "path": "/home/aprohack/desktop/work/tap-project/project/tapRecognitionRui/TapRecognition/data_09_10_26/train_data/imu_Miguel_switch_hand_20261006_094345.txt",
+    "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+  },
+  {
+    "path": "/home/aprohack/desktop/work/tap-project/project/tapRecognitionRui/TapRecognition/data_09_10_26/train_data/imu_OLV_knock_once_20260923_174815.csv",
+    "sha256": "c26d2d75834617208fc34b4451a997f70a2a3d9941d990eddb1ba15fe4bf89c8"
+  },
+  {
+    "path": "/home/aprohack/desktop/work/tap-project/project/tapRecognitionRui/TapRecognition/data_09_10_26/train_data/imu_OLV_knock_once_20260923_174815.txt",
+    "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+  },
+  {
+    "path": "/home/aprohack/desktop/work/tap-project/project/tapRecognitionRui/TapRecognition/data_09_10_26/train_data/imu_OLV_knock_twice_left_20260923_174506.csv",
+    "sha256": "66d897c55bf6428655831fcadcd007131050657e634752bad48f9e6a002884bc"
+  },
+  {
+    "path": "/home/aprohack/desktop/work/tap-project/project/tapRecognitionRui/TapRecognition/data_09_10_26/train_data/imu_OLV_knock_twice_left_20260923_174506.txt",
+    "sha256": "7c9215b7a50565cb65174b1f80129bd3fd997edc04f8df6d386fb046d5f5b8dc"
+  },
+  {
+    "path": "/home/aprohack/desktop/work/tap-project/project/tapRecognitionRui/TapRecognition/data_09_10_26/train_data/imu_OLV_knock_twice_right_20260923_174350.csv",
+    "sha256": "4c424bbcb97d83dd95e36ee16142003043f27422f49c7d385d362d0a25569f8f"
+  },
+  {
+    "path": "/home/aprohack/desktop/work/tap-project/project/tapRecognitionRui/TapRecognition/data_09_10_26/train_data/imu_OLV_knock_twice_right_20260923_174350.txt",
+    "sha256": "e8afbe890f00cfeff27ecf56ddcb039ef09e08e26e2747d1b8b6b736d472300a"
+  },
+  {
+    "path": "/home/aprohack/desktop/work/tap-project/project/tapRecognitionRui/TapRecognition/data_09_10_26/train_data/imu_OLV_shake_phone_20260923_174932.csv",
+    "sha256": "1941eb5d86f0141c7c90d30404470240781ca0d8041154423a70ba25dd7fc8b4"
+  },
+  {
+    "path": "/home/aprohack/desktop/work/tap-project/project/tapRecognitionRui/TapRecognition/data_09_10_26/train_data/imu_OLV_shake_phone_20260923_174932.txt",
+    "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+  },
+  {
+    "path": "/home/aprohack/desktop/work/tap-project/project/tapRecognitionRui/TapRecognition/data_09_10_26/train_data/imu_YYQ_knock_twice_left_20260904_095856.csv",
+    "sha256": "981e96d46629b6cf569dbf9194989d9092fbe4ba79a888413f2d1d655d5518c0"
+  },
+  {
+    "path": "/home/aprohack/desktop/work/tap-project/project/tapRecognitionRui/TapRecognition/data_09_10_26/train_data/imu_YYQ_knock_twice_left_20260904_095856.txt",
+    "sha256": "a771ade410d6cdc84b101fd7b2ce8ddbc67bb21a2987aa77361c2b7759d16f3c"
+  },
+  {
+    "path": "/home/aprohack/desktop/work/tap-project/project/tapRecognitionRui/TapRecognition/data_09_10_26/train_data/imu_YYQ_knock_twice_right_20260904_095740.csv",
+    "sha256": "735c8b726592392973c247e46ae8f244c037a874cef844130959c95d581f2420"
+  },
+  {
+    "path": "/home/aprohack/desktop/work/tap-project/project/tapRecognitionRui/TapRecognition/data_09_10_26/train_data/imu_YYQ_knock_twice_right_20260904_095740.txt",
+    "sha256": "b62ccb0102f61ca5a52750d9a1da856398c5351846f6a0280847e04d314abb1d"
+  },
+  {
+    "path": "/home/aprohack/desktop/work/tap-project/project/tapRecognitionRui/TapRecognition/data_09_10_26/train_data/imu_Ym_knock_twice_left_20260904_111043.csv",
+    "sha256": "60fa8a6c00e44132b23107e6dc5a156d5639eaaf0f14a6489522642fd539ad01"
+  },
+  {
+    "path": "/home/aprohack/desktop/work/tap-project/project/tapRecognitionRui/TapRecognition/data_09_10_26/train_data/imu_Ym_knock_twice_left_20260904_111043.txt",
+    "sha256": "05e628fc894f27df9532ac69e188945404206acd9ad5ebb74cd0e87f21846421"
+  },
+  {
+    "path": "/home/aprohack/desktop/work/tap-project/project/tapRecognitionRui/TapRecognition/data_09_10_26/train_data/imu_Ym_knock_twice_right_20260904_110925.csv",
+    "sha256": "2d743eb71f96b1c452c5d1662066a131e9d640ad2238eeba083b409e45ef29ac"
+  },
+  {
+    "path": "/home/aprohack/desktop/work/tap-project/project/tapRecognitionRui/TapRecognition/data_09_10_26/train_data/imu_Ym_knock_twice_right_20260904_110925.txt",
+    "sha256": "33e1ac53c80142da824e486ee62ef974e730162618741bb759e7d4073ef533e0"
+  },
+  {
+    "path": "/home/aprohack/desktop/work/tap-project/project/tapRecognitionRui/TapRecognition/data_09_10_26/train_data/imu_yzj_knock_twice_left_20260904_095015.csv",
+    "sha256": "fac9961bfc4577146213f0f3e71094f20044a7678af5794e0f86381de3ae21bc"
+  },
+  {
+    "path": "/home/aprohack/desktop/work/tap-project/project/tapRecognitionRui/TapRecognition/data_09_10_26/train_data/imu_yzj_knock_twice_left_20260904_095015.txt",
+    "sha256": "a0695ff69488d033915c5164799ed635438ddce1a3756ae8a7afa3dcc8abaaf3"
+  },
+  {
+    "path": "/home/aprohack/desktop/work/tap-project/project/tapRecognitionRui/TapRecognition/data_09_10_26/train_data/imu_yzj_knock_twice_right_20260904_095127.csv",
+    "sha256": "091459637be34d9f8d5f8bbe9de68aba6ffd2d47eb075d517daae5bbbd9ad15e"
+  },
+  {
+    "path": "/home/aprohack/desktop/work/tap-project/project/tapRecognitionRui/TapRecognition/data_09_10_26/train_data/imu_yzj_knock_twice_right_20260904_095127.txt",
+    "sha256": "59163c40ee7b84147a146751672555a8c7b2d50e3f5b191654bb13fdd96f2094"
+  },
+  {
+    "path": "/home/aprohack/desktop/work/tap-project/project/tapRecognitionRui/TapRecognition/data_09_10_26/valid_data/imuStrict_Miguel_knock_twice_left_20260929_115836.csv",
+    "sha256": "87c28690642ac08487a2a8f41c6e3ffdaead96d6f5010c6c29d6006560d6c8fb"
+  },
+  {
+    "path": "/home/aprohack/desktop/work/tap-project/project/tapRecognitionRui/TapRecognition/data_09_10_26/valid_data/imuStrict_Miguel_knock_twice_left_20260929_115836.txt",
+    "sha256": "343a3ec5ac9c6c88307268afa78c72bf502cdcafcd2337723d7fd0fa342c22fd"
+  },
+  {
+    "path": "/home/aprohack/desktop/work/tap-project/project/tapRecognitionRui/TapRecognition/data_09_10_26/valid_data/imuStrict_Miguel_knock_twice_left_20260929_153217.csv",
+    "sha256": "cc11f38628d7f49679e7672abb1e8fbaf27f87116b6c48365bd54ab01af7a76c"
+  },
+  {
+    "path": "/home/aprohack/desktop/work/tap-project/project/tapRecognitionRui/TapRecognition/data_09_10_26/valid_data/imuStrict_Miguel_knock_twice_left_20260929_153217.txt",
+    "sha256": "a0ebb3a9a9beb55be636851ff84e27ea3f42c4cbf2994b4fd328a41352c42514"
+  },
+  {
+    "path": "/home/aprohack/desktop/work/tap-project/project/tapRecognitionRui/TapRecognition/data_09_10_26/valid_data/imuStrict_Miguel_knock_twice_left_20260929_153518.csv",
+    "sha256": "0aa13ba914fb41dc763b49ce21f81d065528b38c4eb1773ae846b91c51d668fd"
+  },
+  {
+    "path": "/home/aprohack/desktop/work/tap-project/project/tapRecognitionRui/TapRecognition/data_09_10_26/valid_data/imuStrict_Miguel_knock_twice_left_20260929_153518.txt",
+    "sha256": "5475dea2837b63988f224496c792e18a2c4fbeccef1d1474683277245c343795"
+  },
+  {
+    "path": "/home/aprohack/desktop/work/tap-project/project/tapRecognitionRui/TapRecognition/data_09_10_26/valid_data/imuStrict_Miguel_knock_twice_left_20260930_150247.csv",
+    "sha256": "f42fbf6a274592948ded2cd311b9bc14adf370ddd4157958158150523d25f8b8"
+  },
+  {
+    "path": "/home/aprohack/desktop/work/tap-project/project/tapRecognitionRui/TapRecognition/data_09_10_26/valid_data/imuStrict_Miguel_knock_twice_left_20260930_150247.txt",
+    "sha256": "e7465a4f50c9da33f987417f8cd968b235d9c9885ea0de1e550b44d98dc3462c"
+  },
+  {
+    "path": "/home/aprohack/desktop/work/tap-project/project/tapRecognitionRui/TapRecognition/data_09_10_26/valid_data/imuStrict_Miguel_knock_twice_left_20260930_150531.csv",
+    "sha256": "68b3b77fb92bf68a93cbff5e827253843a84d7ef21e9a9f5084279500ccecbd7"
+  },
+  {
+    "path": "/home/aprohack/desktop/work/tap-project/project/tapRecognitionRui/TapRecognition/data_09_10_26/valid_data/imuStrict_Miguel_knock_twice_left_20260930_150531.txt",
+    "sha256": "1ad5e75364f3f40708e3028f8c980953efc009763600eb30b9c0df17f081e8ab"
+  },
+  {
+    "path": "/home/aprohack/desktop/work/tap-project/project/tapRecognitionRui/TapRecognition/data_09_10_26/valid_data/imuStrict_Miguel_knock_twice_left_20260930_151103.csv",
+    "sha256": "b9b195dd595ffe01ef7a29a3d1188d3ac989d2a5a2163387d1fd79b9e7d9af64"
+  },
+  {
+    "path": "/home/aprohack/desktop/work/tap-project/project/tapRecognitionRui/TapRecognition/data_09_10_26/valid_data/imuStrict_Miguel_knock_twice_left_20260930_151103.txt",
+    "sha256": "384232420eaceb1c5380bef84a53aef6025631ebfb78057fb2d5e02605d7eb30"
+  },
+  {
+    "path": "/home/aprohack/desktop/work/tap-project/project/tapRecognitionRui/TapRecognition/data_09_10_26/valid_data/imuStrict_Miguel_knock_twice_left_20261002_105241.csv",
+    "sha256": "e952d553d4a0e4ea729bdcd7c24f52e5e3b5551913626449fcb8c91277be2f50"
+  },
+  {
+    "path": "/home/aprohack/desktop/work/tap-project/project/tapRecognitionRui/TapRecognition/data_09_10_26/valid_data/imuStrict_Miguel_knock_twice_left_20261002_105241.txt",
+    "sha256": "bfdd9413904c92a32c16693eae027feb4fefbce7de8879edea08e86b5f5288d3"
+  },
+  {
+    "path": "/home/aprohack/desktop/work/tap-project/project/tapRecognitionRui/TapRecognition/data_09_10_26/valid_data/imuStrict_Miguel_knock_twice_left_20261002_110333.csv",
+    "sha256": "fd9029cd8d3ff4444081f99fa37f357662bfa2a03f118f794eb7c3079e9f4d6f"
+  },
+  {
+    "path": "/home/aprohack/desktop/work/tap-project/project/tapRecognitionRui/TapRecognition/data_09_10_26/valid_data/imuStrict_Miguel_knock_twice_left_20261002_110333.txt",
+    "sha256": "792a239ab6e2995f868e536e147a59931a424f601a8dc103d086fc1e976724e7"
+  },
+  {
+    "path": "/home/aprohack/desktop/work/tap-project/project/tapRecognitionRui/TapRecognition/data_09_10_26/valid_data/imuStrict_Miguel_knock_twice_left_20261005_152232.csv",
+    "sha256": "c7842631aa03e2ee90aa07077f3094c1375f304dc8adea4faeee227ed6d629ef"
+  },
+  {
+    "path": "/home/aprohack/desktop/work/tap-project/project/tapRecognitionRui/TapRecognition/data_09_10_26/valid_data/imuStrict_Miguel_knock_twice_left_20261005_152232.txt",
+    "sha256": "b3f0cd4cf2ae3935882f30269711f36ac6688fe7bf456f5e34c32de76bbf7fe6"
+  },
+  {
+    "path": "/home/aprohack/desktop/work/tap-project/project/tapRecognitionRui/TapRecognition/data_09_10_26/valid_data/imuStrict_Miguel_knock_twice_right_20260929_114726.csv",
+    "sha256": "0c3217eee6cf6d4eaa3075b37e10ed1db3bc59b84daf4f27a296d45ebc2be569"
+  },
+  {
+    "path": "/home/aprohack/desktop/work/tap-project/project/tapRecognitionRui/TapRecognition/data_09_10_26/valid_data/imuStrict_Miguel_knock_twice_right_20260929_114726.txt",
+    "sha256": "88aa1afd74deb93e107800bb75ea58cd822c20ea870fc54195fef944b6a28623"
+  },
+  {
+    "path": "/home/aprohack/desktop/work/tap-project/project/tapRecognitionRui/TapRecognition/data_09_10_26/valid_data/imuStrict_Miguel_knock_twice_right_20260929_115713.csv",
+    "sha256": "7c05463e802723f757545a4bf210ae7f1c6257d89756618d96ac7648b64a31d5"
+  },
+  {
+    "path": "/home/aprohack/desktop/work/tap-project/project/tapRecognitionRui/TapRecognition/data_09_10_26/valid_data/imuStrict_Miguel_knock_twice_right_20260929_115713.txt",
+    "sha256": "08676c12d91ed2935d234402ecf7d3654dfc9b223dec8cafab2c1090e73418dc"
+  },
+  {
+    "path": "/home/aprohack/desktop/work/tap-project/project/tapRecognitionRui/TapRecognition/data_09_10_26/valid_data/imuStrict_Miguel_knock_twice_right_20260929_142641.csv",
+    "sha256": "39723c326c499fdc6f68c098e9e1340760110999555a304deeb9b8f1b2840c76"
+  },
+  {
+    "path": "/home/aprohack/desktop/work/tap-project/project/tapRecognitionRui/TapRecognition/data_09_10_26/valid_data/imuStrict_Miguel_knock_twice_right_20260929_142641.txt",
+    "sha256": "981e2f6d084e5838c227e7d776b70ad047f4aeef83c50748b4783e85b34c5a87"
+  },
+  {
+    "path": "/home/aprohack/desktop/work/tap-project/project/tapRecognitionRui/TapRecognition/data_09_10_26/valid_data/imuStrict_Miguel_knock_twice_right_20260930_150139.csv",
+    "sha256": "14a1cedcdf4910663114723e2bbc06171df127b34a4bbfe245c4adace51c0372"
+  },
+  {
+    "path": "/home/aprohack/desktop/work/tap-project/project/tapRecognitionRui/TapRecognition/data_09_10_26/valid_data/imuStrict_Miguel_knock_twice_right_20260930_150139.txt",
+    "sha256": "3741aec85c66221bb59f8f9c51b416aafb2da5a8d1671efd2590671851309b73"
+  },
+  {
+    "path": "/home/aprohack/desktop/work/tap-project/project/tapRecognitionRui/TapRecognition/data_09_10_26/valid_data/imuStrict_Miguel_knock_twice_right_20260930_150354.csv",
+    "sha256": "acf69b53a556bb2fa3ea1c6f84a3f29c09f3c5d729a0ecb0709070bb86b9de02"
+  },
+  {
+    "path": "/home/aprohack/desktop/work/tap-project/project/tapRecognitionRui/TapRecognition/data_09_10_26/valid_data/imuStrict_Miguel_knock_twice_right_20260930_150354.txt",
+    "sha256": "166da5fe718c4b77844131cde1eea14ed3c7be9e4712c1468e9589f3a4c17efc"
+  },
+  {
+    "path": "/home/aprohack/desktop/work/tap-project/project/tapRecognitionRui/TapRecognition/data_09_10_26/valid_data/imuStrict_Miguel_knock_twice_right_20260930_150955.csv",
+    "sha256": "d5af10aaff1cfa50138e12860341d3b554a65b1d92972f59ace36d3c93ad15de"
+  },
+  {
+    "path": "/home/aprohack/desktop/work/tap-project/project/tapRecognitionRui/TapRecognition/data_09_10_26/valid_data/imuStrict_Miguel_knock_twice_right_20260930_150955.txt",
+    "sha256": "f8fb9be8a163a6e5c7853c78f82f1b6f8e95d10436853f65d46188afef518312"
+  },
+  {
+    "path": "/home/aprohack/desktop/work/tap-project/project/tapRecognitionRui/TapRecognition/data_09_10_26/valid_data/imuStrict_Miguel_knock_twice_right_20261002_105350.csv",
+    "sha256": "afdb02b1c6ee9932c3f852fe403a92bc099db23b8a4c66ef37a2b55942381e25"
+  },
+  {
+    "path": "/home/aprohack/desktop/work/tap-project/project/tapRecognitionRui/TapRecognition/data_09_10_26/valid_data/imuStrict_Miguel_knock_twice_right_20261002_105350.txt",
+    "sha256": "d4d55ad9ed6dc70f74b45f87a352072c72b1f083a1714addbf2884ff4cdbe345"
+  },
+  {
+    "path": "/home/aprohack/desktop/work/tap-project/project/tapRecognitionRui/TapRecognition/data_09_10_26/valid_data/imuStrict_Miguel_knock_twice_right_20261002_110226.csv",
+    "sha256": "de1621710fb029e10f23eca05053ea01dc241770c2034cd4110c06a501741435"
+  },
+  {
+    "path": "/home/aprohack/desktop/work/tap-project/project/tapRecognitionRui/TapRecognition/data_09_10_26/valid_data/imuStrict_Miguel_knock_twice_right_20261002_110226.txt",
+    "sha256": "e8a33c70f46afb1213354436c1c28c8ddec1b808c928acc74b3568c620acdd02"
+  },
+  {
+    "path": "/home/aprohack/desktop/work/tap-project/project/tapRecognitionRui/TapRecognition/data_09_10_26/valid_data/imuStrict_Miguel_knock_twice_right_20261005_152124.csv",
+    "sha256": "77cba00f0576731d988a0885bbc181653aae3cba977c55ec8507d60f55c5f461"
+  },
+  {
+    "path": "/home/aprohack/desktop/work/tap-project/project/tapRecognitionRui/TapRecognition/data_09_10_26/valid_data/imuStrict_Miguel_knock_twice_right_20261005_152124.txt",
+    "sha256": "46fbf3224e822c65a350d3b03b4b5e9f7a7a37a4418e5a77b803a426d8dbe1a6"
+  },
+  {
+    "path": "/home/aprohack/desktop/work/tap-project/project/tapRecognitionRui/TapRecognition/data_09_10_26/valid_data/imu_JYH_knock_twice_left_20260916_142814.csv",
+    "sha256": "e44c931d1c7a85b1c018bb9d1af5ac2b7c575a9fa93ab44ad3fbd6ac7b4fdbc4"
+  },
+  {
+    "path": "/home/aprohack/desktop/work/tap-project/project/tapRecognitionRui/TapRecognition/data_09_10_26/valid_data/imu_JYH_knock_twice_left_20260916_142814.txt",
+    "sha256": "2cb966239049d9fb04e03590ce4e91c4747037562884a1d0554057043ef4b1c9"
+  },
+  {
+    "path": "/home/aprohack/desktop/work/tap-project/project/tapRecognitionRui/TapRecognition/data_09_10_26/valid_data/imu_JYH_knock_twice_right_20260916_142927.csv",
+    "sha256": "d33bbd2c7391c786037573e734b7cf3a74ad8d02a996ef55c5feeadf493a7fd1"
+  },
+  {
+    "path": "/home/aprohack/desktop/work/tap-project/project/tapRecognitionRui/TapRecognition/data_09_10_26/valid_data/imu_JYH_knock_twice_right_20260916_142927.txt",
+    "sha256": "a454fea989b7030b21153e249d1a3c5d0fa4f551566a3138bffc5d42582b8d0f"
+  },
+  {
+    "path": "/home/aprohack/desktop/work/tap-project/project/tapRecognitionRui/TapRecognition/data_09_10_26/valid_data/imu_Miguel_adjust_grip_20260924_093759.csv",
+    "sha256": "83e759e99ec01342a98914ec1c8170b415f30541bd4d6e5171538a78f2769f0f"
+  },
+  {
+    "path": "/home/aprohack/desktop/work/tap-project/project/tapRecognitionRui/TapRecognition/data_09_10_26/valid_data/imu_Miguel_adjust_grip_20260924_093759.txt",
+    "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+  },
+  {
+    "path": "/home/aprohack/desktop/work/tap-project/project/tapRecognitionRui/TapRecognition/data_09_10_26/valid_data/imu_Miguel_arbitrary_20260921_172305.csv",
+    "sha256": "772bb307f74eb46bda747d2419af260dcbef939287522b2b5be08395fcee330b"
+  },
+  {
+    "path": "/home/aprohack/desktop/work/tap-project/project/tapRecognitionRui/TapRecognition/data_09_10_26/valid_data/imu_Miguel_arbitrary_20260921_172305.txt",
+    "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+  },
+  {
+    "path": "/home/aprohack/desktop/work/tap-project/project/tapRecognitionRui/TapRecognition/data_09_10_26/valid_data/imu_Miguel_knock_once_20260921_172128.csv",
+    "sha256": "16371b89d0e6b6cf18633e29f8537e207f780c061755cde22cda2067bdda85f3"
+  },
+  {
+    "path": "/home/aprohack/desktop/work/tap-project/project/tapRecognitionRui/TapRecognition/data_09_10_26/valid_data/imu_Miguel_knock_once_20260921_172128.txt",
+    "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+  },
+  {
+    "path": "/home/aprohack/desktop/work/tap-project/project/tapRecognitionRui/TapRecognition/data_09_10_26/valid_data/imu_Miguel_knock_once_20260929_141417.csv",
+    "sha256": "f5b39a2b170e5a11f41623851fc0552a39d63442c41e09076b0207f1c235353f"
+  },
+  {
+    "path": "/home/aprohack/desktop/work/tap-project/project/tapRecognitionRui/TapRecognition/data_09_10_26/valid_data/imu_Miguel_knock_once_20260929_141417.txt",
+    "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+  },
+  {
+    "path": "/home/aprohack/desktop/work/tap-project/project/tapRecognitionRui/TapRecognition/data_09_10_26/valid_data/imu_Miguel_knock_once_20260930_152402.csv",
+    "sha256": "c66709d2c2d5550a49a02a71d9b60790ddefeccd085ebfeda5125c92b28f8c8e"
+  },
+  {
+    "path": "/home/aprohack/desktop/work/tap-project/project/tapRecognitionRui/TapRecognition/data_09_10_26/valid_data/imu_Miguel_knock_once_20260930_152402.txt",
+    "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+  },
+  {
+    "path": "/home/aprohack/desktop/work/tap-project/project/tapRecognitionRui/TapRecognition/data_09_10_26/valid_data/imu_Miguel_knock_once_20261008_175842.csv",
+    "sha256": "15b0ad6028b21cb01514ca0d20800aef615ccfc80345e93708c7cc50bade8f5a"
+  },
+  {
+    "path": "/home/aprohack/desktop/work/tap-project/project/tapRecognitionRui/TapRecognition/data_09_10_26/valid_data/imu_Miguel_knock_once_20261008_175842.txt",
+    "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+  },
+  {
+    "path": "/home/aprohack/desktop/work/tap-project/project/tapRecognitionRui/TapRecognition/data_09_10_26/valid_data/imu_Miguel_knock_once_20261008_180014.csv",
+    "sha256": "67d7beb9f93caf972fc477fd0301ae7cebd2138a7c96ae93d93c50bd3ac4327a"
+  },
+  {
+    "path": "/home/aprohack/desktop/work/tap-project/project/tapRecognitionRui/TapRecognition/data_09_10_26/valid_data/imu_Miguel_knock_once_20261008_180014.txt",
+    "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+  },
+  {
+    "path": "/home/aprohack/desktop/work/tap-project/project/tapRecognitionRui/TapRecognition/data_09_10_26/valid_data/imu_Miguel_knock_twice_left_20260921_173822.csv",
+    "sha256": "717f5be4cf423079357d8cd1032a3af59dca55a7e5d4acf07490919a4612739c"
+  },
+  {
+    "path": "/home/aprohack/desktop/work/tap-project/project/tapRecognitionRui/TapRecognition/data_09_10_26/valid_data/imu_Miguel_knock_twice_left_20260921_173822.txt",
+    "sha256": "653b87f7dcbd629a2c380261333deba1a3e8c801bf810fe06ae837f9f1922b60"
+  },
+  {
+    "path": "/home/aprohack/desktop/work/tap-project/project/tapRecognitionRui/TapRecognition/data_09_10_26/valid_data/imu_Miguel_knock_twice_left_20260921_175305.csv",
+    "sha256": "bc7ad024038832f58efd2ea07c99c990a8514ed8c587757fb74bb41159cd0c97"
+  },
+  {
+    "path": "/home/aprohack/desktop/work/tap-project/project/tapRecognitionRui/TapRecognition/data_09_10_26/valid_data/imu_Miguel_knock_twice_left_20260921_175305.txt",
+    "sha256": "320ef2d175f295871d26d16aa8d63d1e6710062ae67344fcf873cf005b39e7ea"
+  },
+  {
+    "path": "/home/aprohack/desktop/work/tap-project/project/tapRecognitionRui/TapRecognition/data_09_10_26/valid_data/imu_Miguel_knock_twice_left_20260925_102200.csv",
+    "sha256": "7de1c374d58bf90b7ffc62b2ec254feeb573cb139108340a6f4f11656c6cac33"
+  },
+  {
+    "path": "/home/aprohack/desktop/work/tap-project/project/tapRecognitionRui/TapRecognition/data_09_10_26/valid_data/imu_Miguel_knock_twice_left_20260925_102200.txt",
+    "sha256": "a9d8f0a9603e157686b9f53121e6e34becef1f5b216f4f4a41d51f492fee69cf"
+  },
+  {
+    "path": "/home/aprohack/desktop/work/tap-project/project/tapRecognitionRui/TapRecognition/data_09_10_26/valid_data/imu_Miguel_knock_twice_left_20260925_152423.csv",
+    "sha256": "42f2d798d012d3d2252b09484aabcbf2801ef927240f243da5e31e6e316f78e2"
+  },
+  {
+    "path": "/home/aprohack/desktop/work/tap-project/project/tapRecognitionRui/TapRecognition/data_09_10_26/valid_data/imu_Miguel_knock_twice_left_20260925_152423.txt",
+    "sha256": "20d1d83b8218b0ff0746819b1090df9a3c616253728da03b760d3d427704e6a8"
+  },
+  {
+    "path": "/home/aprohack/desktop/work/tap-project/project/tapRecognitionRui/TapRecognition/data_09_10_26/valid_data/imu_Miguel_knock_twice_right_20260921_173931.csv",
+    "sha256": "70a9ac7efe736524c287a9fec170b7720757cc3aebe235212104b711715e49f6"
+  },
+  {
+    "path": "/home/aprohack/desktop/work/tap-project/project/tapRecognitionRui/TapRecognition/data_09_10_26/valid_data/imu_Miguel_knock_twice_right_20260921_173931.txt",
+    "sha256": "3f4f7a90e0ddf8272c9666070b558bee031eb1c83008176cc76150bdaba7d9a0"
+  },
+  {
+    "path": "/home/aprohack/desktop/work/tap-project/project/tapRecognitionRui/TapRecognition/data_09_10_26/valid_data/imu_Miguel_knock_twice_right_20260923_113004.csv",
+    "sha256": "652dbe0f7d7b2e977bfd68cbbc7769f45f2453835d55760656877f57682e3e0d"
+  },
+  {
+    "path": "/home/aprohack/desktop/work/tap-project/project/tapRecognitionRui/TapRecognition/data_09_10_26/valid_data/imu_Miguel_knock_twice_right_20260923_113004.txt",
+    "sha256": "5994342628002910c68c69c7c0a9b4985eb6f311178c63cc7637a4cf8e0169f7"
+  },
+  {
+    "path": "/home/aprohack/desktop/work/tap-project/project/tapRecognitionRui/TapRecognition/data_09_10_26/valid_data/imu_Miguel_knock_twice_right_20260923_175649.csv",
+    "sha256": "bf26e98cae95b362375d4d38b027e1dd19233535d9e558aadac087a67f07c2a2"
+  },
+  {
+    "path": "/home/aprohack/desktop/work/tap-project/project/tapRecognitionRui/TapRecognition/data_09_10_26/valid_data/imu_Miguel_knock_twice_right_20260923_175649.txt",
+    "sha256": "7714e79b653de55b4b551464c37593b465d8b1379f648e785bebad1ac5f81d89"
+  },
+  {
+    "path": "/home/aprohack/desktop/work/tap-project/project/tapRecognitionRui/TapRecognition/data_09_10_26/valid_data/imu_Miguel_knock_twice_right_20260925_105253.csv",
+    "sha256": "5da610d8c89d6f7e0b4ca7b163002a7d8be47ad23ad3db1d613951a6c017243b"
+  },
+  {
+    "path": "/home/aprohack/desktop/work/tap-project/project/tapRecognitionRui/TapRecognition/data_09_10_26/valid_data/imu_Miguel_knock_twice_right_20260925_105253.txt",
+    "sha256": "e953286c0ed17d340b60a48a228fc418702d2181507488c8af9d948a7e0a4c2c"
+  },
+  {
+    "path": "/home/aprohack/desktop/work/tap-project/project/tapRecognitionRui/TapRecognition/data_09_10_26/valid_data/imu_Miguel_knock_twice_right_20260925_152549.csv",
+    "sha256": "371a39a7aa0458da0826331e71f3bb9146ea716d2ba18820cb8d87ea0a9f8bcc"
+  },
+  {
+    "path": "/home/aprohack/desktop/work/tap-project/project/tapRecognitionRui/TapRecognition/data_09_10_26/valid_data/imu_Miguel_knock_twice_right_20260925_152549.txt",
+    "sha256": "582138a41720ec3716d7f73f2e579e5b65a581766a5cec4de2913e5e8f223b32"
+  },
+  {
+    "path": "/home/aprohack/desktop/work/tap-project/project/tapRecognitionRui/TapRecognition/data_09_10_26/valid_data/imu_Miguel_pick_place_20260930_152525.csv",
+    "sha256": "2a7bc5f6964e6975713d37aa0dc9aedb8e38d46e79ef9c65b6b812b5bc98a55c"
+  },
+  {
+    "path": "/home/aprohack/desktop/work/tap-project/project/tapRecognitionRui/TapRecognition/data_09_10_26/valid_data/imu_Miguel_pick_place_20260930_152525.txt",
+    "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+  },
+  {
+    "path": "/home/aprohack/desktop/work/tap-project/project/tapRecognitionRui/TapRecognition/data_09_10_26/valid_data/imu_Miguel_shake_phone_20260921_172915.csv",
+    "sha256": "da28fa8d37b578f452c406917d763b748e0ec0f69380c79f93536239b38e02ca"
+  },
+  {
+    "path": "/home/aprohack/desktop/work/tap-project/project/tapRecognitionRui/TapRecognition/data_09_10_26/valid_data/imu_Miguel_shake_phone_20260921_172915.txt",
+    "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+  },
+  {
+    "path": "/home/aprohack/desktop/work/tap-project/project/tapRecognitionRui/TapRecognition/data_09_10_26/valid_data/imu_Miguel_shake_phone_20260925_104738.csv",
+    "sha256": "5b16e054b9232db66427155074977d07a8e28fef77e6adf15d5deddb262ab25e"
+  },
+  {
+    "path": "/home/aprohack/desktop/work/tap-project/project/tapRecognitionRui/TapRecognition/data_09_10_26/valid_data/imu_Miguel_shake_phone_20260925_104738.txt",
+    "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+  },
+  {
+    "path": "/home/aprohack/desktop/work/tap-project/project/tapRecognitionRui/TapRecognition/data_09_10_26/valid_data/imu_Miguel_shake_phone_20260925_110712.csv",
+    "sha256": "94431fcb1dbd4b849c020bfa61ea78337afd5ca54d3bf26762a5564a83076a65"
+  },
+  {
+    "path": "/home/aprohack/desktop/work/tap-project/project/tapRecognitionRui/TapRecognition/data_09_10_26/valid_data/imu_Miguel_shake_phone_20260925_110712.txt",
+    "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+  },
+  {
+    "path": "/home/aprohack/desktop/work/tap-project/project/tapRecognitionRui/TapRecognition/data_09_10_26/valid_data/imu_Miguel_shake_phone_20260930_150646.csv",
+    "sha256": "7a7252359ea8c634b51318da79fd381a67fcab495bfbc34bd36590234af57c20"
+  },
+  {
+    "path": "/home/aprohack/desktop/work/tap-project/project/tapRecognitionRui/TapRecognition/data_09_10_26/valid_data/imu_Miguel_shake_phone_20260930_150646.txt",
+    "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+  },
+  {
+    "path": "/home/aprohack/desktop/work/tap-project/project/tapRecognitionRui/TapRecognition/data_09_10_26/valid_data/imu_Miguel_switch_hand_20260921_173313.csv",
+    "sha256": "7e545d6087a014ce3357aa752be659ca8d462ff64fec2d90f3901f8a693d2bfe"
+  },
+  {
+    "path": "/home/aprohack/desktop/work/tap-project/project/tapRecognitionRui/TapRecognition/data_09_10_26/valid_data/imu_Miguel_switch_hand_20260921_173313.txt",
+    "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+  },
+  {
+    "path": "/home/aprohack/desktop/work/tap-project/project/tapRecognitionRui/TapRecognition/data_09_10_26/valid_data/imu_Miguel_switch_hand_20260930_145912.csv",
+    "sha256": "aec853a54d0817030e32dfbcffe70041d55ffd56ef437efe9cbe40667acbcd6c"
+  },
+  {
+    "path": "/home/aprohack/desktop/work/tap-project/project/tapRecognitionRui/TapRecognition/data_09_10_26/valid_data/imu_Miguel_switch_hand_20260930_145912.txt",
+    "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+  },
+  {
+    "path": "/home/aprohack/desktop/work/tap-project/project/tapRecognitionRui/TapRecognition/data_09_10_26/valid_data/imu_Miguel_switch_hand_20261005_094008.csv",
+    "sha256": "a699c2fad25a79239327f24ae214cdd9025e8e057d349d1ddb000bfa94f277fb"
+  },
+  {
+    "path": "/home/aprohack/desktop/work/tap-project/project/tapRecognitionRui/TapRecognition/data_09_10_26/valid_data/imu_Miguel_switch_hand_20261005_094008.txt",
+    "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+  },
+  {
+    "path": "/home/aprohack/desktop/work/tap-project/project/tapRecognitionRui/TapRecognition/data_09_10_26/valid_data/imu_Miguel_switch_hand_20261005_102931.csv",
+    "sha256": "5d40bf9a6df6e77a19c5d89e2549cf3b94e3c492f6bd096977c70ea4deceea6f"
+  },
+  {
+    "path": "/home/aprohack/desktop/work/tap-project/project/tapRecognitionRui/TapRecognition/data_09_10_26/valid_data/imu_Miguel_switch_hand_20261005_102931.txt",
+    "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+  },
+  {
+    "path": "/home/aprohack/desktop/work/tap-project/project/tapRecognitionRui/TapRecognition/data_09_10_26/valid_data/imu_Miguel_switch_hand_20261005_151632.csv",
+    "sha256": "2239d22737aa0b85391ae002ffd8861729feff220473f95c726574cdb8e2b524"
+  },
+  {
+    "path": "/home/aprohack/desktop/work/tap-project/project/tapRecognitionRui/TapRecognition/data_09_10_26/valid_data/imu_Miguel_switch_hand_20261005_151632.txt",
+    "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+  },
+  {
+    "path": "/home/aprohack/desktop/work/tap-project/project/tapRecognitionRui/TapRecognition/data_09_10_26/valid_data/imu_ZR_pick_place_20260909_091335.csv",
+    "sha256": "ab1e9d8b34b851774c4b0b25584dd2858a8b7addd8129bc11e4977c148899543"
+  },
+  {
+    "path": "/home/aprohack/desktop/work/tap-project/project/tapRecognitionRui/TapRecognition/data_09_10_26/valid_data/imu_ZR_pick_place_20260909_091335.txt",
+    "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+  },
+  {
+    "path": "/home/aprohack/desktop/work/tap-project/project/tapRecognitionRui/TapRecognition/data_09_10_26/valid_data/imu_ZR_shake_phone_20260904_102826.csv",
+    "sha256": "9775d0b50a859c8234ed021fb2ea88f3190e84fa3ec2579d609a0a3681e85b3c"
+  },
+  {
+    "path": "/home/aprohack/desktop/work/tap-project/project/tapRecognitionRui/TapRecognition/data_09_10_26/valid_data/imu_ZR_shake_phone_20260904_102826.txt",
+    "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+  },
+  {
+    "path": "/home/aprohack/desktop/work/tap-project/project/tapRecognitionRui/TapRecognition/data_09_10_26/valid_data/imu_ZR_shake_phone_20260908_175719.csv",
+    "sha256": "0e0724400758dd7c2d34da8935cdd0695508359eaa68841fa1c2840072941fdb"
+  },
+  {
+    "path": "/home/aprohack/desktop/work/tap-project/project/tapRecognitionRui/TapRecognition/data_09_10_26/valid_data/imu_ZR_shake_phone_20260908_175719.txt",
+    "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+  },
+  {
+    "path": "/home/aprohack/desktop/work/tap-project/project/tapRecognitionRui/TapRecognition/data_09_10_26/valid_data/imu_ZR_shake_phone_20260909_091204.csv",
+    "sha256": "ddb119fafd511104bf9ca65d84ecaf17bdc9e4c7a30c5370cc33f3efd2489097"
+  },
+  {
+    "path": "/home/aprohack/desktop/work/tap-project/project/tapRecognitionRui/TapRecognition/data_09_10_26/valid_data/imu_ZR_shake_phone_20260909_091204.txt",
+    "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+  },
+  {
+    "path": "/home/aprohack/desktop/work/tap-project/project/tapRecognitionRui/TapRecognition/data_09_10_26/valid_data/imu_ZR_switch_hand_20260909_092838.csv",
+    "sha256": "c54c57d61c8de247b54a1216c7b67c68a9b886e7d703e35901ef4144252a517c"
+  },
+  {
+    "path": "/home/aprohack/desktop/work/tap-project/project/tapRecognitionRui/TapRecognition/data_09_10_26/valid_data/imu_ZR_switch_hand_20260909_092838.txt",
+    "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+  }
+]

@@ -34,7 +34,7 @@ def main() -> None:
     parser.add_argument("--report", type=Path, help="Save verification provenance and maximum errors as JSON")
     args = parser.parse_args()
     assert args.reset_every >= 0
-    assert args.frames > 29, "Verify beyond the full CNN receptive field"
+    assert args.frames > 0
 
     ckpt = torch.load(args.checkpoint, map_location="cpu", weights_only=True)
     cfg = ckpt["model_config"]
@@ -47,6 +47,8 @@ def main() -> None:
     model = build_model(cfg, ckpt["model_type"]).eval()
     model.load_state_dict(ckpt["model_state"])
     assert args.frames > model.receptive_field
+    feature_model = isinstance(model, FeatureCNNLSTM)
+    cnn_frames = model._receptive_field if feature_model else model.receptive_field
     raw, fs = load_full_recording(args.recording)
     assert abs(fs - ckpt["train_config"]["data"]["sample_rate"]) < 0.5
     samples = IMUSimulator(sample_rate=fs).highpass(raw)[:args.frames]
@@ -57,8 +59,7 @@ def main() -> None:
     assert not any(node.op_type in ("GRU", "LSTM") for node in graph.graph.node)
     input_names = ("imu", "cnn_buffer", "h_in", "c_in")
     output_names = ("prob", "h_out", "c_out", "cnn_buffer_out")
-    output_shapes = ((1, 1, 3), state_shape, state_shape, (1, 32, 29))
-    feature_model = isinstance(model, FeatureCNNLSTM)
+    output_shapes = ((1, 1, 3), state_shape, state_shape, (1, 32, cnn_frames))
     if feature_model:
         assert model.input_proj.normalization_fitted.item()
         input_names += ("feature_history", "feature_ready")
@@ -90,7 +91,7 @@ def main() -> None:
             if frame in boundaries[:-1]:
                 state, buffer = None, None
                 h_onnx = np.zeros(state_shape, dtype=np.float32)
-                c_onnx, b_onnx = h_onnx.copy(), np.zeros((1, 32, 29), dtype=np.float32)
+                c_onnx, b_onnx = h_onnx.copy(), np.zeros((1, 32, cnn_frames), dtype=np.float32)
                 h_ms, c_ms, b_ms = h_onnx.copy(), c_onnx.copy(), b_onnx.copy()
                 extra_onnx = tuple(np.zeros(shape, dtype=np.float32) for shape in output_shapes[4:])
                 extra_ms = tuple(x.copy() for x in extra_onnx)
