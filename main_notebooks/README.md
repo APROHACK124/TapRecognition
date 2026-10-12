@@ -106,6 +106,12 @@ Edit:
 
 The notebook shows operating points, window/frame/event metrics, per-type results, per-recording behavior, and saved-checkpoint examples. It does not retrain or change thresholds. It rejects incompatible exports instead of silently comparing different datasets or rules.
 
+## Mine Hard Negatives
+
+[`mine_hard_negatives.ipynb`](mine_hard_negatives.ipynb) inspects raw negative recordings one at a time, plots IMU and causal left/right model probabilities, and finds candidates using configurable side thresholds, lookahead, and shared cooldown. Multiple checkpoints can be plotted on the same recording; one selected checkpoint drives candidate selection.
+
+The notebook stages inputs under `hard_negative_mining/source_recordings/`, previews tunable hard intervals and surrounding context, and exports explicitly selected candidates under `hard_negative_mining/crops/`. Each raw crop is one session with an empty `.txt` negative label and source/checkpoint provenance. Copy the chosen CSV/label pairs manually into the appropriate training folder. See [`../hard_negative_mining/README.md`](../hard_negative_mining/README.md) for crop fitting details.
+
 ## Historical Notebooks
 
 | Notebook | Purpose |
