@@ -66,7 +66,7 @@ It writes CSV tables and a hash manifest to `notebooks_analysis/results/state_re
 
 Use it before auto-labeling or training to inspect train/validation coverage by participant, gesture, recording family, and split. It recognizes both regular names such as `imu_<person>_<gesture>_<timestamp>.csv` and strict-window names such as `imuStrict_<person>_<gesture>_<timestamp>.csv`.
 
-This notebook identifies imbalance and participant overlap but does not itself enforce a split. Use [`../tools/materialize_person_split.py`](../tools/materialize_person_split.py) when materializing a participant-level split from a manifest.
+This notebook identifies imbalance and participant overlap but does not itself enforce a split. It groups full `negative_mining` recordings and their `__crop_f..._f...` exports as `hard_negative` for inventory and split-balance tables. Use [`../tools/materialize_person_split.py`](../tools/materialize_person_split.py) when materializing a participant-level split from a manifest.
 
 ## Recommended Sequence
 

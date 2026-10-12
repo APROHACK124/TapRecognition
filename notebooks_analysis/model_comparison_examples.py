@@ -17,6 +17,7 @@ from tap_recognition.dataset import RecordedIMUDataset, load_session_exclusions,
 from tap_recognition.model_factory import build_model
 from tap_recognition.physics import IMUSimulator
 from tap_recognition.recording import IMU_COLUMNS, LabelParams, estimate_sample_rate_hz
+from notebooks_analysis.recording_types import recording_type_from_filename
 
 
 @dataclass
@@ -289,7 +290,7 @@ def replay_examples(root: Path, operating_points: pd.DataFrame, split: str = 'va
                               for idx, frame in local_truth if idx in matched_by_event]
                     segments.append(dict(model=label, split=split, file=rec.path.name, user=rec.user,
                                          action=rec.action,
-                                         recording_type='knock_twice' if rec.action.startswith('knock_twice') else rec.action,
+                                          recording_type=recording_type_from_filename(rec.path.name, rec.action),
                                          segment_index=sid, start_frame=start,
                                          end_frame=end, minutes=(end-start)/rec.fs/60,
                                          true_frame=local_truth[0][1] if n_true == 1 else np.nan,
