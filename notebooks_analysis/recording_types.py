@@ -29,8 +29,10 @@ def recording_type_from_action(action: str) -> str:
 def recording_type_from_filename(filename: str | Path, fallback_action: str | None = None) -> str:
     """Return a report type, grouping sides and mined negatives deliberately.
 
-    Standard left/right double-tap collections share ``knock_twice``. Both a
-    full ``negative_mining`` recording and an exported
+    Standard left/right double-tap collections share ``knock_twice``.
+    ``switch_doubletap`` stays a separate standard negative activity, despite
+    its name containing "doubletap"; it is not a positive tap collection.
+    Both a full ``negative_mining`` recording and an exported
     ``negative_mining_<timestamp>__crop_f<start>_f<end>.csv`` use
     ``hard_negative``. Crop suffixes on other collection actions are rejected
     rather than silently grouped under an unintended type. ``fallback_action``
