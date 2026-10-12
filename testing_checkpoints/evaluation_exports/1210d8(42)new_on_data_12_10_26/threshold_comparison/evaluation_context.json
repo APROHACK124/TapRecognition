@@ -1,0 +1,28 @@
+{
+  "checkpoint_path": "testing_checkpoints/1210d8(42)new/best.pt",
+  "checkpoint_training_seed": 42,
+  "data": {
+    "dt_max": 0.45,
+    "dt_min": 0.12,
+    "exclusion_margin": 200,
+    "highpass": true,
+    "mode": "recorded",
+    "negative_windows_per_file": 20,
+    "sample_rate": 100.0,
+    "session_exclusions_file": "/home/miguel/TapRecognition/data_12_10_26/session_exclusions.csv",
+    "synthetic_samples": 8000,
+    "train_dir": "/home/miguel/TapRecognition/data_12_10_26/train_data",
+    "trigger_context_samples": 200,
+    "val_dir": "/home/miguel/TapRecognition/data_12_10_26/valid_data",
+    "val_split": 0.15,
+    "window_samples": 300
+  },
+  "labels": {
+    "half_frames": 10,
+    "peak_offset": 0.05,
+    "sigma": 0.04
+  },
+  "preprocessing_sha256": "6805d8dae15f447cf28114ee7e9f44f6bb822d818b6bb392dc3dc7294bf4c326",
+  "seed": 101,
+  "validation_sha256": "f6ec2f1ccfefea0ce17547a95d159eed4f14d2b80cfb0afc2393023c9ad5e9bb"
+}
