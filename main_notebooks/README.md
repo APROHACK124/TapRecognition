@@ -108,6 +108,10 @@ The notebook shows operating points, window/frame/event metrics, per-type result
 
 ## Mine Hard Negatives
 
+The GRU, raw LSTM, and feature LSTM training notebooks expose `HARD_NEGATIVE_MULTIPLIER = 5` in their settings. Negative windows from filenames containing `negative_mining` (including mined crops) appear that many times per epoch; all other training windows appear once. Set it to `1` to disable. This repetition is additional to the ordinary `neg_window_weight` loss multiplier. Validation and unique-window feature normalization remain unchanged. Each run saves `training_sampling.csv`, and the multiplier is included in checkpoint training configuration. Data paths are not changed: select a dataset containing your mined recordings for the setting to have an effect.
+
+For Python training entry points use `cfg.training.hard_negative_multiplier = 5`; the underlying `TrainingConfig` default is `1` to retain legacy behavior. The CLI supports `python train.py --hard-negative-multiplier 5`. Filename selection checks both `negative_mining` and the window's negative class, so positive windows are never repeated by this rule.
+
 [`mine_hard_negatives.ipynb`](mine_hard_negatives.ipynb) inspects raw negative recordings one at a time, plots IMU and causal left/right model probabilities, and finds candidates using configurable side thresholds, lookahead, and shared cooldown. Multiple checkpoints can be plotted on the same recording; one selected checkpoint drives candidate selection.
 
 The notebook stages inputs under `hard_negative_mining/source_recordings/`, previews tunable hard intervals and surrounding context, and exports explicitly selected candidates under `hard_negative_mining/crops/`. Each raw crop is one session with an empty `.txt` negative label and source/checkpoint provenance. Copy the chosen CSV/label pairs manually into the appropriate training folder. See [`../hard_negative_mining/README.md`](../hard_negative_mining/README.md) for crop fitting details.

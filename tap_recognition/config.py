@@ -106,6 +106,7 @@ class TrainingConfig:
     prediction_threshold: float = 0.50
     event_loss_weight: float = 15.0
     neg_window_weight: float = 1.5
+    hard_negative_multiplier: int = 1  # Total training appearances for negative_mining windows.
     num_workers: int = 0
     early_stopping: EarlyStoppingConfig = field(default_factory=EarlyStoppingConfig)
 

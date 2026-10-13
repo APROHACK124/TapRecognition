@@ -19,6 +19,7 @@ from tap_recognition.config import (
 from tap_recognition.dataset import IMUDoubleTapDataset, RecordedIMUDataset
 from tap_recognition.model_factory import build_model
 from tap_recognition.model_lstm import CausalCNNLSTM
+from tap_recognition.training_sampling import print_training_sampling, repeat_hard_negatives
 
 
 def freeze_except_last_layer(model: nn.Module) -> int:
@@ -337,8 +338,12 @@ def train(cfg: TrainConfig) -> float:
 
     print(f"Loading {cfg.data.mode} datasets...")
     train_ds, val_ds = build_datasets(cfg)
+    sampled_train_ds, sampling_table = repeat_hard_negatives(
+        train_ds, cfg.training.hard_negative_multiplier,
+    )
+    print_training_sampling(sampling_table, cfg.training.hard_negative_multiplier)
     train_loader = DataLoader(
-        train_ds,
+        sampled_train_ds,
         batch_size=cfg.training.batch_size,
         shuffle=True,
         num_workers=cfg.training.num_workers,
@@ -386,6 +391,7 @@ def train(cfg: TrainConfig) -> float:
 
     out_dir = Path(cfg.out_dir)
     out_dir.mkdir(parents=True, exist_ok=True)
+    sampling_table.to_csv(out_dir / "training_sampling.csv", index=False)
     best_val_acc = 0.0
     early_stop = EarlyStopping(cfg.training.early_stopping)
     stopped_epoch = cfg.training.epochs
@@ -484,6 +490,10 @@ def main() -> None:
     parser.add_argument("--epochs", type=int, default=None)
     parser.add_argument("--out-dir", default=None)
     parser.add_argument(
+        "--hard-negative-multiplier", type=int, default=None,
+        help="Total appearances per epoch for negative_mining negatives (1 disables repetition)",
+    )
+    parser.add_argument(
         "--recurrent-type", choices=("gru", "lstm"), default="gru",
         help="Recurrent architecture for training from scratch (default: gru)",
     )
@@ -527,6 +537,8 @@ def main() -> None:
         cfg.training.epochs = args.epochs
     if args.out_dir:
         cfg.out_dir = args.out_dir
+    if args.hard_negative_multiplier is not None:
+        cfg.training.hard_negative_multiplier = args.hard_negative_multiplier
     if args.train_dir:
         cfg.data.train_dir = args.train_dir
     if args.val_dir:

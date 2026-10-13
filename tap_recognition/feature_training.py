@@ -18,6 +18,7 @@ from torch.utils.data import DataLoader, Dataset
 from .config import TrainConfig
 from .imu_features import IMUFeatureConfig
 from .model_factory import build_model
+from .training_sampling import print_training_sampling, repeat_hard_negatives
 from train import (
     EarlyStopping, _augment_positive_windows, _recorded_dataset,
     evaluate, frame_soft_ce, resolve_device, window_class_from_probs,
@@ -132,6 +133,10 @@ def train_feature_lstm(
         raise ValueError("Pass six IMU channels; feature engineering happens inside the model")
     if not 0 <= label_delay_frames < cfg.data.window_samples:
         raise ValueError("Label delay must be within the window length")
+    sampled_train_ds, sampling_table = repeat_hard_negatives(
+        train_ds, cfg.training.hard_negative_multiplier,
+    )
+    print_training_sampling(sampling_table, cfg.training.hard_negative_multiplier)
     random.seed(cfg.seed)
     np.random.seed(cfg.seed)
     torch.manual_seed(cfg.seed)
@@ -143,7 +148,7 @@ def train_feature_lstm(
     normalization_frames = model.input_proj.fit_normalization(stats_loader)
     model = model.to(device)
     generator = torch.Generator().manual_seed(cfg.seed)
-    train_loader = DataLoader(DelayedTargets(train_ds, label_delay_frames),
+    train_loader = DataLoader(DelayedTargets(sampled_train_ds, label_delay_frames),
                               batch_size=cfg.training.batch_size, shuffle=True,
                               generator=generator, num_workers=cfg.training.num_workers)
     val_loader = DataLoader(DelayedTargets(val_ds, label_delay_frames),
@@ -166,6 +171,7 @@ def train_feature_lstm(
     )
     (run_dir / "experiment.json").write_text(json.dumps(metadata, indent=2) + "\n")
     (run_dir / "data_manifest.json").write_text(json.dumps(_manifest(cfg), indent=2) + "\n")
+    sampling_table.to_csv(run_dir / "training_sampling.csv", index=False)
 
     def save_checkpoint(name, epoch, metrics=None):
         snapshot = metadata | dict(model_state=model.state_dict(), epoch=epoch)
