@@ -94,6 +94,12 @@ Set `RUN_DIR` to the completed run directory. The notebook reconstructs the corr
 
 Evaluation data is used for model selection and threshold selection. Its results are not independent test estimates.
 
+Threshold selection defaults to `FP_SELECTION_METRIC = 'negative_fp_per_min'`: the FP-budget modes and `recall_target_min_fp` use alarms per minute only in validation recordings with no annotated double taps. FP-rate tie-breakers use the same setting. Set it to `'fp_per_min'` to use all unmatched alarms over all validation minutes instead. `FP_PER_MIN_LIMIT` is a strict upper bound on the selected metric; the export metadata records `fp_selection_metric`. Both rates are still reported, and `max_f1` still uses event F1 as its primary objective. Rerun evaluation/export for each compared checkpoint after changing this setting.
+
+`evaluate.ipynb` and `compare.ipynb` use true original-recording exposure for `negative_mining` crops: resolve each crop's `.mining.json`, verify the original CSV hash, measure its frames/sample rate, and count that source once per evaluated split/model. A source's minutes are divided among its evaluated crops so ordinary grouped totals do not overcount. Other recordings retain included duration. `minutes` is the allocated FP-rate denominator; `evaluated_minutes` preserves actual input duration. Evaluation exports `recording_duration_audit.csv`, `duration_basis`, and `duration_sha256`. Keep the originals in `hard_negative_mining/source_recordings/` or configure `MINING_SOURCE_DIR` in both notebooks; missing/mismatched originals fail explicitly. This also applies to comparison's training and validation replays independently.
+
+Comparison recalculates displayed duration-dependent rates for older exports without changing saved thresholds or event counts, and warns that evaluation must be rerun for threshold reselection. **Alarms are still counted on crops, not the entire originals: source-duration-normalized crop FP/min is not a measured full-source or normal-use false-alarm rate.**
+
 ## Compare Evaluated Runs
 
 [`compare_models.ipynb`](compare_models.ipynb) reads completed `threshold_comparison/` exports from multiple runs.

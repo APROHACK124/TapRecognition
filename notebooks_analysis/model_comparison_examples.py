@@ -18,6 +18,7 @@ from tap_recognition.model_factory import build_model
 from tap_recognition.physics import IMUSimulator
 from tap_recognition.recording import IMU_COLUMNS, LabelParams, estimate_sample_rate_hz
 from notebooks_analysis.recording_types import recording_type_from_filename
+from notebooks_analysis.recording_durations import durations_for_recordings, DURATION_BASIS
 
 
 @dataclass
@@ -174,7 +175,8 @@ def _segment_at(segments, frame):
     return next((sid for sid, start, end in segments if start <= frame < end), None)
 
 
-def replay_examples(root: Path, operating_points: pd.DataFrame, split: str = 'valid'):
+def replay_examples(root: Path, operating_points: pd.DataFrame, split: str = 'valid',
+                    source_dir: Path | None = None):
     """Replay one split at frozen validation-selected thresholds in eval mode.
 
     Training replay is an in-sample label audit, not a generalization estimate.
@@ -207,6 +209,7 @@ def replay_examples(root: Path, operating_points: pd.DataFrame, split: str = 'va
             if any(cfg[key] != first[key] for key in ('data', 'labels', 'seed')):
                 raise ValueError(f'{label}: {split} preprocessing/data config differs from other models')
     recordings, current_hash = load_examples(root, data, labels, seed, split)
+    duration_lookup = durations_for_recordings(root, list(recordings.values()), source_dir).set_index('file')
     if split == 'valid':
         status = pd.DataFrame([dict(model=label, split=split,
                                      export_validation_sha256=row['validation_sha256'],
@@ -308,6 +311,15 @@ def replay_examples(root: Path, operating_points: pd.DataFrame, split: str = 'va
                                          mean_latency_frames=float(np.mean(deltas)) if deltas else np.nan))
             del model
     segment_scores = pd.DataFrame(segments)
+    segment_scores['evaluated_minutes'] = segment_scores.minutes
+    # Allocate each source once per split/model, then proportionally across included segments.
+    for field in ('source_file', 'source_sha256', 'source_minutes', 'source_members'):
+        segment_scores[field] = segment_scores.file.map(duration_lookup[field])
+    segment_scores['minutes'] = (segment_scores.evaluated_minutes *
+                                segment_scores.file.map(duration_lookup.minutes) /
+                                segment_scores.file.map(duration_lookup.evaluated_minutes))
+    segment_scores['duration_basis'] = DURATION_BASIS
+    segment_scores['event_fp_per_min'] = segment_scores.event_fp / segment_scores.minutes
     alarm_details = pd.DataFrame(alarm_rows, columns=[
         'model', 'split', 'file', 'segment_index', 'alarm_frame', 'peak_frame', 'class_id',
         'probability', 'matched', 'matched_true_frame', 'latency_frames',
@@ -315,6 +327,9 @@ def replay_examples(root: Path, operating_points: pd.DataFrame, split: str = 'va
     ])
     recording_scores = segment_scores.groupby(['model', 'split', 'file', 'user', 'action', 'recording_type'], as_index=False).agg(
         segments=('segment_index', 'size'), minutes=('minutes', 'sum'),
+        evaluated_minutes=('evaluated_minutes', 'sum'), source_file=('source_file', 'first'),
+        source_sha256=('source_sha256', 'first'), source_minutes=('source_minutes', 'first'),
+        source_members=('source_members', 'first'), duration_basis=('duration_basis', 'first'),
         n_windows=('window_correct', 'count'), window_correct=('window_correct', 'sum'),
         window_fp=('window_fp', 'sum'), window_fn=('window_fn', 'sum'),
         n_true_events=('n_true_events', 'sum'), n_alarms=('n_alarms', 'sum'),
