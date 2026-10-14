@@ -1,0 +1,238 @@
+{
+  "checkpoint_path": "testing_checkpoints/1410d8(42)/best.pt",
+  "checkpoint_training_seed": 42,
+  "data": {
+    "dt_max": 0.45,
+    "dt_min": 0.12,
+    "exclusion_margin": 200,
+    "highpass": true,
+    "mode": "recorded",
+    "negative_windows_per_file": 20,
+    "sample_rate": 100.0,
+    "session_exclusions_file": "/home/miguel/TapRecognition/data_13_10_26/session_exclusions.csv",
+    "synthetic_samples": 8000,
+    "train_dir": "/home/miguel/TapRecognition/data_13_10_26/train_data",
+    "trigger_context_samples": 200,
+    "val_dir": "/home/miguel/TapRecognition/data_13_10_26/valid_data",
+    "val_split": 0.15,
+    "window_samples": 300
+  },
+  "duration_basis": "unique_hard_negative_sources_v2",
+  "duration_sha256": "579c2f32ecd9e45837c2d6f6e38b2176547ea047394cac2189d248f5e1347f79",
+  "labels": {
+    "half_frames": 10,
+    "peak_offset": 0.05,
+    "sigma": 0.04
+  },
+  "normal_usage": {
+    "files": [
+      "imu_Miguel_normal_usage_20261013_173950.csv",
+      "imu_Miguel_normal_usage_20261013_175122.csv",
+      "imu_Miguel_normal_usage_20261013_181009.csv",
+      "imu_Miguel_normal_usage_20261013_181906.csv",
+      "imu_Miguel_normal_usage_20261013_185932.csv",
+      "imu_Miguel_normal_usage_20261013_190252.csv",
+      "imu_Miguel_normal_usage_20261013_191149.csv",
+      "imu_Miguel_normal_usage_20261013_192249.csv",
+      "imu_Miguel_normal_usage_20261013_192551.csv",
+      "imu_Miguel_normal_usage_20261013_192806.csv",
+      "imu_Miguel_normal_usage_20261013_193159.csv",
+      "imu_Miguel_normal_usage_20261013_193931.csv",
+      "imu_Miguel_normal_usage_20261013_194449.csv",
+      "imu_Miguel_normal_usage_20261013_203125.csv",
+      "imu_Miguel_normal_usage_20261014_091248.csv",
+      "imu_Miguel_normal_usage_20261014_091755.csv",
+      "imu_Miguel_normal_usage_20261014_092309.csv",
+      "imu_Miguel_normal_usage_20261014_092817.csv",
+      "imu_Miguel_normal_usage_20261014_092932.csv",
+      "imu_Miguel_normal_usage_20261014_103314.csv",
+      "imu_Miguel_normal_usage_20261014_104349.csv",
+      "imu_Miguel_normal_usage_20261014_105023.csv",
+      "imu_Miguel_normal_usage_20261014_105413.csv",
+      "imu_Miguel_normal_usage_20261014_111330.csv",
+      "imu_Miguel_normal_usage_20261014_112013.csv"
+    ],
+    "manifest": [
+      {
+        "file": "imu_Miguel_normal_usage_20261013_173950.csv",
+        "frames": 25276,
+        "minutes": 4.212666666666666,
+        "sample_rate_hz": 100.0,
+        "source_sha256": "8aa5e9b1d76a0e0d50fc9a895f1425aef61b43d3b4fa64c5e75305af73d61340"
+      },
+      {
+        "file": "imu_Miguel_normal_usage_20261013_175122.csv",
+        "frames": 23857,
+        "minutes": 3.9761666666666664,
+        "sample_rate_hz": 100.0,
+        "source_sha256": "2bbd34fb44986ca41fd7d0c362b7ecd418e5510d165bc27a6f67f226280a0f6d"
+      },
+      {
+        "file": "imu_Miguel_normal_usage_20261013_181009.csv",
+        "frames": 29999,
+        "minutes": 4.999833333333333,
+        "sample_rate_hz": 100.0,
+        "source_sha256": "cd914502048e03b600e74f1c420477b74fc5bd31aadb25be246c9007d1bf6880"
+      },
+      {
+        "file": "imu_Miguel_normal_usage_20261013_181906.csv",
+        "frames": 30000,
+        "minutes": 5.0,
+        "sample_rate_hz": 100.0,
+        "source_sha256": "25a843e4683f3254c787d6d3a7a5162e03b2110d568fd07f9eab9907d48154c6"
+      },
+      {
+        "file": "imu_Miguel_normal_usage_20261013_185932.csv",
+        "frames": 30002,
+        "minutes": 5.000333333333333,
+        "sample_rate_hz": 100.0,
+        "source_sha256": "9369d4b19eaf87977d0a89d061e9b4d6c13129131f280aaf4b0eba4a91d62864"
+      },
+      {
+        "file": "imu_Miguel_normal_usage_20261013_190252.csv",
+        "frames": 1942,
+        "minutes": 0.3236666666666667,
+        "sample_rate_hz": 100.0,
+        "source_sha256": "361f9006662396c8d981e7499ce95d9e1259651342b31058714a9979a7959366"
+      },
+      {
+        "file": "imu_Miguel_normal_usage_20261013_191149.csv",
+        "frames": 30000,
+        "minutes": 5.0,
+        "sample_rate_hz": 100.0,
+        "source_sha256": "36d5df9bf929dcb519a254740a5c90f9c114ce101ce2bbee3851d1a6560ba74f"
+      },
+      {
+        "file": "imu_Miguel_normal_usage_20261013_192249.csv",
+        "frames": 30002,
+        "minutes": 5.000333333333333,
+        "sample_rate_hz": 100.0,
+        "source_sha256": "79d93b5394ad35416ea8aec2436bd5454fb43a0c6debbc20834a35456ebb63fb"
+      },
+      {
+        "file": "imu_Miguel_normal_usage_20261013_192551.csv",
+        "frames": 14508,
+        "minutes": 2.418,
+        "sample_rate_hz": 100.0,
+        "source_sha256": "61be98833c4af07a441083ed2d42e2fd3d09a38a5757decf35ed394705c31a28"
+      },
+      {
+        "file": "imu_Miguel_normal_usage_20261013_192806.csv",
+        "frames": 4806,
+        "minutes": 0.801,
+        "sample_rate_hz": 100.0,
+        "source_sha256": "49585b129aff593aa55e3bd64be2066cddf71c67b1a83b421f1a5679d8eca02d"
+      },
+      {
+        "file": "imu_Miguel_normal_usage_20261013_193159.csv",
+        "frames": 21473,
+        "minutes": 3.5788333333333333,
+        "sample_rate_hz": 100.0,
+        "source_sha256": "d061346fb34af68c3fda3314572fda237d5522712334eb34412cf9df98ebf736"
+      },
+      {
+        "file": "imu_Miguel_normal_usage_20261013_193931.csv",
+        "frames": 30000,
+        "minutes": 5.0,
+        "sample_rate_hz": 100.0,
+        "source_sha256": "a962cc7f7519439325d01654cb3bc987daef3bc458f93c5c2567c57866e2b555"
+      },
+      {
+        "file": "imu_Miguel_normal_usage_20261013_194449.csv",
+        "frames": 29866,
+        "minutes": 4.977666666666667,
+        "sample_rate_hz": 100.0,
+        "source_sha256": "281a847980c6289ba0aa55970dcfa209195632f52abe2cca989770de4cb00fb7"
+      },
+      {
+        "file": "imu_Miguel_normal_usage_20261013_203125.csv",
+        "frames": 10942,
+        "minutes": 1.8236666666666668,
+        "sample_rate_hz": 100.0,
+        "source_sha256": "dc9fb3ed5918a40501500e035aa9ea62e285435f6677bf1d4ade3d3a41825417"
+      },
+      {
+        "file": "imu_Miguel_normal_usage_20261014_091248.csv",
+        "frames": 29999,
+        "minutes": 4.999833333333333,
+        "sample_rate_hz": 100.0,
+        "source_sha256": "78fb2f8ea3446d77807c45ac70d11224ee152b9d17369d62cc4c12b63d727762"
+      },
+      {
+        "file": "imu_Miguel_normal_usage_20261014_091755.csv",
+        "frames": 30000,
+        "minutes": 5.0,
+        "sample_rate_hz": 100.0,
+        "source_sha256": "acf18622e87146878c206e2dac7475799683ed1a3bfb9037213fdf1645dc3207"
+      },
+      {
+        "file": "imu_Miguel_normal_usage_20261014_092309.csv",
+        "frames": 30001,
+        "minutes": 5.000166666666667,
+        "sample_rate_hz": 100.0,
+        "source_sha256": "1098fd90ec8a836f7eb399c4a7e872913e2201629c3d6dedaec0e6b6f0a39fc8"
+      },
+      {
+        "file": "imu_Miguel_normal_usage_20261014_092817.csv",
+        "frames": 29999,
+        "minutes": 4.999833333333333,
+        "sample_rate_hz": 100.0,
+        "source_sha256": "f5a191d54d33a8494c64445a5cd434a7240a539f1496fe4a5da777b159cba4c8"
+      },
+      {
+        "file": "imu_Miguel_normal_usage_20261014_092932.csv",
+        "frames": 6334,
+        "minutes": 1.0556666666666668,
+        "sample_rate_hz": 100.0,
+        "source_sha256": "94e47482b228ed56c738b5729140a8f49c50257f72fefe4554c3e79d572c8d57"
+      },
+      {
+        "file": "imu_Miguel_normal_usage_20261014_103314.csv",
+        "frames": 6338,
+        "minutes": 1.0563333333333333,
+        "sample_rate_hz": 100.0,
+        "source_sha256": "63cec52d0e628f6915838427e9b6e795bf01649273483af9b329781c2e8f9a7c"
+      },
+      {
+        "file": "imu_Miguel_normal_usage_20261014_104349.csv",
+        "frames": 29999,
+        "minutes": 4.999833333333333,
+        "sample_rate_hz": 100.0,
+        "source_sha256": "6eca0591b3298778dbf89b5fb1e2bff313114f5e181e32a3d97668635f1e706b"
+      },
+      {
+        "file": "imu_Miguel_normal_usage_20261014_105023.csv",
+        "frames": 29998,
+        "minutes": 4.999666666666667,
+        "sample_rate_hz": 100.0,
+        "source_sha256": "71d41aee713109bef11ca21bd405a427c8b8f66244c49ad8483593a63abc6a2d"
+      },
+      {
+        "file": "imu_Miguel_normal_usage_20261014_105413.csv",
+        "frames": 20711,
+        "minutes": 3.4518333333333335,
+        "sample_rate_hz": 100.0,
+        "source_sha256": "0138f2d69a3462b83c24a683a15dd210780f1bd0def5701cc5c61b76e166be22"
+      },
+      {
+        "file": "imu_Miguel_normal_usage_20261014_111330.csv",
+        "frames": 30001,
+        "minutes": 5.000166666666667,
+        "sample_rate_hz": 100.0,
+        "source_sha256": "b7369436bced63afda606f835394e2c9d36044e71b7060d21f897d2bd37cd283"
+      },
+      {
+        "file": "imu_Miguel_normal_usage_20261014_112013.csv",
+        "frames": 10767,
+        "minutes": 1.7945,
+        "sample_rate_hz": 100.0,
+        "source_sha256": "dbb1ac8e452ac7975dfae9f6aa2a3406326464259a1808129a331ce0eb28ecd5"
+      }
+    ],
+    "sha256": "436d0822df6162d79a0a54abcded133f5a6a8f8357e987a0d78512239bb01a2b",
+    "source_dir": "/home/miguel/TapRecognition/hard_negative_mining/source_recordings"
+  },
+  "preprocessing_sha256": "0382c2efa61d88fcc5345b9ead16680efa40c40a928a4446377ec160fd1273d1",
+  "seed": 101,
+  "validation_sha256": "2e1b9b90183d8029bcc78af2fe30b07bb59a0236303c0c5fa32a4d0140fd05e3"
+}
