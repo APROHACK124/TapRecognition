@@ -9,6 +9,7 @@ import numpy as np
 import pandas as pd
 
 from notebooks_analysis.recording_durations import durations_for_recordings
+from notebooks_analysis.normal_usage_evaluation import evaluate_normal_usage
 
 
 class ThresholdSelectionTests(unittest.TestCase):
@@ -47,6 +48,16 @@ class ThresholdSelectionTests(unittest.TestCase):
         self.namespace['FP_SELECTION_METRIC'] = 'fp_per_min'
         winner = self.namespace['select_operating_point'](self.candidates(), 'fp_budget_max_recall')
         self.assertEqual(winner.left_threshold, .6)
+
+    def test_full_normal_usage_rate_is_a_distinct_selection_option(self):
+        candidates = self.candidates()
+        candidates['normal_usage_fp_per_min'] = [.8, .2]
+        self.namespace['FP_SELECTION_METRIC'] = 'normal_usage_fp_per_min'
+        winner = self.namespace['select_operating_point'](candidates, 'fp_budget_max_recall')
+        self.assertEqual(winner.left_threshold, .6)
+        self.assertGreater(winner.negative_fp_per_min, self.namespace['FP_PER_MIN_LIMIT'])
+        candidates['normal_usage_fp_per_min'] = np.nan
+        self.assertIsNone(self.namespace['select_operating_point'](candidates, 'fp_budget_max_recall'))
 
     def test_limit_is_strict_and_undefined_rates_are_infeasible(self):
         candidates = self.candidates()
@@ -101,6 +112,7 @@ class ThresholdSelectionTests(unittest.TestCase):
                   emit_alarms_pair=lambda probabilities, *_: probabilities,
                   match_alarms=lambda truth, alarms, **_: [(0, 0), (1, 1)] if truth else [],
                   divide=lambda a, b: a / b if b else np.nan)
+        ns.update(evaluate_normal_usage=evaluate_normal_usage, normal_usage_recordings=[], normal_usage_probabilities={})
         ns['duration_audit'] = durations_for_recordings(Path.cwd(), ns['recordings'])
         ns['duration_lookup'] = ns['duration_audit'].set_index('file')
         exec(function_source, ns)

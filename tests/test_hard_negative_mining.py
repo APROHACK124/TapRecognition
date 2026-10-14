@@ -4,6 +4,7 @@ import json
 from pathlib import Path
 import tempfile
 import unittest
+from unittest.mock import patch
 
 import numpy as np
 import pandas as pd
@@ -13,10 +14,16 @@ from notebooks_analysis.hard_negative_mining import (
     MiningModel,
     crop_bounds,
     export_candidates,
+    export_batch,
     find_candidates,
+    find_union_candidates,
     load_recording,
     stage_recordings,
+    mine_recordings,
+    predict_recording,
 )
+from notebooks_analysis.recording_types import recording_type_from_filename
+from tap_recognition.training_sampling import repeat_hard_negatives
 from tap_recognition.dataset import RecordedIMUDataset
 from tap_recognition.recording import IMU_COLUMNS
 
@@ -145,6 +152,97 @@ class HardNegativeMiningTests(unittest.TestCase):
         self.assertTrue(candidates.empty)
         self.assertIn('candidate_id', candidates.columns)
         self.assertTrue(export_candidates(self.rec, candidates, self.model, self.output).empty)
+
+    def trace(self, frames):
+        p = np.zeros((1000, 3)); p[:, 0] = 1
+        for frame in frames:
+            p[frame] = [.01, .98, .01]
+        return p
+
+    def test_union_uses_any_model_thresholds_and_shared_crop_gap(self):
+        candidates = find_union_candidates(
+            self.rec, {'a': self.trace([100, 500]), 'b': self.trace([110, 850])},
+            {'a': (.9, .9), 'b': (.95, .95)}, min_gap_frames=300,
+            lookahead_frames=0, context_before_frames=200, context_after_frames=99)
+        self.assertEqual(candidates.anchor_frame.tolist(), [100, 500, 850])
+        self.assertEqual(candidates.trigger_models.iloc[0], ['a', 'b'])
+        self.assertEqual(candidates.crop_frames.tolist(), [300, 300, 300])
+        self.assertEqual(candidates.candidate_id.tolist(), [0, 1, 2])
+        self.assertTrue(all(a <= b for a, b in zip(candidates.crop_end_frame[:-1], candidates.crop_start_frame[1:])))
+        # Raising only b's threshold removes its unique crop, not a's failures.
+        fewer = find_union_candidates(
+            self.rec, {'a': self.trace([100, 500]), 'b': self.trace([110, 850])},
+            {'a': (.9, .9), 'b': (1., 1.)}, min_gap_frames=300,
+            lookahead_frames=0, context_before_frames=200, context_after_frames=99)
+        self.assertEqual(fewer.anchor_frame.tolist(), [100, 500])
+
+    def test_gap_is_inclusive_and_boundary_duplicates_are_suppressed(self):
+        candidates = find_union_candidates(
+            self.rec, {'a': self.trace([300, 600, 601])}, {'a': (.9, .9)},
+            min_gap_frames=300, lookahead_frames=0, refractory_frames=0,
+            context_before_frames=200, context_after_frames=99)
+        self.assertEqual(candidates.anchor_frame.tolist(), [300, 601])
+        same = find_union_candidates(
+            self.rec, {'a': self.trace([0, 99])}, {'a': (.9, .9)}, min_gap_frames=0,
+            lookahead_frames=0, allow_overlapping_crops=True,
+            context_before_frames=200, context_after_frames=99)
+        self.assertEqual(len(same), 1)
+
+    def test_batch_stats_include_zero_crop_sources_and_export_normal_usage(self):
+        normal = self.source / 'imu_fixture_normal_usage_20261014_120000.csv'
+        self.data.assign(action_label='normal_usage', timestamp_ms=self.data.timestamp_ms+10).to_csv(normal, index=False)
+        normal.with_suffix('.txt').write_text('')
+        traces = [self.trace([]), self.trace([500])]
+        with patch('notebooks_analysis.hard_negative_mining.predict_recording', side_effect=traces):
+            candidates, by_file, summary = mine_recordings(
+                [self.path, normal], {'fixture': self.model}, {'fixture': (.9, .9)},
+                crop_seconds=3., context_before_seconds=2., lookahead_frames=0,
+                training_window_frames=300)
+        self.assertEqual(by_file.crops.tolist(), [0, 1])
+        self.assertEqual(summary['recordings'], 2)
+        self.assertEqual(summary['recording_seconds'], 20.)
+        self.assertEqual(summary['crop_seconds'], 3.)
+        self.assertEqual(summary['crops_per_minute'], 3.)
+        exported = export_batch(candidates, {'fixture': self.model}, self.source, self.output)
+        path = Path(exported.csv.iloc[0])
+        self.assertIn('normal_usage', path.name)
+        self.assertEqual(recording_type_from_filename(path.name), 'hard_negative')
+        meta = json.loads(path.with_suffix('.mining.json').read_text())
+        self.assertEqual(meta['source_frames'], 1000)
+        self.assertEqual(meta['source_duration_seconds'], 10.)
+        self.assertEqual(meta['source_recording_type'], 'normal_usage')
+        self.assertEqual(meta['selection']['trigger_models'], ['fixture'])
+        self.assertEqual(meta['selection']['mining_models'][0]['checkpoint_sha256'], self.model.sha256)
+        dataset = RecordedIMUDataset(self.output, highpass=False)
+        repeated, report = repeat_hard_negatives(dataset, 5)
+        self.assertEqual(len(repeated), 5)
+        self.assertTrue(report.hard_negative.all())
+        # Full normal-use training files are not filename-repeated as mined crops.
+        plain = RecordedIMUDataset(self.source, highpass=False, csv_paths=[normal])
+        _, report = repeat_hard_negatives(plain, 5)
+        self.assertFalse(report.hard_negative.any())
+
+    def test_chunked_full_inference_preserves_raw_and_feature_state(self):
+        from tap_recognition.config import LSTMModelConfig
+        from tap_recognition.imu_features import IMUFeatureConfig
+        from tap_recognition.model_factory import build_model
+        from tap_recognition.physics import IMUSimulator
+        torch.set_num_threads(1)
+        config = LSTMModelConfig(cnn_channels=4, lstm_hidden=8, kernel_size=3, dilations=(1,))
+        for features in ({}, {'feature_config': IMUFeatureConfig().to_dict()}):
+            model = build_model(config.to_model_kwargs() | features).eval()
+            wrapper = MiningModel(self.root/'fixture.pt', model, True, 300, 'test')
+            raw = IMUSimulator(sample_rate=self.rec.fs).highpass(self.rec.raw)
+            with torch.inference_mode():
+                logits, _ = model(torch.from_numpy(raw).unsqueeze(0))
+                expected = logits[0].softmax(-1).numpy()
+            actual = predict_recording(self.rec, wrapper, chunk_frames=137)
+            np.testing.assert_allclose(actual, expected, atol=1e-5, rtol=1e-5)
+
+    def test_batch_rejects_positive_recordings(self):
+        self.rec.events = [(500, 1)]
+        with self.assertRaisesRegex(ValueError, 'negative-only'):
+            find_union_candidates(self.rec, {'a': self.trace([500])}, {'a': (.9, .9)})
 
 
 if __name__ == '__main__':

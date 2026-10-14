@@ -49,24 +49,30 @@ def _sha256(path: Path) -> str:
     return hashlib.sha256(path.read_bytes()).hexdigest()
 
 
+def _local_data_path(root: Path, value: str) -> Path:
+    """Preserve valid paths; relocate stale absolute pod paths by dataset suffix."""
+    path = Path(value)
+    recorded = path if path.is_absolute() else root / path
+    candidates = [recorded, root / path.parent.name / path.name, root / path.name]
+    return next((p for p in candidates if p.exists()), recorded)
+
+
 def load_examples(root: Path, data: dict, labels: dict, seed: int, split: str = 'valid'):
     """Load a split's current frames and fitted windows without augmentation."""
     if split not in ('train', 'valid'):
         raise ValueError(f'Unsupported inspection split: {split!r}')
     directory_key = 'train_dir' if split == 'train' else 'val_dir'
     seed_offset = 0 if split == 'train' else 1
-    registry = Path(data['session_exclusions_file']) if data.get('session_exclusions_file') else None
-    if registry is not None and not registry.is_absolute():
-        registry = root / registry
+    registry = _local_data_path(root, data['session_exclusions_file']) if data.get('session_exclusions_file') else None
+    if registry is not None and not registry.is_file():
+        raise FileNotFoundError(f'{registry}: evaluation exclusion registry is unavailable')
     excluded: dict[str, set[int]] = {}
     for item in load_session_exclusions(registry):
         excluded.setdefault(item.source_file, set()).add(item.segment_index)
     manifest = []
     recordings = {}
     for i, folder in enumerate(data[directory_key].split(',')):
-        directory = Path(folder.strip())
-        if not directory.is_absolute():
-            directory = root / directory
+        directory = _local_data_path(root, folder.strip())
         dataset = RecordedIMUDataset(
             directory, window_samples=data['window_samples'],
             label_params=LabelParams(**labels), highpass=data['highpass'],

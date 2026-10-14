@@ -160,6 +160,18 @@ class ModelComparisonExamplesTests(unittest.TestCase):
         with self.assertRaisesRegex(ValueError, 'Unsupported inspection split'):
             load_examples(Path('.'), {}, {}, 42, split='test')
 
+    def test_replay_relocates_stale_absolute_pod_dataset_paths(self):
+        with tempfile.TemporaryDirectory() as temporary:
+            root = Path(temporary)
+            data, labels, names = self._write_recordings(root)
+            expected, expected_hash = load_examples(root, data, labels, 42)
+            remote = data | {key: f'/old-pod/TapRecognition/{data[key]}'
+                             for key in ('train_dir', 'val_dir', 'session_exclusions_file')}
+            actual, actual_hash = load_examples(root, remote, labels, 42)
+            self.assertEqual(set(actual), set(expected))
+            self.assertEqual(actual_hash, expected_hash)
+            self.assertEqual(actual[names['valid']].path.parent, root/'valid')
+
 
 if __name__ == '__main__':
     unittest.main()

@@ -14,6 +14,9 @@ class RecordingTypesTests(unittest.TestCase):
             'imu_Miguel_switch_doubletap_20261012_170000.csv': 'switch_doubletap',
             'imu_Miguel_negative_mining_20261009_164938.csv': 'hard_negative',
             'imu_Miguel_negative_mining_20261009_164938__crop_f000495_f000795.csv': 'hard_negative',
+            'imu_Miguel_normal_usage_20261014_120000.csv': 'normal_usage',
+            'imu_Miguel_normal_usage_20261014_120000__crop_f000000_f000300.csv': 'hard_negative',
+            'imu_Miguel_hard-negatives_20261014_120000.csv': 'hard_negative',
         }
         for name, expected in cases.items():
             with self.subTest(name=name):

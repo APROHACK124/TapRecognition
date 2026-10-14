@@ -100,6 +100,14 @@ Threshold selection defaults to `FP_SELECTION_METRIC = 'negative_fp_per_min'`: t
 
 Comparison recalculates displayed duration-dependent rates for older exports without changing saved thresholds or event counts, and warns that evaluation must be rerun for threshold reselection. **Alarms are still counted on crops, not the entire originals: source-duration-normalized crop FP/min is not a measured full-source or normal-use false-alarm rate.**
 
+### Full Normal-Use Evaluation
+
+Both `evaluate.ipynb` and `compare.ipynb` also evaluate complete `normal_usage` originals in a **separate population**. Configure `NORMAL_USAGE_SOURCE_DIR` (default: the mining source folder) and `NORMAL_USAGE_FILES` (`None`: all originals, `[]`: disabled, or an explicit basename list). Full originals keep report type `normal_usage`; their mined crops are `hard_negative`. Full-source inference carries CNN/recurrent state across source sessions, with chunked computation and reset only between files. Source copies are deduplicated by hash, and zero-alarm files still contribute their duration.
+
+`normal_usage_fp_per_min = all emitted alarms on complete normal-use originals / their actual total minutes`. Set `FP_SELECTION_METRIC = 'normal_usage_fp_per_min'` in evaluation to use this rate in the existing selectors. Event recall/F1 remain measured on labeled validation data; no full-normal-use alarms/minutes are added to crop diagnostics. Without originals the rate is undefined, not zero, so normal-use budget selection is infeasible. Evaluation exports `normal_usage_metrics.csv`, `normal_usage_recording_metrics.csv`, `normal_usage_alarm_details.csv`, and `normal_usage_manifest.csv`, plus population provenance in `evaluation_context.json`. Comparison replays the selected checkpoints on the current full-normal-use population at frozen thresholds, including older exports, and warns if the population differs from export.
+
+Keep original CSVs available; source lengths alone cannot replace full inference. For held-out estimates use a dedicated source folder/list whose originals **and crops** were excluded from training and threshold selection. The default source folder is not automatically held out.
+
 ## Compare Evaluated Runs
 
 [`compare_models.ipynb`](compare_models.ipynb) reads completed `threshold_comparison/` exports from multiple runs.
@@ -121,6 +129,10 @@ For Python training entry points use `cfg.training.hard_negative_multiplier = 5`
 [`mine_hard_negatives.ipynb`](mine_hard_negatives.ipynb) inspects raw negative recordings one at a time, plots IMU and causal left/right model probabilities, and finds candidates using configurable side thresholds, lookahead, and shared cooldown. Multiple checkpoints can be plotted on the same recording; one selected checkpoint drives candidate selection.
 
 The notebook stages inputs under `hard_negative_mining/source_recordings/`, previews tunable hard intervals and surrounding context, and exports explicitly selected candidates under `hard_negative_mining/crops/`. Each raw crop is one session with an empty `.txt` negative label and source/checkpoint provenance. Copy the chosen CSV/label pairs manually into the appropriate training folder. See [`../hard_negative_mining/README.md`](../hard_negative_mining/README.md) for crop fitting details.
+
+The new **batch mining** section accepts full `normal_usage`, `negative_mining`, and hard-negative originals. Select `BATCH_FILES` or enable `BATCH_SELECT_ALL`; choose `BATCH_MODELS` and each model's left/right thresholds in `MODELS`. It mines the union of alarms from at least one model, applies `BATCH_MIN_GAP_FRAMES` across that union, and prohibits overlapping/slid duplicate crops by default. Three-second crop duration uses each source's sample rate. Per-file and overall tables show crop count, crops/minute, total source time, and summed crop-segment time; zero-crop sources are included. Set `BATCH_KEEP_IDS` for manual filtering, use `BATCH_PREVIEW_ID` to inspect, and enable `SAVE_BATCH_CROPS` only when ready to write. Single-recording saving is separately gated by `SAVE_REVIEWED_CROPS`. Exported files remain browsable in the crops inventory and training-view inspection.
+
+Copy **CSV + empty `.txt` + `.mining.json`** together. Normal-use crops retain `normal_usage` in their filenames and use action `negative_mining`; they are hard negatives in reports and in the configurable training repetition. Full normal-use files are not repeated by that filename rule. New provenance also records original frames, sample rate, duration, source type, and all batch model hashes/thresholds.
 
 ## Historical Notebooks
 

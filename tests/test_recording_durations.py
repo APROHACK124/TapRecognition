@@ -1,6 +1,7 @@
 """Source duration accounting: shared crops, portable provenance, and notebook wiring."""
 
 import hashlib
+import ast
 import io
 import json
 from pathlib import Path
@@ -17,6 +18,7 @@ from notebooks_analysis.recording_durations import (
     DURATION_BASIS, apply_export_durations, duration_fingerprint,
     durations_for_export, durations_for_recordings, recording_durations,
 )
+from notebooks_analysis.normal_usage_evaluation import evaluate_normal_usage
 
 
 class RecordingDurationTests(unittest.TestCase):
@@ -191,8 +193,9 @@ class RecordingDurationTests(unittest.TestCase):
                   recordings=recordings, probabilities={r.path.name: probs for r in recordings},
                   duration_audit=audit, duration_lookup=audit.set_index('file'),
                   display=lambda _: None, divide=lambda a, b: a/b if b else np.nan)
+        ns.update(evaluate_normal_usage=evaluate_normal_usage, normal_usage_recordings=[], normal_usage_probabilities={})
         single = next(s for s in cells if 'def emit_alarms(' in s)
-        single = single.replace('THRESHOLDS = np.round(np.arange(0.10, 1.01, 0.01), 2)', 'THRESHOLDS = [.5]')
+        single = 'THRESHOLDS = [.5]\n' + single.split('\n', 1)[1]
         exec(single, ns)
         sessions = ns['sessions']
         self.assertAlmostEqual(sessions.minutes.sum(), 1.)
@@ -225,9 +228,13 @@ class RecordingDurationTests(unittest.TestCase):
         root = Path(__file__).resolve().parents[1]
         notebook = json.loads((root/'main_notebooks/compare.ipynb').read_text())
         setup = ''.join(notebook['cells'][1]['source'])
-        self.assertIn("SELECTION_MODE = 'fp_budget_max_recall'", setup)
-        self.assertIn("POLICY = 'lookahead_12f'", setup)
-        self.assertIn("SELECTION_MODE in {'fp_per_min', 'negative_fp_per_min'}", setup)
+        constants = {node.targets[0].id: ast.literal_eval(node.value)
+                     for node in ast.parse(setup).body if isinstance(node, ast.Assign)
+                     and isinstance(node.targets[0], ast.Name) and node.targets[0].id in {'SELECTION_MODE', 'POLICY'}}
+        self.assertIn(constants['SELECTION_MODE'], {'max_f1', 'fp_budget_max_recall', 'recall_target_min_fp',
+                                                   'recall_target_max_threshold', 'timely_recall_fp_budget'})
+        self.assertIn(constants['POLICY'], {'instant', 'lookahead_12f'})
+        self.assertIn("SELECTION_MODE in {'fp_per_min', 'negative_fp_per_min', 'normal_usage_fp_per_min'}", setup)
 
 
 if __name__ == '__main__':

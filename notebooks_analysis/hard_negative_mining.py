@@ -14,6 +14,8 @@ import pandas as pd
 import torch
 
 from notebooks_analysis.model_comparison_examples import emit_alarms_pair
+from notebooks_analysis.recording_types import recording_type_from_filename
+from notebooks_analysis.state_reset_analysis import overlap_stream_logits
 from tap_recognition.dataset import load_trigger_events
 from tap_recognition.model_factory import build_model
 from tap_recognition.physics import IMUSimulator
@@ -101,6 +103,7 @@ def recording_inventory(input_dir: Path) -> pd.DataFrame:
         rec = load_recording(path)
         rows.append(dict(file=path.name, user=rec.data.user_name.iloc[0],
                          action=rec.data.action_label.iloc[0], frames=len(rec.data),
+                         recording_type=recording_type_from_filename(path.name, rec.data.action_label.iloc[0]),
                          seconds=len(rec.data) / rec.fs, sample_rate_hz=rec.fs,
                          sessions=len(rec.segments), annotated_events=len(rec.events)))
     return pd.DataFrame(rows)
@@ -125,16 +128,21 @@ def load_mining_model(checkpoint_path: Path) -> MiningModel:
 
 
 def predict_recording(rec: MiningRecording, model: MiningModel,
-                      reset_at_segments: bool = False) -> np.ndarray:
+                      reset_at_segments: bool = False, chunk_frames: int = 4096) -> np.ndarray:
     """Causal full-length inference; preprocessing follows each checkpoint."""
     imu = rec.raw
     if model.highpass:
         imu = IMUSimulator(sample_rate=rec.fs).highpass(imu)
     bounds = [(a, b) for _, a, b in rec.segments] if reset_at_segments else [(0, len(imu))]
     probs = np.empty((len(imu), 3), dtype=np.float32)
+    chunk_frames = _nonnegative_int(chunk_frames, 'chunk_frames')
+    if chunk_frames == 0:
+        raise ValueError('chunk_frames must be positive')
     with torch.inference_mode():
         for start, end in bounds:
-            logits, _ = model.model(torch.from_numpy(imu[start:end]).unsqueeze(0))
+            x = torch.from_numpy(imu[start:end]).unsqueeze(0)
+            sizes = [min(chunk_frames, end-start-i) for i in range(0, end-start, chunk_frames)]
+            logits = overlap_stream_logits(model.model, x, sizes)
             probs[start:end] = logits[0].softmax(-1).numpy()
     return probs
 
@@ -223,6 +231,134 @@ def find_candidates(rec: MiningRecording, probs: np.ndarray, model_name: str,
                          training_retains_core=crop['core_end_frame'] <= visible_end,
                          annotated_events_in_crop=sum(start <= f < end for f, _ in rec.events)))
     return pd.DataFrame(rows, columns=columns)
+
+
+def find_union_candidates(rec: MiningRecording, traces: dict[str, np.ndarray],
+                          thresholds: dict[str, tuple[float, float]],
+                          min_gap_frames: int = 300, allow_overlapping_crops: bool = False,
+                          **settings) -> pd.DataFrame:
+    """Union of causal alarms, chronologically thinned once across ALL models.
+
+    Keep the first failure, suppress the next min_gap_frames after its anchor,
+    and (by default) reject any crop overlapping an already kept crop. Boundary
+    sliding can make distant anchors export the same interval; check bounds too.
+    Suppressed alarms contribute trigger evidence to the retained crop, rather
+    than creating duplicates. All inputs must be known-negative recordings.
+    """
+    if rec.events:
+        raise ValueError(f'{rec.path.name}: batch mining requires a negative-only recording')
+    gap = _nonnegative_int(min_gap_frames, 'min_gap_frames')
+    if not traces or set(traces) != set(thresholds):
+        raise ValueError('Provide traces and per-side thresholds for the same nonempty model set')
+    tables = [find_candidates(rec, probs, name, *thresholds[name], **settings)
+              for name, probs in traces.items()]
+    candidates = pd.concat(tables, ignore_index=True).sort_values(
+        ['anchor_frame', 'model', 'class_id'], kind='stable')
+    kept = []
+    for candidate in candidates.to_dict('records'):
+        # Reject short/truncated exports instead of calling them three-second crops.
+        context_before = settings.get('context_before_frames')
+        context_after = settings.get('context_after_frames')
+        expected = (max(settings.get('before_frames', 40), context_before or 0) +
+                    max(settings.get('after_frames', 10), context_after or 0) + 1)
+        if (candidate['crop_frames'] != expected or not candidate['training_retains_core']
+                or candidate['annotated_events_in_crop']):
+            continue
+        duplicate = None
+        for previous in reversed(kept):
+            same_bounds = (candidate['crop_start_frame'], candidate['crop_end_frame']) == (
+                previous['crop_start_frame'], previous['crop_end_frame'])
+            overlap = candidate['crop_start_frame'] < previous['crop_end_frame'] and (
+                previous['crop_start_frame'] < candidate['crop_end_frame'])
+            if (candidate['anchor_frame'] <= previous['anchor_frame'] + gap
+                    or same_bounds or (not allow_overlapping_crops and overlap)):
+                duplicate = previous
+                break
+            # Crop bounds are monotonic in anchor order; older crops cannot
+            # overlap once this newest crop is already clear.
+            break
+        evidence = {key: candidate[key] for key in (
+            'model', 'class_id', 'probability', 'left_threshold', 'right_threshold',
+            'anchor_frame', 'alarm_frame', 'peak_frame')}
+        if duplicate is not None:
+            duplicate['trigger_details'].append(evidence)
+            duplicate['trigger_models'] = sorted({x['model'] for x in duplicate['trigger_details']})
+            continue
+        candidate.update(candidate_id=len(kept), trigger_models=[candidate['model']],
+                         trigger_details=[evidence], selection_mode='any_model',
+                         min_gap_frames=gap, allow_overlapping_crops=allow_overlapping_crops)
+        kept.append(candidate)
+    columns = list(tables[0].columns) + ['trigger_models', 'trigger_details', 'selection_mode',
+                                        'min_gap_frames', 'allow_overlapping_crops']
+    return pd.DataFrame(kept, columns=columns)
+
+
+def mine_recordings(paths: list[Path], models: dict[str, MiningModel],
+                    thresholds: dict[str, tuple[float, float]], min_gap_frames: int = 300,
+                    allow_overlapping_crops: bool = False, chunk_frames: int = 4096,
+                    crop_seconds: float | None = None, context_before_seconds: float = 2.,
+                    **settings) -> tuple[pd.DataFrame, pd.DataFrame, dict]:
+    """Batch mining with per-file inference; do not retain all large raw traces."""
+    if set(models) != set(thresholds) or not models:
+        raise ValueError('Choose the same nonempty model set for models and thresholds')
+    tables, statistics, seen = [], [], set()
+    for path in paths:
+        rec = load_recording(path)
+        kind = recording_type_from_filename(rec.path.name, rec.data.action_label.iloc[0])
+        if kind not in {'hard_negative', 'normal_usage'} or rec.events:
+            raise ValueError(f'{rec.path.name}: select negative-only hard-negative or normal_usage originals')
+        if rec.sha256 in seen:
+            continue  # A copied/renamed original is still only one recording.
+        seen.add(rec.sha256)
+        local_settings = dict(settings)
+        if crop_seconds is not None:
+            if not np.isfinite(crop_seconds) or not np.isfinite(context_before_seconds) or not 0 <= context_before_seconds < crop_seconds:
+                raise ValueError('Require 0 <= context_before_seconds < crop_seconds')
+            size = round(crop_seconds * rec.fs)
+            left = round(context_before_seconds * rec.fs)
+            local_settings.update(context_before_frames=left, context_after_frames=size-left-1)
+            expected = (max(local_settings.get('before_frames', 40), left) +
+                        max(local_settings.get('after_frames', 10), size-left-1) + 1)
+            if expected != size:
+                raise ValueError('Crop duration must include the configured core interval')
+        traces = {name: predict_recording(rec, model, settings.get('reset_at_segments', False), chunk_frames)
+                  for name, model in models.items()}
+        candidates = find_union_candidates(rec, traces, thresholds, min_gap_frames,
+                                            allow_overlapping_crops, **local_settings)
+        provenance = {name: dict(model=name, checkpoint_path=str(model.path),
+                                checkpoint_sha256=model.sha256, highpass=model.highpass,
+                                left_threshold=thresholds[name][0], right_threshold=thresholds[name][1])
+                      for name, model in models.items()}
+        candidates['mining_models'] = [list(provenance.values()) for _ in range(len(candidates))]
+        candidates['candidate_id'] = np.arange(len(candidates)) + sum(len(t) for t in tables)
+        tables.append(candidates)
+        seconds, mined_seconds = len(rec.data) / rec.fs, float(candidates.crop_seconds.sum())
+        statistics.append(dict(file=rec.path.name, source_sha256=rec.sha256,
+                               recording_seconds=seconds, recording_minutes=seconds / 60,
+                               crops=len(candidates), crops_per_minute=len(candidates) / (seconds / 60),
+                               crop_seconds=mined_seconds, crop_minutes=mined_seconds / 60))
+    candidates = pd.concat(tables, ignore_index=True) if tables else pd.DataFrame()
+    by_file = pd.DataFrame(statistics, columns=['file', 'source_sha256', 'recording_seconds',
+        'recording_minutes', 'crops', 'crops_per_minute', 'crop_seconds', 'crop_minutes'])
+    minutes = float(by_file.recording_minutes.sum())
+    summary = dict(recordings=len(by_file), crops=len(candidates), recording_minutes=minutes,
+                   recording_seconds=minutes * 60, crop_seconds=float(by_file.crop_seconds.sum()),
+                   crop_minutes=float(by_file.crop_minutes.sum()),
+                   crops_per_minute=len(candidates) / minutes if minutes else np.nan)
+    return candidates, by_file, summary
+
+
+def export_batch(selected: pd.DataFrame, models: dict[str, MiningModel],
+                 input_dir: Path, output_dir: Path, training_window_frames: int = 300) -> pd.DataFrame:
+    """Export the batch selection using each representative model's provenance."""
+    tables = []
+    if not selected.empty:
+        for file, group in selected.groupby('file', sort=True):
+            rec = load_recording(Path(input_dir) / file)
+            for name, candidates in group.groupby('model', sort=True):
+                table = export_candidates(rec, candidates, models[name], output_dir, training_window_frames)
+                tables.append(table.assign(file=file, model=name, sample_rate_hz=rec.fs))
+    return pd.concat(tables, ignore_index=True).sort_values('candidate_id') if tables else pd.DataFrame()
 
 
 def plot_recording(rec: MiningRecording, traces: dict[str, np.ndarray],
@@ -316,6 +452,9 @@ def export_candidates(rec: MiningRecording, selected: pd.DataFrame,
             raise ValueError('Selected candidates produce the same crop; select only one of them')
         planned_paths.add(csv_path)
         metadata = dict(source_path=str(rec.path), source_sha256=rec.sha256,
+                         source_frames=len(rec.data), source_sample_rate_hz=rec.fs,
+                         source_duration_seconds=len(rec.data) / rec.fs,
+                         source_recording_type=recording_type_from_filename(rec.path.name, rec.data.action_label.iloc[0]),
                         checkpoint_path=str(model.path), checkpoint_sha256=model.sha256,
                         highpass=model.highpass, label_class=0, training_window_frames=training_window_frames,
                         crop_bounds='[start, end), original CSV row indices; anchor/core interval is inclusive',

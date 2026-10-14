@@ -16,7 +16,7 @@ import pandas as pd
 from tap_recognition.recording import estimate_sample_rate_hz
 
 
-DURATION_BASIS = 'unique_negative_mining_sources_v1'
+DURATION_BASIS = 'unique_hard_negative_sources_v2'
 
 
 def _sha256(path: Path) -> str:
@@ -37,7 +37,7 @@ def recording_durations(root: Path, inputs: list[dict], source_dir: Path | None 
     """One row per evaluated file; sum `minutes` for the deduplicated denominator.
 
     Inputs require path, evaluated_minutes, and n_true_events. Ordinary files
-    retain included duration. negative_mining crops resolve .mining.json and a
+    retain included duration. Hard-negative and normal_usage crops resolve .mining.json and a
     hash-verified source CSV, counting that CSV once across all supplied inputs.
     Durations are divided equally among members of each source to keep ordinary
     group-by/sum reports additive. Invoke separately for each split/model, not
@@ -60,7 +60,9 @@ def recording_durations(root: Path, inputs: list[dict], source_dir: Path | None 
         evaluated = float(item['evaluated_minutes'])
         if not np.isfinite(evaluated) or evaluated <= 0:
             raise ValueError(f'{name}: evaluated_minutes must be finite and positive')
-        mining = 'negative_mining' in name.lower()
+        lower = name.lower()
+        mining = ('negative_mining' in lower or 'hard_negative' in lower or 'hard-negatives' in lower
+                  or ('normal_usage' in lower and '__crop_' in lower))
         original_path, original_name, digest = path, name, ''
         source_frames, source_fs, source_minutes = np.nan, np.nan, evaluated
         if mining:

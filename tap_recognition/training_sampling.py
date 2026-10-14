@@ -26,7 +26,7 @@ def _window_source(dataset: Dataset, index: int) -> tuple[str, int]:
 def repeat_hard_negatives(
     dataset: Dataset, multiplier: int = 1,
 ) -> tuple[Dataset, pd.DataFrame]:
-    """Keep all windows once; repeat negative_mining negatives to N total copies.
+    """Keep all windows once; repeat mined/hard negatives to N total copies.
 
     Pass only the training split. The original dataset and its metadata are
     unchanged, so evaluation and feature normalization can use unique windows.
@@ -37,7 +37,11 @@ def repeat_hard_negatives(
     rows, hard_indices = [], []
     for index in range(len(dataset)):
         source, class_id = _window_source(dataset, index)
-        hard_negative = class_id == 0 and "negative_mining" in source.lower()
+        name = source.lower()
+        hard_negative = class_id == 0 and (
+            "negative_mining" in name or "hard_negative" in name or "hard-negatives" in name
+            or ("normal_usage" in name and "__crop_" in name)
+        )
         if hard_negative:
             hard_indices.append(index)
         rows.append(dict(window_index=index, source_file=source, window_class=class_id,
@@ -56,8 +60,8 @@ def print_training_sampling(table: pd.DataFrame, multiplier: int) -> None:
     epoch_count = int(table.appearances_per_epoch.sum())
     share = hard_count * multiplier / epoch_count if epoch_count else 0.0
     print(f"Training windows: {len(table)} unique; {epoch_count} appearances per epoch")
-    print(f"negative_mining negatives: {hard_count} x {multiplier}; "
+    print(f"Hard-negative windows (including normal_usage crops): {hard_count} x {multiplier}; "
           f"{share:.1%} of training epoch. Other windows x 1; validation unchanged.")
     if multiplier > 1 and not hard_count:
-        print("No negative training windows with 'negative_mining' in their filename; "
+        print("No filename-selected hard-negative training windows; "
               "the multiplier has no effect on this split.")
