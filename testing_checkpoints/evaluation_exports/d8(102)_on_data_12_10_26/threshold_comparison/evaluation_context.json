@@ -17,6 +17,8 @@
     "val_split": 0.15,
     "window_samples": 300
   },
+  "duration_basis": "unique_negative_mining_sources_v1",
+  "duration_sha256": "812d4623989f25ef46cf48bd82df93f9c074319ee2136dce90ba6148836469c8",
   "labels": {
     "half_frames": 10,
     "peak_offset": 0.05,

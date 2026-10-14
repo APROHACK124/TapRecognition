@@ -9,11 +9,11 @@
     "mode": "recorded",
     "negative_windows_per_file": 20,
     "sample_rate": 100.0,
-    "session_exclusions_file": "/home/aprohack/desktop/work/tap-project/project/tapRecognitionRui/TapRecognition/data_12_10_26/session_exclusions.csv",
+    "session_exclusions_file": "/home/miguel/TapRecognition/data_12_10_26/session_exclusions.csv",
     "synthetic_samples": 8000,
-    "train_dir": "/home/aprohack/desktop/work/tap-project/project/tapRecognitionRui/TapRecognition/data_12_10_26/train_data",
+    "train_dir": "/home/miguel/TapRecognition/data_12_10_26/train_data",
     "trigger_context_samples": 200,
-    "val_dir": "/home/aprohack/desktop/work/tap-project/project/tapRecognitionRui/TapRecognition/data_12_10_26/valid_data",
+    "val_dir": "/home/miguel/TapRecognition/data_12_10_26/valid_data",
     "val_split": 0.15,
     "window_samples": 300
   },
@@ -24,7 +24,7 @@
     "peak_offset": 0.05,
     "sigma": 0.04
   },
-  "preprocessing_sha256": "fb5f2eed02c96863b19ae495ee63a10a319552e789ec750df8ff850282aa97b8",
+  "preprocessing_sha256": "6805d8dae15f447cf28114ee7e9f44f6bb822d818b6bb392dc3dc7294bf4c326",
   "seed": 101,
   "validation_sha256": "4d0cf4a960f7bb6dc239588344ea8ebe3188a5a34310dcb3d06efac10fe28033"
 }
