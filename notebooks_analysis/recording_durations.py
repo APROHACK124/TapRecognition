@@ -33,7 +33,8 @@ def _original_duration(path: Path) -> tuple[int, float, float]:
     return len(stamps), fs, len(stamps) / fs / 60
 
 
-def recording_durations(root: Path, inputs: list[dict], source_dir: Path | None = None) -> pd.DataFrame:
+def recording_durations(root: Path, inputs: list[dict], source_dir: Path | None = None,
+                        *, cache=None) -> pd.DataFrame:
     """One row per evaluated file; sum `minutes` for the deduplicated denominator.
 
     Inputs require path, evaluated_minutes, and n_true_events. Ordinary files
@@ -48,7 +49,9 @@ def recording_durations(root: Path, inputs: list[dict], source_dir: Path | None 
     source_dir = Path(source_dir) if source_dir is not None else root / 'hard_negative_mining/source_recordings'
     if not source_dir.is_absolute():
         source_dir = root / source_dir
-    rows, cache, names = [], {}, set()
+    rows, duration_cache, names = [], {}, set()
+    digest_of = _sha256 if cache is None else cache.file_sha256
+    original_duration = _original_duration if cache is None else cache.original_duration
     for item in inputs:
         path = Path(item['path'])
         if not path.is_absolute():
@@ -72,7 +75,7 @@ def recording_durations(root: Path, inputs: list[dict], source_dir: Path | None 
                 meta_path = path.with_suffix('.mining.json')
                 if not meta_path.is_file():
                     raise FileNotFoundError(f'{meta_path}: required to recover the original recording duration')
-                meta = json.loads(meta_path.read_text())
+                meta = json.loads(meta_path.read_text()) if cache is None else cache.read_json(meta_path)
                 selection = meta.get('selection', {})
                 original_name, digest = selection.get('file'), meta.get('source_sha256')
                 if not original_name or Path(original_name).name != original_name or not digest:
@@ -83,17 +86,17 @@ def recording_durations(root: Path, inputs: list[dict], source_dir: Path | None 
                 # Prefer a portable local source directory over old absolute pod paths.
                 candidates = [source_dir / original_name, path.parent / original_name,
                               recorded_path if recorded_path.is_absolute() else root / recorded_path]
-                original_path = next((p for p in candidates if p.is_file() and _sha256(p) == digest), None)
+                original_path = next((p for p in candidates if p.is_file() and digest_of(p) == digest), None)
                 if original_path is None:
                     raise FileNotFoundError(f'{original_name}: no hash-matching original CSV found; '
                                             f'copy it into {source_dir} (expected SHA-256 {digest})')
             else:
                 if not path.is_file():
                     raise FileNotFoundError(path)
-                digest = _sha256(path)
-            if digest not in cache:
-                cache[digest] = _original_duration(original_path)
-            source_frames, source_fs, source_minutes = cache[digest]
+                digest = digest_of(path)
+            if digest not in duration_cache:
+                duration_cache[digest] = original_duration(original_path)
+            source_frames, source_fs, source_minutes = duration_cache[digest]
             if '__crop_' in name:
                 start, end = selection.get('crop_start_frame'), selection.get('crop_end_frame')
                 if not isinstance(start, int) or not isinstance(end, int) or not 0 <= start < end <= source_frames:
@@ -113,14 +116,15 @@ def recording_durations(root: Path, inputs: list[dict], source_dir: Path | None 
     return table
 
 
-def durations_for_recordings(root: Path, recordings, source_dir: Path | None = None) -> pd.DataFrame:
+def durations_for_recordings(root: Path, recordings, source_dir: Path | None = None,
+                             *, cache=None) -> pd.DataFrame:
     """Adapter for both continuous-evaluation and comparison replay recordings."""
     inputs = []
     for rec in recordings:
         frames = sum(end - start for _, start, end in rec.segments) if hasattr(rec, 'segments') else len(rec.imu)
         inputs.append(dict(path=rec.path, evaluated_minutes=frames / rec.fs / 60,
                            n_true_events=len(rec.events)))
-    return recording_durations(root, inputs, source_dir)
+    return recording_durations(root, inputs, source_dir, cache=cache)
 
 
 def duration_fingerprint(table: pd.DataFrame) -> str:
@@ -133,7 +137,7 @@ def duration_fingerprint(table: pd.DataFrame) -> str:
 
 
 def durations_for_export(root: Path, by_file: pd.DataFrame, data: dict | None,
-                         source_dir: Path | None = None) -> pd.DataFrame:
+                         source_dir: Path | None = None, *, cache=None) -> pd.DataFrame:
     """Resolve current source durations for exported counts without rerunning inference."""
     directories = []
     for value in (data or {}).get('val_dir', '').split(','):
@@ -146,7 +150,7 @@ def durations_for_export(root: Path, by_file: pd.DataFrame, data: dict | None,
         path = next((d / row.file for d in directories if (d / row.file).is_file()), root / row.file)
         inputs.append(dict(path=path, evaluated_minutes=getattr(row, 'evaluated_minutes', row.minutes),
                            n_true_events=row.n_true_events))
-    return recording_durations(root, inputs, source_dir)
+    return recording_durations(root, inputs, source_dir, cache=cache)
 
 
 def apply_export_durations(summary: pd.DataFrame, by_type: pd.DataFrame, by_file: pd.DataFrame,

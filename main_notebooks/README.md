@@ -94,6 +94,51 @@ Set `RUN_DIR` to the completed run directory. The notebook reconstructs the corr
 
 Evaluation data is used for model selection and threshold selection. Its results are not independent test estimates.
 
+### Faster, Separate Evaluation Copy
+
+[`evaluate_fast.ipynb`](evaluate_fast.ipynb) is an isolated copy with the same
+threshold grid, populations, metric definitions, selection rules and export
+schemas. It uses `notebooks_analysis/fast_pair_evaluation.py` to jump between
+precomputed crossing frames and reuse forward-lookahead peaks. Normal-use sweeps
+retain side counts instead of building detailed alarm tables for every pair;
+the all-original and validation-source populations reuse these counts. Detailed
+tables are still generated for selected pairs. No extra package or GPU is needed.
+
+- The source `evaluate.ipynb` and user-created evaluation copies are unchanged.
+- Exports are disabled initially (`SAVE_COMPARISON=False`). When enabled, they
+  go to a separate `fast_evaluation/threshold_comparison/` directory below the
+  configured evaluation output directory; table filenames and schemas are unchanged.
+- The pair cell prints its runtime and computed/disk-hit/memory-hit counts.
+- Pair results persist in `.cache/evaluate_fast/`, keyed by actual probability
+  bytes, annotations, sample rates, ordered populations, durations, detector/
+  matching code and timing settings. New thresholds compute only missing pairs;
+  budget/selector changes reuse existing pairs. Set `PAIR_SWEEP_CACHE_DIR=None`
+  to disable disk persistence. Prepared arrays must not be mutated in place;
+  rerun the detector and pair cells after changing upstream probabilities.
+- The full-original normal-use and validation-source-only rates remain separate,
+  with identical deduplication and exposure definitions to the source notebook.
+
+Run synthetic/golden-reference tests with:
+
+```bash
+.venv/bin/python -m unittest tests.test_fast_pair_evaluation
+```
+
+For a real-data check against the current source notebook's configured checkpoint,
+dataset and full grid, run:
+
+```bash
+.venv/bin/python tools/verify_fast_evaluation.py
+```
+
+This runs the slow reference sweep once, then checks exact overall/side values,
+selectors, per-file/type tables, normal-use tables, column order, dtypes and CSV
+serialization. It also benchmarks cold/warm fast sweeps and writes a verification
+report under `/tmp/opencode/`. Historical exports are not written. The slow
+reference can take several minutes. `tools/build_fast_evaluation_notebook.py`
+can create a new copy from the source in future; it refuses to overwrite an
+existing notebook.
+
 Threshold selection defaults to `FP_SELECTION_METRIC = 'negative_fp_per_min'`: the FP-budget modes and `recall_target_min_fp` use alarms per minute only in validation recordings with no annotated double taps. FP-rate tie-breakers use the same setting. Set it to `'fp_per_min'` to use all unmatched alarms over all validation minutes instead. `FP_PER_MIN_LIMIT` is a strict upper bound on the selected metric; the export metadata records `fp_selection_metric`. Both rates are still reported, and `max_f1` still uses event F1 as its primary objective. Rerun evaluation/export for each compared checkpoint after changing this setting.
 
 `evaluate.ipynb` and `compare.ipynb` use true original-recording exposure for `negative_mining` crops: resolve each crop's `.mining.json`, verify the original CSV hash, measure its frames/sample rate, and count that source once per evaluated split/model. A source's minutes are divided among its evaluated crops so ordinary grouped totals do not overcount. Other recordings retain included duration. `minutes` is the allocated FP-rate denominator; `evaluated_minutes` preserves actual input duration. Evaluation exports `recording_duration_audit.csv`, `duration_basis`, and `duration_sha256`. Keep the originals in `hard_negative_mining/source_recordings/` or configure `MINING_SOURCE_DIR` in both notebooks; missing/mismatched originals fail explicitly. This also applies to comparison's training and validation replays independently.
@@ -109,6 +154,49 @@ Both `evaluate.ipynb` and `compare.ipynb` also evaluate complete `normal_usage` 
 Keep original CSVs available; source lengths alone cannot replace full inference. For held-out estimates use a dedicated source folder/list whose originals **and crops** were excluded from training and threshold selection. The default source folder is not automatically held out.
 
 ## Compare Evaluated Runs
+
+### Fast Comparison Copy
+
+[`fast_comparison.ipynb`](fast_comparison.ipynb) preserves the configured `RUNS`,
+selection mode, matching interval, plots and schemas from `compare.ipynb`. It
+adds a `ComparisonRuntime` for:
+
+- Persistent, threshold-independent CPU probabilities and independently inferred
+  fitted-window side scores. Changing thresholds or matching does not rerun models.
+- Exact candidate-based alarm detection, including resets/EOF handling at each
+  included contiguous bound. Full normal-use originals remain continuous through
+  internal sessions, independently of the crop-based training/validation replay.
+- Shared file-hash, original-duration and prepared-data caches across models and
+  replay sections, without skipping current source/checkpoint verification.
+- Timing and prediction compute/disk-hit/memory-hit statistics after each replay.
+
+The default `COMPARISON_CACHE_DIR` is `.cache/fast_comparison/`; set it to `None`
+for memory-only caching. NumPy cache files use no pickled objects. Prediction
+keys include checkpoint/input content, actual fitted windows, preprocessing/reset
+boundaries, inference code and numerical backend/thread settings. Do not mutate
+returned input/probability arrays in place. The copy uses two CPU threads for all
+sections (`COMPARISON_CPU_THREADS`); there is no batching, reduced precision or
+GPU switch, so original scalar-window and continuous-inference semantics remain.
+Warm runs still validate current files and recompute matching/aggregation.
+
+The source notebook and historical exports are not changed. Comparison adds no
+training or threshold tuning. The original helpers default to their existing
+uncached behavior; only the copy opts into the runtime.
+
+Validation commands:
+
+```bash
+.venv/bin/python -m unittest tests.test_fast_comparison
+.venv/bin/python tools/verify_fast_comparison.py
+```
+
+The real-data verifier checks every currently configured model at its frozen
+thresholds, full normal-use sources, validation and training. It compares exact
+table values, column order/dtypes, CSV serialization and probability traces,
+benchmarks reference/cold/warm execution, and executes all fast-notebook cells.
+Reports/disposable caches go under `/tmp/opencode/`, never historical exports.
+`tools/build_fast_comparison_notebook.py` can create a fresh copy later and
+refuses to overwrite an existing notebook.
 
 [`compare_models.ipynb`](compare_models.ipynb) reads completed `threshold_comparison/` exports from multiple runs.
 

@@ -38,3 +38,7 @@ venv/
 
 # Windows download-origin metadata copied as invalid filenames outside NTFS.
 *:Zone.Identifier
+
+# Content-addressed pair-metric cache used only by evaluate_fast.ipynb.
+/.cache/evaluate_fast/
+/.cache/fast_comparison/

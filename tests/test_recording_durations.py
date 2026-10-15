@@ -193,7 +193,8 @@ class RecordingDurationTests(unittest.TestCase):
                   recordings=recordings, probabilities={r.path.name: probs for r in recordings},
                   duration_audit=audit, duration_lookup=audit.set_index('file'),
                   display=lambda _: None, divide=lambda a, b: a/b if b else np.nan)
-        ns.update(evaluate_normal_usage=evaluate_normal_usage, normal_usage_recordings=[], normal_usage_probabilities={})
+        ns.update(evaluate_normal_usage=evaluate_normal_usage, normal_usage_recordings=[], normal_usage_probabilities={},
+                  validation_crop_normal_usage_recordings=[], validation_crop_normal_usage_probabilities={})
         single = next(s for s in cells if 'def emit_alarms(' in s)
         single = 'THRESHOLDS = [.5]\n' + single.split('\n', 1)[1]
         exec(single, ns)

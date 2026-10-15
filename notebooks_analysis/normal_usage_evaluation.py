@@ -54,8 +54,8 @@ def load_normal_usage(source_dir: Path, filenames: list[str] | None = None):
 
 
 def evaluate_normal_usage(recordings: list[MiningRecording], traces: dict[str, np.ndarray],
-                          left_threshold: float, right_threshold: float,
-                          lookahead_frames: int = 12, refractory_sec: float = .5):
+                           left_threshold: float, right_threshold: float,
+                           lookahead_frames: int = 12, refractory_sec: float = .5, *, emitter=None):
     """Actual emitted alarms / ALL full-source minutes, including zero-alarm files."""
     rows, alarms = [], []
     for rec in recordings:
@@ -64,8 +64,9 @@ def evaluate_normal_usage(recordings: list[MiningRecording], traces: dict[str, n
         p = traces[rec.path.name]
         if p.shape != (len(rec.data), 3) or not np.isfinite(p).all():
             raise ValueError(f'{rec.path.name}: expected full-source [frames, 3] probabilities')
-        detected = emit_alarms_pair(p, left_threshold, right_threshold, lookahead_frames,
-                                   round(refractory_sec * rec.fs), [(0, len(p))])
+        detector = emit_alarms_pair if emitter is None else emitter
+        detected = detector(p, left_threshold, right_threshold, lookahead_frames,
+                            round(refractory_sec * rec.fs), [(0, len(p))])
         minutes = len(p) / rec.fs / 60
         left = sum(a['class_id'] == 1 for a in detected)
         right = len(detected) - left
@@ -87,9 +88,12 @@ def evaluate_normal_usage(recordings: list[MiningRecording], traces: dict[str, n
 
 
 def replay_normal_usage(root: Path, operating_points: pd.DataFrame, source_dir: Path,
-                        filenames: list[str] | None = None, chunk_frames: int = 4096):
+                         filenames: list[str] | None = None, chunk_frames: int = 4096, *, runtime=None):
     """Replay frozen thresholds for every model on the same full-source population."""
-    recordings, manifest, fingerprint = load_normal_usage(source_dir, filenames)
+    if runtime is None:
+        recordings, manifest, fingerprint = load_normal_usage(source_dir, filenames)
+    else:
+        recordings, manifest, fingerprint = runtime.load_normal_usage(source_dir, filenames)
     summaries, files, alarms = [], [], []
     looks = {'instant': 0, 'lookahead_12f': 12}
     if recordings:
@@ -98,17 +102,24 @@ def replay_normal_usage(root: Path, operating_points: pd.DataFrame, source_dir: 
             if not isinstance(checkpoint, str):
                 raise ValueError(f"{row['model']}: full-source replay needs evaluation_context.json with checkpoint_path")
             path = Path(root) / checkpoint
-            if file_sha256(path) != row['checkpoint_sha256']:
-                raise ValueError(f"{row['model']}: checkpoint differs from its selected-threshold export")
-            model = load_mining_model(path)
-            # An explicit evaluation-data preprocessing override is authoritative.
-            data = row.get('evaluation_data')
-            if isinstance(data, dict):
-                model.highpass = bool(data['highpass'])
-            traces = {r.path.name: predict_recording(r, model, False, chunk_frames) for r in recordings}
+            if runtime is None:
+                if file_sha256(path) != row['checkpoint_sha256']:
+                    raise ValueError(f"{row['model']}: checkpoint differs from its selected-threshold export")
+                model = load_mining_model(path)
+                # An explicit evaluation-data preprocessing override is authoritative.
+                data = row.get('evaluation_data')
+                if isinstance(data, dict):
+                    model.highpass = bool(data['highpass'])
+                traces = {r.path.name: predict_recording(r, model, False, chunk_frames) for r in recordings}
+            else:
+                checkpoint_data = runtime.checkpoint(path, row['checkpoint_sha256'])
+                traces = {r.path.name: runtime.normal_prediction(
+                    path, checkpoint_data, row['checkpoint_sha256'], row.get('evaluation_data'), r, chunk_frames)
+                    for r in recordings}
             overall, _, by_file, by_alarm = evaluate_normal_usage(
                 recordings, traces, row['left_threshold'], row['right_threshold'],
-                looks[row['policy']], row.get('refractory_sec', .5))
+                looks[row['policy']], row.get('refractory_sec', .5),
+                emitter=None if runtime is None else runtime.emit_alarms_pair)
             identifiers = dict(model=row['model'], selection_mode=row['selection_mode'], policy=row['policy'],
                                left_threshold=row['left_threshold'], right_threshold=row['right_threshold'],
                                normal_usage_sha256=fingerprint)

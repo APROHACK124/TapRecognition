@@ -146,7 +146,9 @@ class NormalUsageEvaluationTests(unittest.TestCase):
                   match_alarms=lambda *_args, **_kwargs: [(0, 0), (1, 1)],
                   divide=lambda a, b: a/b if b else np.nan,
                   evaluate_normal_usage=evaluate_normal_usage,
-                  normal_usage_recordings=normal, normal_usage_probabilities={path.name: normal_probs})
+                  normal_usage_recordings=normal, normal_usage_probabilities={path.name: normal_probs},
+                  validation_crop_normal_usage_recordings=normal,
+                  validation_crop_normal_usage_probabilities={path.name: normal_probs})
         exec(code.split('sweep_rows = []')[0], ns)
         overall, sides = ns['evaluate_pair_events'](.9, .9, 'instant')
         self.assertEqual(overall['tp'], 2)
@@ -157,6 +159,7 @@ class NormalUsageEvaluationTests(unittest.TestCase):
         self.assertEqual(overall['normal_usage_fp_per_min'], 1.)
         self.assertEqual(sides[1]['normal_usage_fp_per_min'], 1.)
         self.assertEqual(sides[2]['normal_usage_fp_per_min'], 0.)
+        self.assertEqual(sides[1]['validation_crop_normal_usage_fp_per_min'], 1.)
 
 
 if __name__ == '__main__':

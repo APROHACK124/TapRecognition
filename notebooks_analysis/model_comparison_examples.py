@@ -182,11 +182,13 @@ def _segment_at(segments, frame):
 
 
 def replay_examples(root: Path, operating_points: pd.DataFrame, split: str = 'valid',
-                    source_dir: Path | None = None):
+                    source_dir: Path | None = None, *, runtime=None):
     """Replay one split at frozen validation-selected thresholds in eval mode.
 
     Training replay is an in-sample label audit, not a generalization estimate.
     Its current-data hash is not compared with the exported validation hash.
+    Optional runtime supplies verified input/prediction caches and an equivalent
+    detector. The default path and all matching/aggregation code are unchanged.
     """
     if split not in ('train', 'valid'):
         raise ValueError(f'Unsupported inspection split: {split!r}')
@@ -196,9 +198,12 @@ def replay_examples(root: Path, operating_points: pd.DataFrame, split: str = 'va
         checkpoint_path = root / row['checkpoint_path'] if isinstance(row.get('checkpoint_path'), str) else (
             root / row['folder'] / '..' / 'best.pt')
         checkpoint_path = checkpoint_path.resolve()
-        if _sha256(checkpoint_path) != row['checkpoint_sha256']:
-            raise ValueError(f'{label}: checkpoint differs from selected-threshold export')
-        checkpoints[label] = torch.load(checkpoint_path, map_location='cpu', weights_only=True)
+        if runtime is None:
+            if _sha256(checkpoint_path) != row['checkpoint_sha256']:
+                raise ValueError(f'{label}: checkpoint differs from selected-threshold export')
+            checkpoints[label] = torch.load(checkpoint_path, map_location='cpu', weights_only=True)
+        else:
+            checkpoints[label] = runtime.checkpoint(checkpoint_path, row['checkpoint_sha256'])
     has_evaluation_context = all(isinstance(row.get('evaluation_data'), dict)
                                  for _, row in choices.iterrows())
     if has_evaluation_context:
@@ -214,8 +219,12 @@ def replay_examples(root: Path, operating_points: pd.DataFrame, split: str = 'va
             cfg = checkpoint['train_config']
             if any(cfg[key] != first[key] for key in ('data', 'labels', 'seed')):
                 raise ValueError(f'{label}: {split} preprocessing/data config differs from other models')
-    recordings, current_hash = load_examples(root, data, labels, seed, split)
-    duration_lookup = durations_for_recordings(root, list(recordings.values()), source_dir).set_index('file')
+    if runtime is None:
+        recordings, current_hash = load_examples(root, data, labels, seed, split)
+    else:
+        recordings, current_hash = runtime.load_examples(root, data, labels, seed, split)
+    duration_lookup = durations_for_recordings(
+        root, list(recordings.values()), source_dir, cache=runtime).set_index('file')
     if split == 'valid':
         status = pd.DataFrame([dict(model=label, split=split,
                                      export_validation_sha256=row['validation_sha256'],
@@ -230,21 +239,27 @@ def replay_examples(root: Path, operating_points: pd.DataFrame, split: str = 'va
     with torch.inference_mode():
         for label, row in choices.iterrows():
             checkpoint = checkpoints[label]
-            config = dict(checkpoint['model_config'])
-            config['dilations'] = tuple(config['dilations'])
-            model = build_model(config, checkpoint.get('model_type')).cpu().eval()
-            model.load_state_dict(checkpoint['model_state'])
+            model = None
+            if runtime is None:
+                config = dict(checkpoint['model_config'])
+                config['dilations'] = tuple(config['dilations'])
+                model = build_model(config, checkpoint.get('model_type')).cpu().eval()
+                model.load_state_dict(checkpoint['model_state'])
             look = looks[row['policy']]
             thresholds = np.array([row['left_threshold'], row['right_threshold']])
             for rec in recordings.values():
-                probs = np.zeros((len(rec.imu), 3), dtype=np.float32)
-                probs[:, 0] = 1
-                for start, end in rec.bounds:
-                    logits, _ = model(torch.from_numpy(rec.imu[start:end]).unsqueeze(0))
-                    probs[start:end] = logits[0].softmax(-1).numpy()
+                if runtime is None:
+                    probs = np.zeros((len(rec.imu), 3), dtype=np.float32)
+                    probs[:, 0] = 1
+                    for start, end in rec.bounds:
+                        logits, _ = model(torch.from_numpy(rec.imu[start:end]).unsqueeze(0))
+                        probs[start:end] = logits[0].softmax(-1).numpy()
+                else:
+                    probs, window_scores = runtime.example_predictions(checkpoint, row['checkpoint_sha256'], rec)
                 traces[(label, rec.path.name)] = probs
-                detected = emit_alarms_pair(probs, *thresholds, look,
-                                            round(float(row['refractory_sec']) * rec.fs), rec.bounds)
+                emitter = emit_alarms_pair if runtime is None else runtime.emit_alarms_pair
+                detected = emitter(probs, *thresholds, look,
+                                   round(float(row['refractory_sec']) * rec.fs), rec.bounds)
                 matched = match_alarms(rec.events, detected, int(row['early_allowance_frames']),
                                        int(row['max_late_frames']))
                 matched_by_event = dict(matched)
@@ -287,8 +302,11 @@ def replay_examples(root: Path, operating_points: pd.DataFrame, split: str = 'va
                         window_true, window_pred, left_score, right_score = np.nan, np.nan, np.nan, np.nan
                     else:
                         x, window_true = window
-                        logits, _ = model(torch.from_numpy(x).unsqueeze(0))
-                        left_score, right_score = logits[0].softmax(-1)[:, 1:].max(dim=0).values.tolist()
+                        if runtime is None:
+                            logits, _ = model(torch.from_numpy(x).unsqueeze(0))
+                            left_score, right_score = logits[0].softmax(-1)[:, 1:].max(dim=0).values.tolist()
+                        else:
+                            left_score, right_score = window_scores[sid]
                         eligible = np.where(np.array([left_score, right_score]) >= thresholds,
                                             [left_score, right_score], -np.inf)
                         window_pred = int(eligible.argmax() + 1) if np.isfinite(eligible).any() else 0
