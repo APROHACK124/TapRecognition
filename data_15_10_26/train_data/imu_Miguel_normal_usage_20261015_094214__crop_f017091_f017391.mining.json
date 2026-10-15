@@ -1,0 +1,89 @@
+{
+  "checkpoint_path": "/home/aprohack/desktop/work/tap-project/project/tapRecognitionRui/TapRecognition/testing_checkpoints/1410d8(42)/best.pt",
+  "checkpoint_sha256": "92ed3d0f9cf464a7c5d7bb40a3142e108c8981d8eedf6e9daa485cf5afc53d5c",
+  "crop_bounds": "[start, end), original CSV row indices; anchor/core interval is inclusive",
+  "highpass": true,
+  "label_class": 0,
+  "selection": {
+    "alarm_frame": 17341,
+    "allow_overlapping_crops": true,
+    "anchor": "peak",
+    "anchor_frame": 17341,
+    "anchor_in_crop": 250,
+    "anchor_seconds": 173.41,
+    "annotated_events_in_crop": 0,
+    "candidate_id": 90,
+    "class_id": 2,
+    "context_clipped": false,
+    "core_end_frame": 17352,
+    "core_start_frame": 17301,
+    "crop_end_frame": 17391,
+    "crop_frames": 300,
+    "crop_seconds": 3.0,
+    "crop_start_frame": 17091,
+    "crossing_frame": 17341,
+    "file": "imu_Miguel_normal_usage_20261015_094214.csv",
+    "left_threshold": 0.3,
+    "lookahead_frames": 0,
+    "min_gap_frames": 100,
+    "mining_models": [
+      {
+        "checkpoint_path": "/home/aprohack/desktop/work/tap-project/project/tapRecognitionRui/TapRecognition/testing_checkpoints/1410d8(42)/best.pt",
+        "checkpoint_sha256": "92ed3d0f9cf464a7c5d7bb40a3142e108c8981d8eedf6e9daa485cf5afc53d5c",
+        "highpass": true,
+        "left_threshold": 0.3,
+        "model": "latest (1410d8(42))",
+        "right_threshold": 0.3
+      },
+      {
+        "checkpoint_path": "/home/aprohack/desktop/work/tap-project/project/tapRecognitionRui/TapRecognition/testing_checkpoints/lstm64_features/d8(102)/best.pt",
+        "checkpoint_sha256": "6a0d69c81717280af300b444dbcdeb5d18beddd7cdad60b80c626a0b5393aeb6",
+        "highpass": true,
+        "left_threshold": 0.95,
+        "model": "feature_0910d8(102)",
+        "right_threshold": 0.95
+      },
+      {
+        "checkpoint_path": "/home/aprohack/desktop/work/tap-project/project/tapRecognitionRui/TapRecognition/testing_checkpoints/0910d8(52)/best.pt",
+        "checkpoint_sha256": "cfec2d609f6ab5a7402e817718d24334e5e07f930118c11152b1e33e1dd66eba",
+        "highpass": true,
+        "left_threshold": 0.8,
+        "model": "raw_0910d8(52)",
+        "right_threshold": 0.8
+      }
+    ],
+    "model": "latest (1410d8(42))",
+    "peak_frame": 17341,
+    "probability": 0.34444865584373474,
+    "refractory_frames": 100,
+    "reset_at_segments": false,
+    "right_threshold": 0.3,
+    "segment_index": 1,
+    "selection_mode": "any_model",
+    "side": "right",
+    "source_sha256": "e6ad9adff89040beb88183efa9103c1cca74d1b825268b43558ec6e1e92964e8",
+    "training_retains_core": true,
+    "trigger_details": [
+      {
+        "alarm_frame": 17341,
+        "anchor_frame": 17341,
+        "class_id": 2,
+        "left_threshold": 0.3,
+        "model": "latest (1410d8(42))",
+        "peak_frame": 17341,
+        "probability": 0.34444865584373474,
+        "right_threshold": 0.3
+      }
+    ],
+    "trigger_models": [
+      "latest (1410d8(42))"
+    ]
+  },
+  "source_duration_seconds": 300.36,
+  "source_frames": 30036,
+  "source_path": "/home/aprohack/desktop/work/tap-project/project/tapRecognitionRui/TapRecognition/hard_negative_mining_15_10_26/source_recordings/imu_Miguel_normal_usage_20261015_094214.csv",
+  "source_recording_type": "normal_usage",
+  "source_sample_rate_hz": 100.0,
+  "source_sha256": "e6ad9adff89040beb88183efa9103c1cca74d1b825268b43558ec6e1e92964e8",
+  "training_window_frames": 300
+}

@@ -9,11 +9,11 @@
     "mode": "recorded",
     "negative_windows_per_file": 20,
     "sample_rate": 100.0,
-    "session_exclusions_file": "/home/miguel/TapRecognition/data_13_10_26/session_exclusions.csv",
+    "session_exclusions_file": "/home/aprohack/desktop/work/tap-project/project/tapRecognitionRui/TapRecognition/data_13_10_26/session_exclusions.csv",
     "synthetic_samples": 8000,
-    "train_dir": "/home/miguel/TapRecognition/data_13_10_26/train_data",
+    "train_dir": "/home/aprohack/desktop/work/tap-project/project/tapRecognitionRui/TapRecognition/data_13_10_26/train_data",
     "trigger_context_samples": 200,
-    "val_dir": "/home/miguel/TapRecognition/data_13_10_26/valid_data",
+    "val_dir": "/home/aprohack/desktop/work/tap-project/project/tapRecognitionRui/TapRecognition/data_13_10_26/valid_data",
     "val_split": 0.15,
     "window_samples": 300
   },
@@ -230,9 +230,9 @@
       }
     ],
     "sha256": "436d0822df6162d79a0a54abcded133f5a6a8f8357e987a0d78512239bb01a2b",
-    "source_dir": "/home/miguel/TapRecognition/hard_negative_mining/source_recordings"
+    "source_dir": "/home/aprohack/desktop/work/tap-project/project/tapRecognitionRui/TapRecognition/hard_negative_mining/source_recordings"
   },
-  "preprocessing_sha256": "0382c2efa61d88fcc5345b9ead16680efa40c40a928a4446377ec160fd1273d1",
+  "preprocessing_sha256": "429df3bedc7aa1d6cfa3bc2745ebd6b5f2f2990711ff1aa390aa3706f93a787e",
   "seed": 101,
   "validation_sha256": "2e1b9b90183d8029bcc78af2fe30b07bb59a0236303c0c5fa32a4d0140fd05e3"
 }
