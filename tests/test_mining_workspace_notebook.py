@@ -54,14 +54,13 @@ class MiningWorkspaceNotebookTests(unittest.TestCase):
 
     def test_workspace_and_model_defaults(self):
         setup = next(source for source in self.code if 'MINING_WORKSPACE = ' in source)
-        settings = setup.split("SOURCE_DIR = ROOT / 'temp'", 1)[1]
+        settings = 'MINING_WORKSPACE = ' + setup.split('MINING_WORKSPACE = ', 1)[1]
         env = dict(ROOT=ROOT)
         exec(compile(settings, 'workspace-settings', 'exec'), env)
-        workspace = ROOT / 'hard_negative_mining_15_10_26'
+        workspace = ROOT / 'hard_negative_mining_22_10_26'
         self.assertEqual(env['INPUT_DIR'], workspace / 'source_recordings')
         self.assertEqual(env['OUTPUT_DIR'], workspace / 'crops')
         self.assertEqual(env['MODELS'], {})
-        self.assertFalse(env['STAGE_NEW_RECORDINGS'])
 
     def test_code_compiles(self):
         for index, source in enumerate(self.code):

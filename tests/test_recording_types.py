@@ -17,6 +17,8 @@ class RecordingTypesTests(unittest.TestCase):
             'imu_Miguel_normal_usage_20261014_120000.csv': 'normal_usage',
             'imu_Miguel_normal_usage_20261014_120000__crop_f000000_f000300.csv': 'hard_negative',
             'imu_Miguel_hard-negatives_20261014_120000.csv': 'hard_negative',
+            'imuStrict_MiguelL_knock_twice_left_20261022_175714__crop_f000300_f000600.csv': 'knock_twice',
+            'imuStrict_MiguelL_knock_twice_right_20261022_175549__crop_f000000_f000300.csv': 'knock_twice',
         }
         for name, expected in cases.items():
             with self.subTest(name=name):

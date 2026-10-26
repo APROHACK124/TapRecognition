@@ -6,6 +6,21 @@ Do not train multiple candidates simultaneously on this machine. Preserve every 
 
 ## Canonical Workflow
 
+### New mining workspaces (22 October 2026)
+
+- `mine_hard_negatives.ipynb` uses only the new negatives in
+  `hard_negative_mining_22_10_26/`. The previous notebook was renamed to
+  `mine_hard_negatives_before_22_10_26.ipynb`, preserving its settings and outputs.
+- `mine_hard_positives.ipynb` uses strict-labeled sources in
+  `hard_positive_mining_22_10_26/`. A whole segment is hard if **any model** has a
+  correct-side peak below its threshold within **±500 ms** of the auto-label,
+  clipped to the segment. Strict labeling used **1950–2750 ms**. A separate cell
+  provides detailed raw/model traces for one selected segment. Only hard labeled
+  segments are exported, with remapped positive labels and provenance.
+- `data_22_10_26/` starts as a copy of `data_15_10_26/`; newly mined crops stay in
+  their workspaces until explicitly exported and assigned to dataset splits.
+- Define each notebook's `MODELS` before mining. All export switches start off.
+
 ```text
 training_gru.ipynb or training_lstm.ipynb
                     |

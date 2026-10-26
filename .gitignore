@@ -42,3 +42,6 @@ venv/
 # Content-addressed pair-metric cache used only by evaluate_fast.ipynb.
 /.cache/evaluate_fast/
 /.cache/fast_comparison/
+
+# Local agent context/reference notes; do not commit.
+/agents/

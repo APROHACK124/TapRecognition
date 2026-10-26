@@ -1,0 +1,13 @@
+{
+  "events": 20,
+  "half_frames": 10,
+  "labeler": "tools.auto_label_imu.label_csv",
+  "misses": 0,
+  "segments": 20,
+  "source_labels_sha256": "2059218191f83f2ec035fdc30c5dea20a3544dc6cc04cfdec4c10e39ec32b5b3",
+  "source_sha256": "edcaf312cfee69069043d735bedad2be1fe1a623df6d3f9e2f8667ef3e3dfbbf",
+  "strict_spike_window_ms": [
+    1950,
+    2750
+  ]
+}

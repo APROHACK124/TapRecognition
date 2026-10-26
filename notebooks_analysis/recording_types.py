@@ -35,7 +35,8 @@ def recording_type_from_filename(filename: str | Path, fallback_action: str | No
     Both a full ``negative_mining`` recording and an exported
     ``negative_mining_<timestamp>__crop_f<start>_f<end>.csv`` use
     ``hard_negative``. Full ``normal_usage`` originals retain ``normal_usage``;
-    their mined crops also use ``hard_negative``. Other crop actions are rejected
+    their mined crops also use ``hard_negative``. Labeled left/right positive
+    segment crops retain ``knock_twice``. Other crop actions are rejected
     rather than silently grouped under an unintended type. ``fallback_action``
     keeps ad-hoc or fixture CSVs usable in replay tables when they do not use
     the collection naming convention.
@@ -51,9 +52,10 @@ def recording_type_from_filename(filename: str | Path, fallback_action: str | No
     fields = match.groupdict()
     action = fields["action"].lower()
     if fields["crop"] is not None:
-        if action not in {"negative_mining", "hard_negative", "hard_negatives", "hard-negatives", "normal_usage"}:
-            raise ValueError(f"Only hard-negative or normal_usage recordings may use a crop suffix: {filename}")
+        positive = action in {"knock_twice_left", "knock_twice_right"}
+        if not positive and action not in {"negative_mining", "hard_negative", "hard_negatives", "hard-negatives", "normal_usage"}:
+            raise ValueError(f"Only mining negatives or labeled double taps may use a crop suffix: {filename}")
         if int(fields["crop_start"]) >= int(fields["crop_end"]):
-            raise ValueError(f"Invalid hard-negative crop bounds: {filename}")
-        return "hard_negative"
+            raise ValueError(f"Invalid crop bounds: {filename}")
+        return "knock_twice" if positive else "hard_negative"
     return recording_type_from_action(action)
